@@ -1,0 +1,638 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar/tou.jpeg">
+  <link rel="icon" href="/img/avatar/tou.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="利用pytorch训练你的深度学习模型-5-可视化与 Hook">
+  <meta name="author" content="zheng">
+  <meta name="keywords" content="">
+  
+  <title>深度学习-12-pytorch-5-可视化与 Hook - Sage的生活学习笔记</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"truth-zheng.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Sage的学习生活笔记</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/bg/2.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="深度学习-12-pytorch-5-可视化与 Hook">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-08-12 13:00" pubdate>
+        2021年8月12日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      36
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">深度学习-12-pytorch-5-可视化与 Hook</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2021年8月15日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <blockquote>
+<p>创作声明：主要内容参考于张贤同学<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/265394674">https://zhuanlan.zhihu.com/p/265394674</a></p>
+</blockquote>
+<h2 id="Tensorboard"><a href="#Tensorboard" class="headerlink" title="Tensorboard"></a>Tensorboard</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>原本是tensorflow的可视化工具，pytorch从1.2.0开始支持tensorboard。之前的版本也可以使用tensorboardX代替。</p>
+<p>在使用1.2.0版本以上的PyTorch的情况下，直接使用pip安装即可。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">pip <span class="hljs-keyword">install</span> tensorboard<br></code></pre></td></tr></table></figure>
+<p>这样直接安装之后，有可能打开的tensorboard网页是全白的，如果有这种问题，解决方法是卸载之后安装更低版本</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">tensorboard</span>。pip uninstall tensorboard<br><span class="hljs-attribute">pip</span> install tensorboard==<span class="hljs-number">2</span>.<span class="hljs-number">0</span>.<span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
+<h3 id="Tensorboard的使用逻辑"><a href="#Tensorboard的使用逻辑" class="headerlink" title="Tensorboard的使用逻辑"></a>Tensorboard的使用逻辑</h3><p>Tensorboard的工作流程简单来说是</p>
+<ul>
+<li>将代码运行过程中的某些你关心的数据保存在一个文件夹中：<br>这一步由代码中的writer完成 </li>
+<li>再读取这个文件夹中的数据，用浏览器显示出来：<br>这一步通过在命令行运行tensorboard完成。</li>
+</ul>
+<h3 id="代码体中要做的事"><a href="#代码体中要做的事" class="headerlink" title="代码体中要做的事"></a>代码体中要做的事</h3><p>首先导入tensorboard</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-keyword">from</span> torch.utils.tensorboard <span class="hljs-keyword">import</span> SummaryWriter   <br></code></pre></td></tr></table></figure>
+<p>这里的SummaryWriter的作用就是，将数据以特定的格式存储到刚刚提到的那个文件夹中。</p>
+<p>首先我们将其实例化</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">writer = <span class="hljs-constructor">SummaryWriter(&#x27;.<span class="hljs-operator">/</span><span class="hljs-params">path</span><span class="hljs-operator">/</span><span class="hljs-params">to</span><span class="hljs-operator">/</span><span class="hljs-params">log</span>&#x27;)</span><br></code></pre></td></tr></table></figure>
+<p>这里传入的参数就是指向文件夹的路径，之后我们使用这个writer对象“拿出来”的任何数据都保存在这个路径之下。</p>
+<p>这个对象包含多个方法，比如针对数值，我们可以调用</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">writer.add<span class="hljs-constructor">_scalar(<span class="hljs-params">tag</span>, <span class="hljs-params">scalar_value</span>, <span class="hljs-params">global_step</span>=None, <span class="hljs-params">walltime</span>=None)</span><br></code></pre></td></tr></table></figure>
+<p>这里的tag指定可视化时这个变量的名字，scalar_value是你要存的值，global_step可以理解为x轴坐标。</p>
+<p>举一个简单的例子：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> range(<span class="hljs-number">100</span>)<br>    mAP = eval(model)<br>    writer.add<span class="hljs-constructor">_scalar(&#x27;<span class="hljs-params">mAP</span>&#x27;, <span class="hljs-params">mAP</span>, <span class="hljs-params">epoch</span>)</span><br></code></pre></td></tr></table></figure>
+<p>这样就会生成一个x轴跨度为100的折线图，y轴坐标代表着每一个epoch的mAP。这个折线图会保存在指定的路径下（但是现在还看不到）</p>
+<p>同理，除了数值，我们可能还会想看到模型训练过程中的图像。 </p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros">writer.add_image(tag, img_tensor, <span class="hljs-attribute">global_step</span>=None, <span class="hljs-attribute">walltime</span>=None, <span class="hljs-attribute">dataformats</span>=<span class="hljs-string">&#x27;CHW&#x27;</span>)<br>writer.add_images(tag, img_tensor, <span class="hljs-attribute">global_step</span>=None, <span class="hljs-attribute">walltime</span>=None, <span class="hljs-attribute">dataformats</span>=<span class="hljs-string">&#x27;NCHW&#x27;</span>)<br></code></pre></td></tr></table></figure>
+<h3 id="可视化"><a href="#可视化" class="headerlink" title="可视化"></a>可视化</h3><p>我们已经将关心的数据拿出来了，接下来我们只需要在命令行运行：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">tensorboard --logdir=.<span class="hljs-regexp">/path/</span>to<span class="hljs-regexp">/the/</span>folder --port <span class="hljs-number">8123</span><br></code></pre></td></tr></table></figure>
+<p>然后打开浏览器，访问地址<a target="_blank" rel="noopener" href="http://localhost:8123/">http://localhost:8123/</a>  即可。这里的8123只是随便一个例子，用其他的未被占用端口也没有任何问题，注意命令行的端口与浏览器访问的地址同步。</p>
+<p>如果发现不显示数据，注意检查一下路径是否正确，命令行这里注意是</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">--logdir=.<span class="hljs-regexp">/path/</span>to<span class="hljs-regexp">/the/</span>folder<br></code></pre></td></tr></table></figure>
+<p>而不是</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">--logdir</span>= <span class="hljs-string">&#x27;./path/to/the/folder &#x27;</span><br></code></pre></td></tr></table></figure>
+<p>另一点要注意的是tensorboard并不是实时显示（visdom是完全实时的），而是默认30秒刷新一次。</p>
+<h3 id="细节"><a href="#细节" class="headerlink" title="细节"></a>细节</h3><h4 id="变量归类"><a href="#变量归类" class="headerlink" title="变量归类"></a>变量归类</h4><p>命名变量的时候可以使用形如</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">writer.add<span class="hljs-constructor">_scalar(&#x27;<span class="hljs-params">loss</span><span class="hljs-operator">/</span><span class="hljs-params">loss1</span>&#x27;, <span class="hljs-params">loss1</span>, <span class="hljs-params">epoch</span>)</span><br>writer.add<span class="hljs-constructor">_scalar(&#x27;<span class="hljs-params">loss</span><span class="hljs-operator">/</span><span class="hljs-params">loss2</span>&#x27;, <span class="hljs-params">loss2</span>, <span class="hljs-params">epoch</span>)</span><br>writer.add<span class="hljs-constructor">_scalar(&#x27;<span class="hljs-params">loss</span><span class="hljs-operator">/</span><span class="hljs-params">loss3</span>&#x27;, <span class="hljs-params">loss3</span>, <span class="hljs-params">epoch</span>)</span><br></code></pre></td></tr></table></figure>
+<p>的格式，这样3个loss就会被显示在同一个section。</p>
+<h4 id="同时显示多个折线图"><a href="#同时显示多个折线图" class="headerlink" title="同时显示多个折线图"></a>同时显示多个折线图</h4><p>假如使用了两种学习率去训练同一个网络，想要比较它们训练过程中的loss曲线，只需要将两个日志文件夹放到同一目录下，并在命令行运行</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">tensorboard --logdir=.<span class="hljs-regexp">/path/</span>to<span class="hljs-regexp">/the/</span>root --port <span class="hljs-number">8123</span><br></code></pre></td></tr></table></figure>
+<h2 id="Hook-函数"><a href="#Hook-函数" class="headerlink" title="Hook 函数"></a>Hook 函数</h2><p>Hook 函数是在不改变主体的情况下，实现额外功能。由于 PyTorch 是基于动态图实现的，因此在一次迭代运算结束后，一些中间变量如非叶子节点的梯度和特征图，会被释放掉。在这种情况下想要提取和记录这些中间变量，就需要使用 Hook 函数。</p>
+<p>PyTorch 提供了 4 种 Hook 函数。</p>
+<h3 id="torch-Tensor-register-hook-hook"><a href="#torch-Tensor-register-hook-hook" class="headerlink" title="torch.Tensor.register_hook(hook)"></a>torch.Tensor.register_hook(hook)</h3><p>功能：注册一个反向传播 hook 函数，仅输入一个参数，为张量的梯度。</p>
+<p><code>hook</code>函数：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">hook</span><span class="hljs-params">(grad)</span></span><br></code></pre></td></tr></table></figure>
+
+<p>参数：</p>
+<ul>
+<li>grad：张量的梯度</li>
+</ul>
+<p>代码如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs routeros">w = torch.tensor([1.], <span class="hljs-attribute">requires_grad</span>=<span class="hljs-literal">True</span>)<br>x = torch.tensor([2.], <span class="hljs-attribute">requires_grad</span>=<span class="hljs-literal">True</span>)<br>a = torch.<span class="hljs-builtin-name">add</span>(w, x)<br>b = torch.<span class="hljs-builtin-name">add</span>(w, 1)<br>y = torch.mul(a, b)<br><br><span class="hljs-comment"># 保存梯度的 list</span><br>a_grad = list()<br><br><span class="hljs-comment"># 定义 hook 函数，把梯度添加到 list 中</span><br>def grad_hook(grad):<br>    a_grad.append(grad)<br><br><span class="hljs-comment"># 一个张量注册 hook 函数</span><br>handle = a.register_hook(grad_hook)<br><br>y.backward()<br><br><span class="hljs-comment"># 查看梯度</span><br><span class="hljs-builtin-name">print</span>(<span class="hljs-string">&quot;gradient:&quot;</span>, w.grad, x.grad, a.grad, b.grad, y.grad)<br><span class="hljs-comment"># 查看在 hook 函数里 list 记录的梯度</span><br><span class="hljs-builtin-name">print</span>(<span class="hljs-string">&quot;a_grad[0]: &quot;</span>, a_grad[0])<br>handle.<span class="hljs-builtin-name">remove</span>()<br></code></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">gradient</span>: tensor([<span class="hljs-number">5</span>.]) tensor([<span class="hljs-number">2</span>.]) None None None<br><span class="hljs-attribute">a_grad</span>[<span class="hljs-number">0</span>]:  tensor([<span class="hljs-number">2</span>.])<br></code></pre></td></tr></table></figure>
+
+<p>在反向传播结束后，非叶子节点张量的梯度被清空了。而通过<code>hook</code>函数记录的梯度仍然可以查看。</p>
+<p><code>hook</code>函数里面可以修改梯度的值，无需返回也可以作为新的梯度赋值给原来的梯度。代码如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs routeros">w = torch.tensor([1.], <span class="hljs-attribute">requires_grad</span>=<span class="hljs-literal">True</span>)<br>x = torch.tensor([2.], <span class="hljs-attribute">requires_grad</span>=<span class="hljs-literal">True</span>)<br>a = torch.<span class="hljs-builtin-name">add</span>(w, x)<br>b = torch.<span class="hljs-builtin-name">add</span>(w, 1)<br>y = torch.mul(a, b)<br><br>a_grad = list()<br><br>def grad_hook(grad):<br>    grad *= 2<br>    return grad<span class="hljs-number">*3</span><br><br>handle = w.register_hook(grad_hook)<br><br>y.backward()<br><br><span class="hljs-comment"># 查看梯度</span><br><span class="hljs-builtin-name">print</span>(<span class="hljs-string">&quot;w.grad: &quot;</span>, w.grad)<br>handle.<span class="hljs-builtin-name">remove</span>()<br></code></pre></td></tr></table></figure>
+
+<p>结果是：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">w<span class="hljs-selector-class">.grad</span>:  tensor(<span class="hljs-selector-attr">[30.]</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="torch-nn-Module-register-forward-hook-hook"><a href="#torch-nn-Module-register-forward-hook-hook" class="headerlink" title="torch.nn.Module.register_forward_hook(hook)"></a>torch.nn.Module.register_forward_hook(hook)</h3><p>功能：注册 module 的前向传播<code>hook</code>函数，可用于获取中间的 feature map。</p>
+<p><code>hook</code>函数：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs lua">hook(<span class="hljs-built_in">module</span>, <span class="hljs-built_in">input</span>, <span class="hljs-built_in">output</span>)<br></code></pre></td></tr></table></figure>
+
+<p>参数：</p>
+<ul>
+<li>module：当前网络层</li>
+<li>input：当前网络层输入数据</li>
+<li>output：当前网络层输出数据</li>
+</ul>
+<p>下面代码执行的功能是 $3 \times 3$ 的卷积和 $2 \times 2$ 的池化。我们使用<code>register_forward_hook()</code>记录中间卷积层输入和输出的 feature map。</p>
+<p><img src="/img/pytorchtrain5/1.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">class</span> Net(nn.Module):<br>    <span class="hljs-attribute">def</span> __init__(self):<br>        <span class="hljs-attribute">super</span>(Net, self).__init__()<br>        <span class="hljs-attribute">self</span>.conv<span class="hljs-number">1</span> = nn.Conv<span class="hljs-number">2</span>d(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)<br>        <span class="hljs-attribute">self</span>.pool<span class="hljs-number">1</span> = nn.MaxPool<span class="hljs-number">2</span>d(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>)<br><br>    <span class="hljs-attribute">def</span> forward(self, x):<br>        <span class="hljs-attribute">x</span> = self.conv<span class="hljs-number">1</span>(x)<br>        <span class="hljs-attribute">x</span> = self.pool<span class="hljs-number">1</span>(x)<br>        <span class="hljs-attribute">return</span> x<br><br><span class="hljs-attribute">def</span> forward_hook(module, data_input, data_output):<br>    <span class="hljs-attribute">fmap_block</span>.append(data_output)<br>    <span class="hljs-attribute">input_block</span>.append(data_input)<br><br><span class="hljs-comment"># 初始化网络</span><br><span class="hljs-attribute">net</span> = Net()<br><span class="hljs-attribute">net</span>.conv<span class="hljs-number">1</span>.weight[<span class="hljs-number">0</span>].detach().fill_(<span class="hljs-number">1</span>)<br><span class="hljs-attribute">net</span>.conv<span class="hljs-number">1</span>.weight[<span class="hljs-number">1</span>].detach().fill_(<span class="hljs-number">2</span>)<br><span class="hljs-attribute">net</span>.conv<span class="hljs-number">1</span>.bias.data.detach().zero_()<br><br><span class="hljs-comment"># 注册hook</span><br><span class="hljs-attribute">fmap_block</span> = list()<br><span class="hljs-attribute">input_block</span> = list()<br><span class="hljs-attribute">net</span>.conv<span class="hljs-number">1</span>.register_forward_hook(forward_hook)<br><br><span class="hljs-comment"># inference</span><br><span class="hljs-attribute">fake_img</span> = torch.ones((<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">4</span>, <span class="hljs-number">4</span>))   # batch size * channel * H * W<br><span class="hljs-attribute">output</span> = net(fake_img)<br><br><br><span class="hljs-comment"># 观察</span><br><span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;output shape: &#123;&#125;\noutput value: &#123;&#125;\n&quot;</span>.format(output.shape, output))<br><span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;feature maps shape: &#123;&#125;\noutput value: &#123;&#125;\n&quot;</span>.format(fmap_block[<span class="hljs-number">0</span>].shape, fmap_block[<span class="hljs-number">0</span>]))<br><span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;input shape: &#123;&#125;\ninput value: &#123;&#125;&quot;</span>.format(input_block[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>].shape, input_block[<span class="hljs-number">0</span>]))<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs lua"><span class="hljs-built_in">output</span> shape: torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>])<br><span class="hljs-built_in">output</span> value: tensor(<span class="hljs-string">[[[[ 9.]],</span><br><span class="hljs-string">         [[18.]]]]</span>, grad_fn=&lt;MaxPool2DWithIndicesBackward&gt;)<br>feature maps shape: torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>])<br><span class="hljs-built_in">output</span> value: tensor(<span class="hljs-string">[[[[ 9.,  9.],</span><br><span class="hljs-string">          [ 9.,  9.]],</span><br><span class="hljs-string">         [[18., 18.],</span><br><span class="hljs-string">          [18., 18.]]]]</span>, grad_fn=&lt;ThnnConv2DBackward&gt;)<br><span class="hljs-built_in">input</span> shape: torch.Size([<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">4</span>, <span class="hljs-number">4</span>])<br><span class="hljs-built_in">input</span> value: (tensor(<span class="hljs-string">[[[[1., 1., 1., 1.],</span><br><span class="hljs-string">          [1., 1., 1., 1.],</span><br><span class="hljs-string">          [1., 1., 1., 1.],</span><br><span class="hljs-string">          [1., 1., 1., 1.]]]]</span>),)<br></code></pre></td></tr></table></figure>
+
+<h3 id="torch-Tensor-register-forward-pre-hook"><a href="#torch-Tensor-register-forward-pre-hook" class="headerlink" title="torch.Tensor.register_forward_pre_hook()"></a>torch.Tensor.register_forward_pre_hook()</h3><p>功能：注册 module 的前向传播前的<code>hook</code>函数，可用于获取输入数据。</p>
+<p><code>hook</code>函数：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">hook</span><span class="hljs-params">(module, input)</span></span><br></code></pre></td></tr></table></figure>
+
+<p>参数：</p>
+<ul>
+<li>module：当前网络层</li>
+<li>input：当前网络层输入数据</li>
+</ul>
+<h3 id="torch-Tensor-register-backward-hook"><a href="#torch-Tensor-register-backward-hook" class="headerlink" title="torch.Tensor.register_backward_hook()"></a>torch.Tensor.register_backward_hook()</h3><p>功能：注册 module 的反向传播的<code>hook</code>函数，可用于获取梯度。</p>
+<p><code>hook</code>函数：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">hook</span><span class="hljs-params">(module, grad_input, grad_output)</span></span><br></code></pre></td></tr></table></figure>
+
+<p>参数：</p>
+<ul>
+<li>module：当前网络层</li>
+<li>input：当前网络层输入的梯度数据</li>
+<li>output：当前网络层输出的梯度数据</li>
+</ul>
+<p>代码如下：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs css">class Net(nn<span class="hljs-selector-class">.Module</span>):<br>    def <span class="hljs-built_in">__init__</span>(self):<br>        <span class="hljs-built_in">super</span>(Net, self).<span class="hljs-built_in">__init__</span>()<br>        self.conv1 = nn.<span class="hljs-built_in">Conv2d</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)<br>        self.pool1 = nn.<span class="hljs-built_in">MaxPool2d</span>(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>)<br><br>    def <span class="hljs-built_in">forward</span>(self, x):<br>        x = self.<span class="hljs-built_in">conv1</span>(x)<br>        x = self.<span class="hljs-built_in">pool1</span>(x)<br>        return x<br><br>def <span class="hljs-built_in">forward_hook</span>(module, data_input, data_output):<br>    fmap_block.<span class="hljs-built_in">append</span>(data_output)<br>    input_block.<span class="hljs-built_in">append</span>(data_input)<br><br>def <span class="hljs-built_in">forward_pre_hook</span>(module, data_input):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;forward_pre_hook input:&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(data_input))<br><br>def <span class="hljs-built_in">backward_hook</span>(module, grad_input, grad_output):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;backward hook input:&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(grad_input))<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;backward hook output:&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(grad_output))<br><br># 初始化网络<br>net = <span class="hljs-built_in">Net</span>()<br>net.conv1.weight[<span class="hljs-number">0</span>].<span class="hljs-built_in">detach</span>().<span class="hljs-built_in">fill_</span>(<span class="hljs-number">1</span>)<br>net.conv1.weight[<span class="hljs-number">1</span>].<span class="hljs-built_in">detach</span>().<span class="hljs-built_in">fill_</span>(<span class="hljs-number">2</span>)<br>net.conv1.bias.data.<span class="hljs-built_in">detach</span>().<span class="hljs-built_in">zero_</span>()<br><br># 注册hook<br>fmap_block = <span class="hljs-built_in">list</span>()<br>input_block = <span class="hljs-built_in">list</span>()<br>net.conv1.<span class="hljs-built_in">register_forward_hook</span>(forward_hook)<br>net.conv1.<span class="hljs-built_in">register_forward_pre_hook</span>(forward_pre_hook)<br>net.conv1.<span class="hljs-built_in">register_backward_hook</span>(backward_hook)<br><br># inference<br>fake_img = torch.<span class="hljs-built_in">ones</span>((<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">4</span>, <span class="hljs-number">4</span>))   # batch size * channel * H * W<br>output = <span class="hljs-built_in">net</span>(fake_img)<br><br>loss_fnc = nn.<span class="hljs-built_in">L1Loss</span>()<br>target = torch.<span class="hljs-built_in">randn_like</span>(output)<br>loss = <span class="hljs-built_in">loss_fnc</span>(target, output)<br>loss.<span class="hljs-built_in">backward</span>()<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs inform7">forward_pre_hook input:(tensor(<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[1., 1., 1., 1.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[1., 1., 1., 1.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[1., 1., 1., 1.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[1., 1., 1., 1.]</span>]</span>]</span>]</span>),)<br>backward hook input:(None, tensor(<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[0.5000, 0.5000, 0.5000]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0.5000, 0.5000, 0.5000]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0.5000, 0.5000, 0.5000]</span>]</span>]</span>,</span><br><span class="hljs-comment">        <span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[0.5000, 0.5000, 0.5000]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0.5000, 0.5000, 0.5000]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0.5000, 0.5000, 0.5000]</span>]</span>]</span>]</span>), tensor(<span class="hljs-comment">[0.5000, 0.5000]</span>))<br>backward hook output:(tensor(<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[0.5000, 0.0000]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0.0000, 0.0000]</span>]</span>,</span></span><br><span class="hljs-comment"><span class="hljs-comment">         <span class="hljs-comment">[<span class="hljs-comment">[0.5000, 0.0000]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0.0000, 0.0000]</span>]</span>]</span>]</span>),)<br></code></pre></td></tr></table></figure>
+
+<h3 id="hook函数实现机制"><a href="#hook函数实现机制" class="headerlink" title="hook函数实现机制"></a><code>hook</code>函数实现机制</h3><p><code>hook</code>函数实现的原理是在<code>module</code>的<code>__call()__</code>函数进行拦截，<code>__call()__</code>函数可以分为 4 个部分：</p>
+<ul>
+<li>第 1 部分是实现 _forward_pre_hooks</li>
+<li>第 2 部分是实现 forward 前向传播 </li>
+<li>第 3 部分是实现 _forward_hooks  </li>
+<li>第 4 部分是实现 _backward_hooks</li>
+</ul>
+<p>由于卷积层也是一个<code>module</code>，因此可以记录<code>_forward_hooks</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__call__</span>(<span class="hljs-params">self, *<span class="hljs-built_in">input</span>, **kwargs</span>):</span><br>    <span class="hljs-comment"># 第 1 部分是实现 _forward_pre_hooks</span><br>    <span class="hljs-keyword">for</span> hook <span class="hljs-keyword">in</span> self._forward_pre_hooks.values():<br>        result = hook(self, <span class="hljs-built_in">input</span>)<br>        <span class="hljs-keyword">if</span> result <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(result, <span class="hljs-built_in">tuple</span>):<br>                result = (result,)<br>            <span class="hljs-built_in">input</span> = result<br><br>    <span class="hljs-comment"># 第 2 部分是实现 forward 前向传播       </span><br>    <span class="hljs-keyword">if</span> torch._C._get_tracing_state():<br>        result = self._slow_forward(*<span class="hljs-built_in">input</span>, **kwargs)<br>    <span class="hljs-keyword">else</span>:<br>        result = self.forward(*<span class="hljs-built_in">input</span>, **kwargs)<br><br>    <span class="hljs-comment"># 第 3 部分是实现 _forward_hooks   </span><br>    <span class="hljs-keyword">for</span> hook <span class="hljs-keyword">in</span> self._forward_hooks.values():<br>        hook_result = hook(self, <span class="hljs-built_in">input</span>, result)<br>        <span class="hljs-keyword">if</span> hook_result <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>            result = hook_result<br><br>    <span class="hljs-comment"># 第 4 部分是实现 _backward_hooks</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(self._backward_hooks) &gt; <span class="hljs-number">0</span>:<br>        var = result<br>        <span class="hljs-keyword">while</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(var, torch.Tensor):<br>            <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(var, <span class="hljs-built_in">dict</span>):<br>                var = <span class="hljs-built_in">next</span>((v <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> var.values() <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(v, torch.Tensor)))<br>            <span class="hljs-keyword">else</span>:<br>                var = var[<span class="hljs-number">0</span>]<br>        grad_fn = var.grad_fn<br>        <span class="hljs-keyword">if</span> grad_fn <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>            <span class="hljs-keyword">for</span> hook <span class="hljs-keyword">in</span> self._backward_hooks.values():<br>                wrapper = functools.partial(hook, self)<br>                functools.update_wrapper(wrapper, hook)<br>                grad_fn.register_hook(wrapper)<br>    <span class="hljs-keyword">return</span> result<br></code></pre></td></tr></table></figure>
+
+<h2 id="Hook-函数提取网络的特征图"><a href="#Hook-函数提取网络的特征图" class="headerlink" title="Hook 函数提取网络的特征图"></a>Hook 函数提取网络的特征图</h2><p>下面通过<code>hook</code>函数获取 AlexNet 每个卷积层的所有卷积核参数，以形状作为 key，value 对应该层多个卷积核的 list。然后取出每层的第一个卷积核，形状是 [1, in_channle, h, w]，转换为 [in_channle, 1, h, w]，使用 TensorBoard 进行可视化，代码如下：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs nix"><span class="hljs-attr">writer</span> = SummaryWriter(<span class="hljs-attr">comment=&#x27;test_your_comment&#x27;,</span> <span class="hljs-attr">filename_suffix=&quot;_test_your_filename_suffix&quot;)</span><br><br><span class="hljs-comment"># 数据</span><br><span class="hljs-attr">path_img</span> = <span class="hljs-string">&quot;imgs/lena.png&quot;</span>     <span class="hljs-comment"># your path to image</span><br><span class="hljs-attr">normMean</span> = [<span class="hljs-number">0.49139968</span>, <span class="hljs-number">0.48215827</span>, <span class="hljs-number">0.44653124</span>]<br><span class="hljs-attr">normStd</span> = [<span class="hljs-number">0.24703233</span>, <span class="hljs-number">0.24348505</span>, <span class="hljs-number">0.26158768</span>]<br><br><span class="hljs-attr">norm_transform</span> = transforms.Normalize(normMean, normStd)<br><span class="hljs-attr">img_transforms</span> = transforms.Compose([<br>    transforms.Resize((<span class="hljs-number">224</span>, <span class="hljs-number">224</span>)),<br>    transforms.ToTensor(),<br>    norm_transform<br>])<br><br><span class="hljs-attr">img_pil</span> = Image.open(path_img).convert(&#x27;RGB&#x27;)<br><span class="hljs-keyword">if</span> img_transforms is not None:<br>    <span class="hljs-attr">img_tensor</span> = img_transforms(img_pil)<br>img_tensor.unsqueeze_(<span class="hljs-number">0</span>)    <span class="hljs-comment"># chw --&gt; bchw</span><br><br><span class="hljs-comment"># 模型</span><br><span class="hljs-attr">alexnet</span> = models.alexnet(<span class="hljs-attr">pretrained=True)</span><br><br><span class="hljs-comment"># 注册hook</span><br><span class="hljs-attr">fmap_dict</span> = dict()<br>for name, sub_module <span class="hljs-keyword">in</span> alexnet.named_modules():<br><br>    <span class="hljs-keyword">if</span> isinstance(sub_module, nn.Conv2d):<br>        <span class="hljs-attr">key_name</span> = str(sub_module.weight.shape)<br>        fmap_dict.setdefault(key_name, list())<br>        <span class="hljs-comment"># 由于AlexNet 使用 nn.Sequantial 包装，所以 name 的形式是：features.0  features.1</span><br>        n1, <span class="hljs-attr">n2</span> = name.split(<span class="hljs-string">&quot;.&quot;</span>)<br><br>        def hook_func(m, i, o):<br>            <span class="hljs-attr">key_name</span> = str(m.weight.shape)<br>            fmap_dict[key_name].append(o)<br><br>        alexnet._modules[n1]._modules[n2].register_forward_hook(hook_func)<br><br><span class="hljs-comment"># forward</span><br><span class="hljs-attr">output</span> = alexnet(img_tensor)<br><br><span class="hljs-comment"># add image</span><br>for layer_name, fmap_list <span class="hljs-keyword">in</span> fmap_dict.items():<br>    <span class="hljs-attr">fmap</span> = fmap_list[<span class="hljs-number">0</span>]<span class="hljs-comment"># 取出第一个卷积核的参数</span><br>    fmap.transpose_(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>) <span class="hljs-comment"># 把 BCHW 转换为 CBHW</span><br><br>    <span class="hljs-attr">nrow</span> = int(np.sqrt(fmap.shape[<span class="hljs-number">0</span>]))<br>    <span class="hljs-attr">fmap_grid</span> = vutils.make_grid(fmap, <span class="hljs-attr">normalize=True,</span> <span class="hljs-attr">scale_each=True,</span> <span class="hljs-attr">nrow=nrow)</span><br>    writer.add_image(&#x27;feature <span class="hljs-built_in">map</span> <span class="hljs-keyword">in</span> &#123;&#125;&#x27;.format(layer_name), fmap_grid, <span class="hljs-attr">global_step=322)</span><br></code></pre></td></tr></table></figure>
+
+<p>使用 TensorBoard 进行可视化如下：</p>
+<p><img src="/img/pytorchtrain5/2.png" srcset="/img/loading.gif" lazyload></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
+                    
+                      <a class="hover-with-bg" href="/tags/pytorch/">pytorch</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-NC-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/08/14/pytorchtrain6/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深度学习-13-pytorch-6-正则化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/11/pytorchtrain4/">
+                        <span class="hidden-mobile">深度学习-11-pytorch-4-损失函数与优化器</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://github.com" target="_blank" rel="nofollow noopener"><span>Github</span></a> <i class="iconfont icon-love"></i> <a href="https://scholar.google.com/" target="_blank" rel="nofollow noopener"><span>GoogleScholar</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.10.1/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

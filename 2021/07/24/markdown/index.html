@@ -1,0 +1,643 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar/tou.jpeg">
+  <link rel="icon" href="/img/avatar/tou.jpeg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="关于Markdown的必要介绍以及实际操作">
+  <meta name="author" content="zheng">
+  <meta name="keywords" content="">
+  
+  <title>Markdown-可靠的标记语言 - Sage的生活学习笔记</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"truth-zheng.github.io","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Sage的学习生活笔记</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/bg/2.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Markdown-可靠的标记语言">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-07-24 18:00" pubdate>
+        2021年7月24日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      25
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Markdown-可靠的标记语言</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2021年7月31日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <blockquote>
+<p>创作声明：主要内容为互联网内容整合。</p>
+</blockquote>
+<h2 id="你为什么需要Markdown"><a href="#你为什么需要Markdown" class="headerlink" title="你为什么需要Markdown"></a><strong>你为什么需要Markdown</strong></h2><p>Markdown 是一种轻量级标记语言，创始人为 John Gruber。它允许人们「使用易读易写的纯文本格式编写文档，然后转换成有效的 XHTML（或者 HTML）文档」。——维基百科。简单地说，Markdown 与 HTML 语言一样，使用一些符号就代替样式，但是它比 HTML 语言更加简单，通过简单的标记语法，它可以使普通文本内容具有一定的格式。<br>Markdown 的本质是让我们回归到内容本身，注重文章本身的结构，而不是样式。</p>
+<h2 id="Markdown环境搭建"><a href="#Markdown环境搭建" class="headerlink" title="Markdown环境搭建"></a><strong>Markdown环境搭建</strong></h2><p>市面上有许多Markdown解决方案，我选择使用VS Code+插件解决（一体化解决方案），VS Code的安装与使用不再赘述，以下必备插件：</p>
+<h3 id="Markdown-All-in-One"><a href="#Markdown-All-in-One" class="headerlink" title="Markdown All in One"></a><strong>Markdown All in One</strong></h3><p>这是个大一统型的扩展，集成了撰写 Markdown 时所需要的大部分功能，是 Markdown 类插件中下载榜榜首。可以认为是 VS Code 中的 Markdown 必备扩展。其功能涵盖：  </p>
+<ul>
+<li><strong>快捷键</strong><br>Ctrl + B 加粗<br>Ctrl + I 斜体<br>Alt + S 删除线<br>Alt + C 勾选/取消勾选任务清单项目<br>Ctrl + M开启LaTeX 数学公式编写</li>
+<li><strong>自动生成并更新目录</strong><br>Markdown All in One 插件可以自动根据你正在编辑的文档，生成相应的目录。我们利用快捷键 Ctrl + Shift + P 调出「命令面板」，输入「目录」，即可直接调用命令「Markdown: 创建目录」。之后如果你更新了文章内容，也可以直接通过命令「Markdown：更新目录」更新。</li>
+<li><strong>路径补全</strong><br>Markdown All in One 可以直接帮助我们补全本地图片的路径，这个功能非常方便，因此我也推荐将 Markdown 文档所需的图片素材保存在一个和源文件同一个路径的文件夹下，比如这一的安排方式就比较合理：<br>.<br>├── 1 文章一<br>│   ├── image/<br>│   └── Post1.md<br>├── 2 文章二<br>│   ├── image/<br>│   └── Post2.md<br>…  </li>
+<li><strong>LaTeX数学公式支持</strong><br>Markdown All in One 直接提供了基于 LaTeX 的数学公式渲染，支持行内数学公式，以及整段的数学公式。</li>
+</ul>
+<h3 id="Markdown-Preview-Mermaid-Support"><a href="#Markdown-Preview-Mermaid-Support" class="headerlink" title="Markdown Preview Mermaid Support"></a><strong>Markdown Preview Mermaid Support</strong></h3><p>由于我偶尔会使用 Markdown 绘制流程图、时序图或甘特图，因此我也会使用 Mermaid 渲染引擎来辅助我的绘制。这里 Markdown Preview Mermaid Support 这个插件就让 VS Code 的 Markdown 预览能够正确渲染 Mermaid 图，非常方便。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs css">```mermaid<br>graph <span class="hljs-selector-tag">TD</span>;<br>    <span class="hljs-selector-tag">A</span>--&gt;<span class="hljs-selector-tag">B</span>;<br>    <span class="hljs-selector-tag">A</span>--&gt;C;<br>    <span class="hljs-selector-tag">B</span>--&gt;D;<br>    C--&gt;D;<br></code></pre></td></tr></table></figure>
+
+<pre><code class=" mermaid">graph TD;
+    A--&gt;B;
+    A--&gt;C;
+    B--&gt;D;
+    C--&gt;D;
+</code></pre>
+<h3 id="格式转换Pandoc"><a href="#格式转换Pandoc" class="headerlink" title="格式转换Pandoc"></a><strong>格式转换Pandoc</strong></h3><p>Pandoc 的下载可以去官网手动下载<a target="_blank" rel="noopener" href="https://pandoc.org/">pandoc</a><br>也可以使用包管理器自动下载。<br>对 Windows 用户，有 <code>Scoop</code> 和 <code>Chocolatey</code></p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-keyword">scoop </span><span class="hljs-keyword">install </span>pandoc<br>choco <span class="hljs-keyword">install </span>pandoc<br></code></pre></td></tr></table></figure>
+<p>对 MacOS 用户，有 Homebrew</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-keyword">brew </span><span class="hljs-keyword">install </span>pandoc<br></code></pre></td></tr></table></figure>
+<p>安装完毕后，在 VS Code 中安装相关扩展，这里首推 VS Code-pandoc（选 Chris 的那个），可以实现 .md 到 .pdf，.docx 和 .html 的转换。</p>
+<h3 id="进阶操作"><a href="#进阶操作" class="headerlink" title="进阶操作"></a><strong>进阶操作</strong></h3><p>VS Code 最强大的地方在于其无穷无尽的自定义功能。可能你觉得默认的 Markdown 预览风格并不符合你的口味，那么你可以直接在 VS Code 的设置中（快捷键 Ctrl + , 打开）自定义 Markdown 渲染使用的 CSS 样式文件：  </p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json">&#123;  <br>    <span class="hljs-attr">&quot;markdown.styles&quot;</span>: [<br>        <span class="hljs-string">&quot;Style.css&quot;</span><br>    ]<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>其中的 Style.css 就是更换默认 Markdown 渲染使用样式的 CSS 文件，这里需要填写你所使用文件的绝对路径。<br>VS Code 强大的插件系统，以及开源的方便性，让我们可以从几乎任何角度、利用各种手段去自定义我们的 Markdown 编写环境（比如自定义 VS Code 的 CSS 修改样式、自定义编译自动化将 Markdown 编译为 HTML、PDF 等）。更多进阶的操作功能，请直接参考微软官方的开发文档：<a target="_blank" rel="noopener" href="https://code.visualstudio.com/docs/languages/markdown">Markdown and Visual Studio Code</a>  </p>
+<h2 id="Markdown常用操作"><a href="#Markdown常用操作" class="headerlink" title="Markdown常用操作"></a><strong>Markdown常用操作</strong></h2><h3 id="字体设置"><a href="#字体设置" class="headerlink" title="字体设置"></a><strong>字体设置</strong></h3><p>这里显示正文  </p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-strong">*这里显示的是斜体*</span>  <br><span class="hljs-emphasis">_这里显示的倾斜体_</span>  <br><span class="hljs-strong">**这里显示的文字是加粗了**</span>  <br><span class="hljs-strong">***这里的文字是倾斜加粗的**</span>*  <br>~~这里的文字是加下划线的~~  <br></code></pre></td></tr></table></figure>
+<p><em>这里显示的是斜体</em><br><em>这里显示的倾斜体</em><br><strong>这里显示的文字是加粗了</strong><br><em><strong>这里的文字是倾斜加粗的</strong></em><br><del>这里的文字是加下划线的</del>  </p>
+<p><strong>分级标题</strong><br>类 Atx 形式则是在行首插入 1 到 6 个 # ，对应到标题 1 到 6 阶，例如：</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs clean"># 一级标题<br>## 二级标题<br>### 三级标题<br>#### 四级标题<br>##### 五级标题<br>###### 六级标题  <br></code></pre></td></tr></table></figure>
+<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><h4 id="四级标题"><a href="#四级标题" class="headerlink" title="四级标题"></a>四级标题</h4><h5 id="五级标题"><a href="#五级标题" class="headerlink" title="五级标题"></a>五级标题</h5><h6 id="六级标题"><a href="#六级标题" class="headerlink" title="六级标题"></a>六级标题</h6><p>类 Setext 形式是用底线的形式，利用 = （最高阶标题）和 - （第二阶标题），任何数量的 = 和 - 都可以有效果。</p>
+<p>例如：</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-section">这是一个一级标题</span><br><span class="hljs-section">============================</span><br><span class="hljs-section">二级标题</span><br><span class="hljs-section">-----------</span><br></code></pre></td></tr></table></figure>
+<hr>
+<h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a><strong>链接</strong></h3><ul>
+<li><strong>插入本地图片链接</strong><br>![图片描述]（图片路径） 注：图片描述可以不写。 <figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs less">如本地插入图片示范：<br>!<span class="hljs-selector-attr">[插入下一层级目录下的图片]</span>(/短视频封面/<span class="hljs-number">083</span>.jpg)<br>!<span class="hljs-selector-attr">[插入同级目录下的图片]</span>(/原创扁平方盒-逐浪字体.jpg)<br></code></pre></td></tr></table></figure></li>
+<li><strong>插入互联网上图片</strong></li>
+</ul>
+<p>![图片描述]（图片网络路径） 注：图片描述与插入本地图片一样，描述可以不写。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">![图片描述](https:<span class="hljs-regexp">//</span>www.baidu.com<span class="hljs-regexp">/images/</span><span class="hljs-number">1</span>.jpg)<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>自动连接</strong><br>Markdown 支持以比较简短的自动链接形式来处理网址和电子邮件信箱，只要是用&lt;&gt;包起来， Markdown 就会自动把它转成链接。也可以直接写，也是可以显示成链接形式的。 链接内容定义的形式为：<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">[这是百度链接](http:<span class="hljs-regexp">//</span>www.baidu.com/ <span class="hljs-string">&quot;欢迎访问百度&quot;</span>).<br>[这是百度链接](http:<span class="hljs-regexp">//</span>www.baidu.com/ <span class="hljs-string">&#x27;欢迎访问百度&#x27;</span>).<br>[这是百度链接](http:<span class="hljs-regexp">//</span>www.baidu.com/ (欢迎访问百度)).<br></code></pre></td></tr></table></figure>
+<a target="_blank" rel="noopener" href="http://www.baidu.com/" title="欢迎访问百度">这是百度链接</a>.</li>
+<li><strong>代码块</strong><br>对于程序员来说代码功能是必不可少的，插入程序代码的方式有两种，一种是利用缩进(tab), 另一种是利用英文“```”符号（一般在ESC键下方，和~同一个键）包裹代码。<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs autohotkey">如果要标记一小段行内代码，你可以用反引号把它包起来（`），例如：<br>     Use the `printf()` function.<br></code></pre></td></tr></table></figure>
+<h3 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a><strong>分割线</strong></h3>你可以在一行中用三个以上的星号、减号、底线来建立一个分隔线，行内不能有其他东西。你也可以在星号或是减号中间插入空格。下面每种写法都可以建立分隔线：<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-bullet">*</span> <span class="hljs-emphasis">* *</span><br>​<br><span class="hljs-strong">**<span class="hljs-emphasis">*</span></span><br><span class="hljs-emphasis"><span class="hljs-strong">​</span></span><br><span class="hljs-emphasis"><span class="hljs-strong"><span class="hljs-strong">****</span>*</span></span><br><span class="hljs-strong">​</span><br><span class="hljs-strong">- - -</span><br><span class="hljs-strong">​</span><br><span class="hljs-strong">---------------------------------------</span><br></code></pre></td></tr></table></figure>
+<h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a><strong>引用</strong></h3>在被引用的文本前加上&gt;符号，以及一个空格就可以了，如果只输入了一个&gt;符号会产生一个空白的引用。<figure class="highlight node-repl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs node-repl"><span class="hljs-meta">&gt;</span> <span class="javascript">文字引用 </span><br><span class="hljs-meta">&gt;</span><br><span class="hljs-meta">&gt;</span> <span class="javascript">文字引用 </span><br><span class="hljs-meta">&gt;</span> <span class="javascript">文字引用 </span><br><span class="hljs-meta">&gt;</span> <span class="javascript">文字引用 </span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<blockquote>
+<p>文字引用 </p>
+<p>文字引用<br>文字引用<br>文字引用 </p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">&gt;</span><span class="bash">&gt;&gt;第一层嵌套引用</span><br><span class="hljs-meta">&gt;</span><span class="bash">&gt;第二层嵌套引用</span><br><span class="hljs-meta">&gt;</span><span class="bash">第三层嵌套引用</span><br></code></pre></td></tr></table></figure>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>第一层嵌套引用<br>第二层嵌套引用<br>第三层嵌套引用</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="列表"><a href="#列表" class="headerlink" title="列表"></a><strong>列表</strong></h3><p><strong>无序列表</strong><br>使用 星号*，加号+，减号- 表示无序列表。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-bullet">*</span> 无序列表文字<br><span class="hljs-bullet">*</span> 无序列表文字<br><span class="hljs-bullet">*</span> 无序列表文字<br>等同于：<br><br><span class="hljs-bullet">+</span> 无序列表文字<br><span class="hljs-bullet">+</span> 无序列表文字<br><span class="hljs-bullet">+</span> 无序列表文字<br>也等同于：<br><br><span class="hljs-bullet">-</span> 无序列表文字<br><span class="hljs-bullet">-</span> 无序列表文字<br><span class="hljs-bullet">-</span> 无序列表文字<br></code></pre></td></tr></table></figure>
+
+
+<ul>
+<li>无序列表文字</li>
+<li>无序列表文字<br>…………</li>
+<li><em>有序列表</em>*<br>有序列表则使用数字接着一个英文句点。<br>注意：英文句点后面一定要有一个空格，起到缩进的作用。<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> 有序列表<br><span class="hljs-bullet">2.</span> 有序列表<br><span class="hljs-bullet">3.</span> 有序列表<br></code></pre></td></tr></table></figure></li>
+</ul>
+<ol>
+<li>有序列表</li>
+<li>有序列表</li>
+<li>有序列表  </li>
+</ol>
+<p><strong>无序列表和有序列表同时使用</strong>  </p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-bullet">*</span> 这是无序列表1<br><span class="hljs-bullet">-</span> 这是无序列表2<br><span class="hljs-bullet">+</span> 这是无序列表3<br><span class="hljs-bullet">1.</span> 这是有序列表1 <br><span class="hljs-bullet">2.</span> 这是有序列表2<br><span class="hljs-bullet">*</span> 1. 有序无序混合使用1<br><span class="hljs-bullet">+</span> 2. 有序无序混合使用2<br></code></pre></td></tr></table></figure>
+<ul>
+<li>这是无序列表1</li>
+</ul>
+<ul>
+<li>这是无序列表2</li>
+</ul>
+<ul>
+<li>这是无序列表3</li>
+</ul>
+<ol>
+<li>这是有序列表1 </li>
+<li>这是有序列表2</li>
+</ol>
+<ul>
+<li><ol>
+<li>有序无序混合使用1</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li><ol start="2">
+<li>有序无序混合使用2</li>
+</ol>
+</li>
+</ul>
+<p><strong>注意事项</strong><br>在使用列表时，只要是数字后面加上英文的点，就会无意间产生列表，比如2020.5.25,这时候想表达的是日期，有些软件把它被误认为是列表。解决方式：在每个点前面加上\就可以了。如下图所示：2020. 05. 25. 今天是2020年5月25日显示如下： 2020. 05. 25. 今天是2020年5月25日。</p>
+<h3 id="表格"><a href="#表格" class="headerlink" title="表格"></a><strong>表格</strong></h3><figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs gherkin">|<span class="hljs-string"> name  </span>|<span class="hljs-string"> 111  </span>|<span class="hljs-string">  222  </span>|<span class="hljs-string">  333  </span>|<span class="hljs-string">  444  </span>|<br>|<span class="hljs-string"> :-: </span>|<span class="hljs-string"> :--- </span>|<span class="hljs-string">  ---: </span>|<span class="hljs-string"> :---: </span>|<span class="hljs-string"> :---: </span>|<br>|<span class="hljs-string">  aaa  </span>|<span class="hljs-string"> bbb  </span>|<span class="hljs-string">  ccc  </span>|<span class="hljs-string">  ddd  </span>|<span class="hljs-string">  eee  </span>|<br>|<span class="hljs-string">  fff  </span>|<span class="hljs-string"> ggg  </span>|<span class="hljs-string">  hhh  </span>|<span class="hljs-string">  iii  </span>|<span class="hljs-string">  000  </span>|<br>:- 左对齐<br>:-: 居中<br>-: 右对齐<br></code></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th align="center">name</th>
+<th align="left">111</th>
+<th align="center">222</th>
+<th align="center">333</th>
+<th align="center">444</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">aa</td>
+<td align="left">bbb</td>
+<td align="center">ccc</td>
+<td align="center">ddd</td>
+<td align="center">eee</td>
+</tr>
+<tr>
+<td align="center">fff</td>
+<td align="left">ggg</td>
+<td align="center">hhh</td>
+<td align="center">iii</td>
+<td align="center">000</td>
+</tr>
+</tbody></table>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E7%94%9F%E4%BA%A7%E5%8A%9B%E5%B7%A5%E5%85%B7/">生产力工具</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Markdown/">Markdown</a>
+                    
+                      <a class="hover-with-bg" href="/tags/VS-Code/">VS Code</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-NC-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/07/25/dlenv/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深度学习-0-环境配置</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://github.com" target="_blank" rel="nofollow noopener"><span>Github</span></a> <i class="iconfont icon-love"></i> <a href="https://scholar.google.com/" target="_blank" rel="nofollow noopener"><span>GoogleScholar</span></a> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.10.1/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
