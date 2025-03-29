@@ -1,0 +1,1024 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar/tou.jpeg">
+  <link rel="icon" href="/img/avatar/tou.jpeg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zheng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="利用pytorch训练你的深度学习模型-7-模型补充操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-14-pytorch-7-模型补充操作">
+<meta property="og:url" content="https://truth-zheng.github.io/2021/08/14/pytorchtrain7/index.html">
+<meta property="og:site_name" content="Sage的生活学习笔记">
+<meta property="og:description" content="利用pytorch训练你的深度学习模型-7-模型补充操作">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+<meta property="article:published_time" content="2021-08-14T14:00:00.000Z">
+<meta property="article:modified_time" content="2021-08-15T09:12:09.000Z">
+<meta property="article:author" content="zheng">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="pytorch">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>深度学习-14-pytorch-7-模型补充操作 - Sage的生活学习笔记</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"truth-zheng.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"gtag":null,"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sage的学习生活笔记</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/2.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深度学习-14-pytorch-7-模型补充操作"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-14 22:00" pubdate>
+          2021年8月14日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          7.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          59 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">深度学习-14-pytorch-7-模型补充操作</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年8月15日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>创作声明：主要内容参考于张贤同学<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/265394674">https://zhuanlan.zhihu.com/p/265394674</a></p>
+</blockquote>
+<h2 id="PyTorch-中的模型保存与加载"><a href="#PyTorch-中的模型保存与加载" class="headerlink" title="PyTorch 中的模型保存与加载"></a>PyTorch 中的模型保存与加载</h2><h3 id="序列化与反序列化"><a href="#序列化与反序列化" class="headerlink" title="序列化与反序列化"></a>序列化与反序列化</h3><p>模型在内存中是以对象的逻辑结构保存的，但是在硬盘中是以二进制流的方式保存的。</p>
+<ul>
+<li>序列化是指将内存中的数据以二进制序列的方式保存到硬盘中。PyTorch 的模型保存就是序列化。</li>
+<li>反序列化是指将硬盘中的二进制序列加载到内存中，得到模型的对象。PyTorch 的模型加载就是反序列化。</li>
+</ul>
+<h3 id="torch-save"><a href="#torch-save" class="headerlink" title="torch.save"></a>torch.save</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torch.save(obj, f, pickle_module, <span class="hljs-attribute">pickle_protocol</span>=2, <span class="hljs-attribute">_use_new_zipfile_serialization</span>=<span class="hljs-literal">False</span>)<br></code></pre></td></tr></table></figure>
+
+<p>主要参数：</p>
+<ul>
+<li>obj：保存的对象，可以是模型。也可以是 dict。因为一般在保存模型时，不仅要保存模型，还需要保存优化器、此时对应的 epoch 等参数。这时就可以用 dict 包装起来。 </li>
+<li>f：输出路径</li>
+</ul>
+<p>其中模型保存还有两种方式：</p>
+<h4 id="保存整个-Module"><a href="#保存整个-Module" class="headerlink" title="保存整个 Module"></a>保存整个 Module</h4><p>这种方法比较耗时，保存的文件大</p>
+<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dos">torch.savev(<span class="hljs-built_in">net</span>, <span class="hljs-built_in">path</span>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="只保存模型的参数"><a href="#只保存模型的参数" class="headerlink" title="只保存模型的参数"></a>只保存模型的参数</h4><p>推荐这种方法，运行比较快，保存的文件比较小</p>
+<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dos">state_sict = <span class="hljs-built_in">net</span>.state_dict()<br>torch.savev(state_sict, <span class="hljs-built_in">path</span>)<br></code></pre></td></tr></table></figure>
+
+<p>下面是保存 LeNet 的例子。在网络初始化中，把权值都设置为 2020，然后保存模型。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs scss">import torch<br>import numpy as np<br>import torch<span class="hljs-selector-class">.nn</span> as nn<br>from common_tools import set_seed<br><br><br>class <span class="hljs-built_in">LeNet2</span>(nn.Module):<br>    def <span class="hljs-built_in">__init__</span>(self, classes):<br>        <span class="hljs-built_in">super</span>(LeNet2, self).<span class="hljs-built_in">__init__</span>()<br>        self.features = nn.<span class="hljs-built_in">Sequential</span>(<br>            nn.<span class="hljs-built_in">Conv2d</span>(<span class="hljs-number">3</span>, <span class="hljs-number">6</span>, <span class="hljs-number">5</span>),<br>            nn.<span class="hljs-built_in">ReLU</span>(),<br>            nn.<span class="hljs-built_in">MaxPool2d</span>(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>),<br>            nn.<span class="hljs-built_in">Conv2d</span>(<span class="hljs-number">6</span>, <span class="hljs-number">16</span>, <span class="hljs-number">5</span>),<br>            nn.<span class="hljs-built_in">ReLU</span>(),<br>            nn.<span class="hljs-built_in">MaxPool2d</span>(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>)<br>        )<br>        self.classifier = nn.<span class="hljs-built_in">Sequential</span>(<br>            nn.<span class="hljs-built_in">Linear</span>(<span class="hljs-number">16</span>*<span class="hljs-number">5</span>*<span class="hljs-number">5</span>, <span class="hljs-number">120</span>),<br>            nn.<span class="hljs-built_in">ReLU</span>(),<br>            nn.<span class="hljs-built_in">Linear</span>(<span class="hljs-number">120</span>, <span class="hljs-number">84</span>),<br>            nn.<span class="hljs-built_in">ReLU</span>(),<br>            nn.<span class="hljs-built_in">Linear</span>(<span class="hljs-number">84</span>, classes)<br>        )<br><br>    def <span class="hljs-built_in">forward</span>(self, x):<br>        x = self.<span class="hljs-built_in">features</span>(x)<br>        x = x.<span class="hljs-built_in">view</span>(x.<span class="hljs-built_in">size</span>()[<span class="hljs-number">0</span>], -<span class="hljs-number">1</span>)<br>        x = self.<span class="hljs-built_in">classifier</span>(x)<br>        return x<br><br>    def <span class="hljs-built_in">initialize</span>(self):<br>        for p in self.<span class="hljs-built_in">parameters</span>():<br>            p.data.<span class="hljs-built_in">fill_</span>(<span class="hljs-number">2020</span>)<br><br><br>net = <span class="hljs-built_in">LeNet2</span>(classes=<span class="hljs-number">2019</span>)<br><br># <span class="hljs-string">&quot;训练&quot;</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;训练前: &quot;</span>, net.features[<span class="hljs-number">0</span>].weight[<span class="hljs-number">0</span>, ...])<br>net.<span class="hljs-built_in">initialize</span>()<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;训练后: &quot;</span>, net.features[<span class="hljs-number">0</span>].weight[<span class="hljs-number">0</span>, ...])<br><br>path_model = <span class="hljs-string">&quot;./model.pkl&quot;</span><br>path_state_dict = <span class="hljs-string">&quot;./model_state_dict.pkl&quot;</span><br><br># 保存整个模型<br>torch.<span class="hljs-built_in">save</span>(net, path_model)<br><br># 保存模型参数<br>net_state_dict = net.<span class="hljs-built_in">state_dict</span>()<br>torch.<span class="hljs-built_in">save</span>(net_state_dict, path_state_dict)<br></code></pre></td></tr></table></figure>
+
+<p>运行完之后，文件夹中生成了&#96;&#96;&#96;model.pkl&#96;&#96;和<code>model_state_dict.pkl</code>，分别保存了整个网络和网络的参数</p>
+<h3 id="torch-load"><a href="#torch-load" class="headerlink" title="torch.load"></a>torch.load</h3><figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">torch.<span class="hljs-keyword">load</span>(f, map_location=<span class="hljs-keyword">None</span>, pickle_module, **pickle_load_args)<br></code></pre></td></tr></table></figure>
+
+<p>主要参数：</p>
+<ul>
+<li>f：文件路径</li>
+<li>map_location：指定存在 CPU 或者 GPU。</li>
+</ul>
+<p>加载模型也有两种方式</p>
+<h4 id="加载整个-Module"><a href="#加载整个-Module" class="headerlink" title="加载整个 Module"></a>加载整个 Module</h4><p>如果保存的时候，保存的是整个模型，那么加载时就加载整个模型。这种方法不需要事先创建一个模型对象，也不用知道模型的结构，代码如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs stylus">path_model = <span class="hljs-string">&quot;./model.pkl&quot;</span><br>net_load = torch<span class="hljs-selector-class">.load</span>(path_model)<br><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(net_load)</span></span><br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs routeros">LeNet2(<br>  (features): Sequential(<br>    (0): Conv2d(3, 6, kernel_size=(5, 5), stride=(1, 1))<br>    (1): ReLU()<br>    (2): MaxPool2d(<span class="hljs-attribute">kernel_size</span>=2, <span class="hljs-attribute">stride</span>=2, <span class="hljs-attribute">padding</span>=0, <span class="hljs-attribute">dilation</span>=1, <span class="hljs-attribute">ceil_mode</span>=<span class="hljs-literal">False</span>)<br>    (3): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))<br>    (4): ReLU()<br>    (5): MaxPool2d(<span class="hljs-attribute">kernel_size</span>=2, <span class="hljs-attribute">stride</span>=2, <span class="hljs-attribute">padding</span>=0, <span class="hljs-attribute">dilation</span>=1, <span class="hljs-attribute">ceil_mode</span>=<span class="hljs-literal">False</span>)<br>  )<br>  (classifier): Sequential(<br>    (0): Linear(<span class="hljs-attribute">in_features</span>=400, <span class="hljs-attribute">out_features</span>=120, <span class="hljs-attribute">bias</span>=<span class="hljs-literal">True</span>)<br>    (1): ReLU()<br>    (2): Linear(<span class="hljs-attribute">in_features</span>=120, <span class="hljs-attribute">out_features</span>=84, <span class="hljs-attribute">bias</span>=<span class="hljs-literal">True</span>)<br>    (3): ReLU()<br>    (4): Linear(<span class="hljs-attribute">in_features</span>=84, <span class="hljs-attribute">out_features</span>=2019, <span class="hljs-attribute">bias</span>=<span class="hljs-literal">True</span>)<br>  )<br>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="只加载模型的参数"><a href="#只加载模型的参数" class="headerlink" title="只加载模型的参数"></a>只加载模型的参数</h4><p>如果保存的时候，保存的是模型的参数，那么加载时就参数。这种方法需要事先创建一个模型对象，再使用模型的<code>load_state_dict()</code>方法把参数加载到模型中，代码如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs stylus">path_state_dict = <span class="hljs-string">&quot;./model_state_dict.pkl&quot;</span><br>state_dict_load = torch<span class="hljs-selector-class">.load</span>(path_state_dict)<br>net_new = <span class="hljs-built_in">LeNet2</span>(classes=<span class="hljs-number">2019</span>)<br><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;加载前: &quot;</span>, net_new.features[<span class="hljs-number">0</span>].weight[<span class="hljs-number">0</span>, ...])</span></span><br>net_new<span class="hljs-selector-class">.load_state_dict</span>(state_dict_load)<br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;加载后: &quot;</span>, net_new.features[<span class="hljs-number">0</span>].weight[<span class="hljs-number">0</span>, ...])</span></span><br></code></pre></td></tr></table></figure>
+
+<h3 id="模型的断点续训练"><a href="#模型的断点续训练" class="headerlink" title="模型的断点续训练"></a>模型的断点续训练</h3><p>在训练过程中，可能由于某种意外原因如断点等导致训练终止，这时需要重新开始训练。断点续练是在训练过程中每隔一定次数的 epoch 就保存<strong>模型的参数和优化器的参数</strong>，这样如果意外终止训练了，下次就可以重新加载最新的<strong>模型参数和优化器的参数</strong>，在这个基础上继续训练。</p>
+<p>下面的代码中，每隔 5 个 epoch 就保存一次，保存的是一个 dict，包括模型参数、优化器的参数、epoch。然后在 epoch 大于 5 时，就<code>break</code>模拟训练意外终止。关键代码如下：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">if</span> (epoch+<span class="hljs-number">1</span>) % checkpoint_interval == <span class="hljs-number">0</span>:<br><br>    <span class="hljs-keyword">checkpoint</span> = &#123;&quot;model_state_dict&quot;: net.state_dict(),<br>                  &quot;optimizer_state_dict&quot;: optimizer.state_dict(),<br>                  &quot;epoch&quot;: epoch&#125;<br>    path_checkpoint = &quot;./checkpoint_&#123;&#125;_epoch.pkl&quot;.format(epoch)<br>    torch.save(<span class="hljs-keyword">checkpoint</span>, path_checkpoint)<br></code></pre></td></tr></table></figure>
+
+<p>在 epoch 大于 5 时，就<code>break</code>模拟训练意外终止</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs axapta"><span class="hljs-keyword">if</span> epoch &gt; <span class="hljs-number">5</span>:<br>    <span class="hljs-keyword">print</span>(<span class="hljs-string">&quot;训练意外中断...&quot;</span>)<br>    <span class="hljs-keyword">break</span><br></code></pre></td></tr></table></figure>
+
+<p>断点续训练的恢复代码如下：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">path_checkpoint = &quot;./checkpoint_4_epoch.pkl&quot;<br><span class="hljs-keyword">checkpoint</span> = torch.<span class="hljs-keyword">load</span>(path_checkpoint)<br><br>net.load_state_dict(<span class="hljs-keyword">checkpoint</span>[<span class="hljs-string">&#x27;model_state_dict&#x27;</span>])<br><br>optimizer.load_state_dict(<span class="hljs-keyword">checkpoint</span>[<span class="hljs-string">&#x27;optimizer_state_dict&#x27;</span>])<br><br>start_epoch = <span class="hljs-keyword">checkpoint</span>[<span class="hljs-string">&#x27;epoch&#x27;</span>]<br><br>scheduler.last_epoch = start_epoch<br></code></pre></td></tr></table></figure>
+
+<p>需要注意的是，还要设置<code>scheduler.last_epoch</code>参数为保存的 epoch。模型训练的起始 epoch 也要修改为保存的 epoch。</p>
+<h2 id="Finetune"><a href="#Finetune" class="headerlink" title="Finetune"></a>Finetune</h2><p>迁移学习：把在 source domain 任务上的学习到的模型应用到 target domain 的任务。</p>
+<p><strong>Finetune（微调）</strong> 就是一种迁移学习的方法。比如做人脸识别，可以把 ImageNet 看作 source domain，人脸数据集看作 target domain。通常来说 source domain 要比 target domain 大得多。可以利用 ImageNet 训练好的网络应用到人脸识别中。</p>
+<p>对于一个模型，通常可以分为前面的 feature extractor (卷积层)和后面的 classifier，在 Finetune 时，通常不改变 feature extractor 的权值，也就是冻结卷积层；并且改变最后一个全连接层的输出来适应目标任务，训练后面 classifier 的权值，这就是 Finetune。通常 target domain 的数据比较小，不足以训练全部参数，容易导致过拟合，因此不改变 feature extractor 的权值。</p>
+<p>Finetune 步骤如下：</p>
+<ol>
+<li>获取预训练模型的参数</li>
+<li>使用<code>load_state_dict()</code>把参数加载到模型中</li>
+<li>修改输出层</li>
+<li>固定 feature extractor 的参数。这部分通常有 2 种做法：<ol>
+<li>固定卷积层的预训练参数。可以设置<code>requires_grad=False</code>或者<code>lr=0</code></li>
+<li>可以通过<code>params_group</code>给 feature extractor 设置一个较小的学习率</li>
+</ol>
+</li>
+</ol>
+<p>下面微调 ResNet18，用于蜜蜂和蚂蚁图片的二分类。训练集每类数据各 120 张，验证集每类数据各 70 张图片。</p>
+<p>数据下载地址：<a target="_blank" rel="noopener" href="http://download.pytorch.org/tutorial/hymenoptera_data.zip">http://download.pytorch.org/tutorial/hymenoptera_data.zip</a></p>
+<p>预训练好的模型参数下载地址：<a target="_blank" rel="noopener" href="http://download.pytorch.org/models/resnet18-5c106cde.pth">http://download.pytorch.org/models/resnet18-5c106cde.pth</a></p>
+<p>网络代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">模型finetune方法</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn<br><span class="hljs-keyword">from</span> torch.utils.data <span class="hljs-keyword">import</span> DataLoader<br><span class="hljs-keyword">import</span> torchvision.transforms <span class="hljs-keyword">as</span> transforms<br><span class="hljs-keyword">import</span> torch.optim <span class="hljs-keyword">as</span> optim<br><span class="hljs-keyword">from</span> matplotlib <span class="hljs-keyword">import</span> pyplot <span class="hljs-keyword">as</span> plt<br><span class="hljs-keyword">from</span> lesson2.rmb_classification.tools.my_dataset <span class="hljs-keyword">import</span> AntsDataset<br><span class="hljs-keyword">from</span> common_tools <span class="hljs-keyword">import</span> set_seed<br><span class="hljs-keyword">import</span> torchvision.models <span class="hljs-keyword">as</span> models<br><span class="hljs-keyword">import</span> enviroments<br>BASEDIR = os.path.dirname(os.path.abspath(__file__))<br>device = torch.device(<span class="hljs-string">&quot;cuda&quot;</span> <span class="hljs-keyword">if</span> torch.cuda.is_available() <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;cpu&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;use device :&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(device))<br><br>set_seed(<span class="hljs-number">1</span>)  <span class="hljs-comment"># 设置随机种子</span><br>label_name = &#123;<span class="hljs-string">&quot;ants&quot;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&quot;bees&quot;</span>: <span class="hljs-number">1</span>&#125;<br><br><span class="hljs-comment"># 参数设置</span><br>MAX_EPOCH = <span class="hljs-number">25</span><br>BATCH_SIZE = <span class="hljs-number">16</span><br>LR = <span class="hljs-number">0.001</span><br>log_interval = <span class="hljs-number">10</span><br>val_interval = <span class="hljs-number">1</span><br>classes = <span class="hljs-number">2</span><br>start_epoch = -<span class="hljs-number">1</span><br>lr_decay_step = <span class="hljs-number">7</span><br><br><br><span class="hljs-comment"># ============================ step 1/5 数据 ============================</span><br>data_dir = enviroments.hymenoptera_data_dir<br>train_dir = os.path.join(data_dir, <span class="hljs-string">&quot;train&quot;</span>)<br>valid_dir = os.path.join(data_dir, <span class="hljs-string">&quot;val&quot;</span>)<br><br>norm_mean = [<span class="hljs-number">0.485</span>, <span class="hljs-number">0.456</span>, <span class="hljs-number">0.406</span>]<br>norm_std = [<span class="hljs-number">0.229</span>, <span class="hljs-number">0.224</span>, <span class="hljs-number">0.225</span>]<br><br>train_transform = transforms.Compose([<br>    transforms.RandomResizedCrop(<span class="hljs-number">224</span>),<br>    transforms.RandomHorizontalFlip(),<br>    transforms.ToTensor(),<br>    transforms.Normalize(norm_mean, norm_std),<br>])<br><br>valid_transform = transforms.Compose([<br>    transforms.Resize(<span class="hljs-number">256</span>),<br>    transforms.CenterCrop(<span class="hljs-number">224</span>),<br>    transforms.ToTensor(),<br>    transforms.Normalize(norm_mean, norm_std),<br>])<br><br><span class="hljs-comment"># 构建MyDataset实例</span><br>train_data = AntsDataset(data_dir=train_dir, transform=train_transform)<br>valid_data = AntsDataset(data_dir=valid_dir, transform=valid_transform)<br><br><span class="hljs-comment"># 构建DataLoder</span><br>train_loader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=<span class="hljs-literal">True</span>)<br>valid_loader = DataLoader(dataset=valid_data, batch_size=BATCH_SIZE)<br><br><span class="hljs-comment"># ============================ step 2/5 模型 ============================</span><br><br><span class="hljs-comment"># 1/3 构建模型</span><br>resnet18_ft = models.resnet18()<br><br><span class="hljs-comment"># 2/3 加载参数</span><br><span class="hljs-comment"># flag = 0</span><br>flag = <span class="hljs-number">1</span><br><span class="hljs-keyword">if</span> flag:<br>    path_pretrained_model = enviroments.resnet18_path<br>    state_dict_load = torch.load(path_pretrained_model)<br>    resnet18_ft.load_state_dict(state_dict_load)<br><br><span class="hljs-comment"># 法1 : 冻结卷积层</span><br>flag_m1 = <span class="hljs-number">0</span><br><span class="hljs-comment"># flag_m1 = 1</span><br><span class="hljs-keyword">if</span> flag_m1:<br>    <span class="hljs-keyword">for</span> param <span class="hljs-keyword">in</span> resnet18_ft.parameters():<br>        param.requires_grad = <span class="hljs-literal">False</span><br>    <span class="hljs-comment"># print(&quot;conv1.weights[0, 0, ...]:\n &#123;&#125;&quot;.format(resnet18_ft.conv1.weight[0, 0, ...]))</span><br><br><br><span class="hljs-comment"># 3/3 替换fc层</span><br><span class="hljs-comment"># 首先拿到 fc 层的输入个数</span><br>num_ftrs = resnet18_ft.fc.in_features<br><span class="hljs-comment"># 然后构造新的 fc 层替换原来的 fc 层</span><br>resnet18_ft.fc = nn.Linear(num_ftrs, classes)<br><br><br>resnet18_ft.to(device)<br><span class="hljs-comment"># ============================ step 3/5 损失函数 ============================</span><br>criterion = nn.CrossEntropyLoss()                                                   <span class="hljs-comment"># 选择损失函数</span><br><br><span class="hljs-comment"># ============================ step 4/5 优化器 ============================</span><br><span class="hljs-comment"># 法2 : conv 小学习率</span><br>flag = <span class="hljs-number">0</span><br><span class="hljs-comment"># flag = 1</span><br><span class="hljs-keyword">if</span> flag:<br>    <span class="hljs-comment"># 首先获取全连接层参数的地址</span><br>    fc_params_id = <span class="hljs-built_in">list</span>(<span class="hljs-built_in">map</span>(<span class="hljs-built_in">id</span>, resnet18_ft.fc.parameters()))  <span class="hljs-comment"># 返回的是parameters的 内存地址</span><br>    <span class="hljs-comment"># 然后使用 filter 过滤不属于全连接层的参数，也就是保留卷积层的参数</span><br>    base_params = <span class="hljs-built_in">filter</span>(<span class="hljs-keyword">lambda</span> p: <span class="hljs-built_in">id</span>(p) <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> fc_params_id, resnet18_ft.parameters())<br>    <span class="hljs-comment"># 设置优化器的分组学习率，传入一个 list，包含 2 个元素，每个元素是字典。对应 2 个参数组</span><br>    optimizer = optim.SGD([&#123;<span class="hljs-string">&#x27;params&#x27;</span>: base_params, <span class="hljs-string">&#x27;lr&#x27;</span>: LR * <span class="hljs-number">0.1</span>&#125;, &#123;<span class="hljs-string">&#x27;params&#x27;</span>: resnet18_ft.fc.parameters(), <span class="hljs-string">&#x27;lr&#x27;</span>: LR&#125;],<br>                          momentum=<span class="hljs-number">0.9</span>)<br><br><span class="hljs-keyword">else</span>:<br>    optimizer = optim.SGD(resnet18_ft.parameters(), lr=LR, momentum=<span class="hljs-number">0.9</span>)               <span class="hljs-comment"># 选择优化器</span><br><br>scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=lr_decay_step, gamma=<span class="hljs-number">0.1</span>)     <span class="hljs-comment"># 设置学习率下降策略</span><br><br><br><span class="hljs-comment"># ============================ step 5/5 训练 ============================</span><br>train_curve = <span class="hljs-built_in">list</span>()<br>valid_curve = <span class="hljs-built_in">list</span>()<br><br><span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(start_epoch + <span class="hljs-number">1</span>, MAX_EPOCH):<br><br>    loss_mean = <span class="hljs-number">0.</span><br>    correct = <span class="hljs-number">0.</span><br>    total = <span class="hljs-number">0.</span><br><br>    resnet18_ft.train()<br>    <span class="hljs-keyword">for</span> i, data <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(train_loader):<br><br>        <span class="hljs-comment"># forward</span><br>        inputs, labels = data<br>        inputs, labels = inputs.to(device), labels.to(device)<br>        outputs = resnet18_ft(inputs)<br><br>        <span class="hljs-comment"># backward</span><br>        optimizer.zero_grad()<br>        loss = criterion(outputs, labels)<br>        loss.backward()<br><br>        <span class="hljs-comment"># update weights</span><br>        optimizer.step()<br><br>        <span class="hljs-comment"># 统计分类情况</span><br>        _, predicted = torch.<span class="hljs-built_in">max</span>(outputs.data, <span class="hljs-number">1</span>)<br>        total += labels.size(<span class="hljs-number">0</span>)<br>        correct += (predicted == labels).squeeze().cpu().<span class="hljs-built_in">sum</span>().numpy()<br><br>        <span class="hljs-comment"># 打印训练信息</span><br>        loss_mean += loss.item()<br>        train_curve.append(loss.item())<br>        <span class="hljs-keyword">if</span> (i+<span class="hljs-number">1</span>) % log_interval == <span class="hljs-number">0</span>:<br>            loss_mean = loss_mean / log_interval<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Training:Epoch[&#123;:0&gt;3&#125;/&#123;:0&gt;3&#125;] Iteration[&#123;:0&gt;3&#125;/&#123;:0&gt;3&#125;] Loss: &#123;:.4f&#125; Acc:&#123;:.2%&#125;&quot;</span>.<span class="hljs-built_in">format</span>(<br>                epoch, MAX_EPOCH, i+<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(train_loader), loss_mean, correct / total))<br>            loss_mean = <span class="hljs-number">0.</span><br><br>            <span class="hljs-comment"># if flag_m1:</span><br>            <span class="hljs-comment"># print(&quot;epoch:&#123;&#125; conv1.weights[0, 0, ...] :\n &#123;&#125;&quot;.format(epoch, resnet18_ft.conv1.weight[0, 0, ...]))</span><br><br>    scheduler.step()  <span class="hljs-comment"># 更新学习率</span><br><br>    <span class="hljs-comment"># validate the model</span><br>    <span class="hljs-keyword">if</span> (epoch+<span class="hljs-number">1</span>) % val_interval == <span class="hljs-number">0</span>:<br><br>        correct_val = <span class="hljs-number">0.</span><br>        total_val = <span class="hljs-number">0.</span><br>        loss_val = <span class="hljs-number">0.</span><br>        resnet18_ft.<span class="hljs-built_in">eval</span>()<br>        <span class="hljs-keyword">with</span> torch.no_grad():<br>            <span class="hljs-keyword">for</span> j, data <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(valid_loader):<br>                inputs, labels = data<br>                inputs, labels = inputs.to(device), labels.to(device)<br><br>                outputs = resnet18_ft(inputs)<br>                loss = criterion(outputs, labels)<br><br>                _, predicted = torch.<span class="hljs-built_in">max</span>(outputs.data, <span class="hljs-number">1</span>)<br>                total_val += labels.size(<span class="hljs-number">0</span>)<br>                correct_val += (predicted == labels).squeeze().cpu().<span class="hljs-built_in">sum</span>().numpy()<br><br>                loss_val += loss.item()<br><br>            loss_val_mean = loss_val/<span class="hljs-built_in">len</span>(valid_loader)<br>            valid_curve.append(loss_val_mean)<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Valid:\t Epoch[&#123;:0&gt;3&#125;/&#123;:0&gt;3&#125;] Iteration[&#123;:0&gt;3&#125;/&#123;:0&gt;3&#125;] Loss: &#123;:.4f&#125; Acc:&#123;:.2%&#125;&quot;</span>.<span class="hljs-built_in">format</span>(<br>                epoch, MAX_EPOCH, j+<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(valid_loader), loss_val_mean, correct_val / total_val))<br>        resnet18_ft.train()<br><br>train_x = <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(train_curve))<br>train_y = train_curve<br><br>train_iters = <span class="hljs-built_in">len</span>(train_loader)<br>valid_x = np.arange(<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(valid_curve)+<span class="hljs-number">1</span>) * train_iters*val_interval <span class="hljs-comment"># 由于valid中记录的是epochloss，需要对记录点进行转换到iterations</span><br>valid_y = valid_curve<br><br>plt.plot(train_x, train_y, label=<span class="hljs-string">&#x27;Train&#x27;</span>)<br>plt.plot(valid_x, valid_y, label=<span class="hljs-string">&#x27;Valid&#x27;</span>)<br><br>plt.legend(loc=<span class="hljs-string">&#x27;upper right&#x27;</span>)<br>plt.ylabel(<span class="hljs-string">&#x27;loss value&#x27;</span>)<br>plt.xlabel(<span class="hljs-string">&#x27;Iteration&#x27;</span>)<br>plt.show()<br><br></code></pre></td></tr></table></figure>
+<h3 id="不使用-Finetune"><a href="#不使用-Finetune" class="headerlink" title="不使用 Finetune"></a>不使用 Finetune</h3><p>第一次我们首先不使用 Finetune，而是从零开始训练模型，这时只需要修改全连接层即可：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># 首先拿到 fc 层的输入个数</span><br><span class="hljs-attr">num_ftrs</span> = resnet18_ft.fc.in_features<br><span class="hljs-comment"># 然后构造新的 fc 层替换原来的 fc 层</span><br><span class="hljs-attr">resnet18_ft.fc</span> = nn.Linear(num_ftrs, classes)<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">use</span> device :cpu<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">000</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">7192</span> Acc:<span class="hljs-number">47</span>.<span class="hljs-number">50</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">000</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6885</span> Acc:<span class="hljs-number">51</span>.<span class="hljs-number">63</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">001</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6568</span> Acc:<span class="hljs-number">60</span>.<span class="hljs-number">62</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">001</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6360</span> Acc:<span class="hljs-number">59</span>.<span class="hljs-number">48</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">002</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6411</span> Acc:<span class="hljs-number">60</span>.<span class="hljs-number">62</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">002</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6191</span> Acc:<span class="hljs-number">66</span>.<span class="hljs-number">01</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">003</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5765</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">25</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">003</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6179</span> Acc:<span class="hljs-number">67</span>.<span class="hljs-number">32</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">004</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6074</span> Acc:<span class="hljs-number">67</span>.<span class="hljs-number">50</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">004</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6251</span> Acc:<span class="hljs-number">62</span>.<span class="hljs-number">75</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">005</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6177</span> Acc:<span class="hljs-number">58</span>.<span class="hljs-number">75</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">005</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6541</span> Acc:<span class="hljs-number">64</span>.<span class="hljs-number">71</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">006</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6103</span> Acc:<span class="hljs-number">65</span>.<span class="hljs-number">62</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">006</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">7100</span> Acc:<span class="hljs-number">60</span>.<span class="hljs-number">78</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">007</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6560</span> Acc:<span class="hljs-number">60</span>.<span class="hljs-number">62</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">007</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6019</span> Acc:<span class="hljs-number">67</span>.<span class="hljs-number">32</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">008</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5454</span> Acc:<span class="hljs-number">70</span>.<span class="hljs-number">62</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">008</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5761</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">90</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">009</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5499</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">25</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">009</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5598</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">90</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">010</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5466</span> Acc:<span class="hljs-number">69</span>.<span class="hljs-number">38</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">010</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5535</span> Acc:<span class="hljs-number">70</span>.<span class="hljs-number">59</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">011</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5310</span> Acc:<span class="hljs-number">68</span>.<span class="hljs-number">12</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">011</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5700</span> Acc:<span class="hljs-number">70</span>.<span class="hljs-number">59</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">012</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5024</span> Acc:<span class="hljs-number">72</span>.<span class="hljs-number">50</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">012</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5537</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">90</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">013</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5542</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">25</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">013</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5836</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">90</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">014</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5458</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">88</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">014</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5714</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">24</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">015</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5331</span> Acc:<span class="hljs-number">72</span>.<span class="hljs-number">50</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">015</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5613</span> Acc:<span class="hljs-number">73</span>.<span class="hljs-number">20</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">016</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5296</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">25</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">016</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5646</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">24</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">017</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5039</span> Acc:<span class="hljs-number">75</span>.<span class="hljs-number">00</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">017</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5643</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">24</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">018</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5351</span> Acc:<span class="hljs-number">73</span>.<span class="hljs-number">75</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">018</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5745</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">24</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">019</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5441</span> Acc:<span class="hljs-number">69</span>.<span class="hljs-number">38</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">019</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5703</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">90</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">020</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5582</span> Acc:<span class="hljs-number">69</span>.<span class="hljs-number">38</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">020</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5759</span> Acc:<span class="hljs-number">71</span>.<span class="hljs-number">90</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">021</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5219</span> Acc:<span class="hljs-number">73</span>.<span class="hljs-number">75</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">021</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5689</span> Acc:<span class="hljs-number">72</span>.<span class="hljs-number">55</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">022</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5670</span> Acc:<span class="hljs-number">70</span>.<span class="hljs-number">62</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">022</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6052</span> Acc:<span class="hljs-number">69</span>.<span class="hljs-number">28</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">023</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5725</span> Acc:<span class="hljs-number">65</span>.<span class="hljs-number">62</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">023</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6047</span> Acc:<span class="hljs-number">68</span>.<span class="hljs-number">63</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">024</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5761</span> Acc:<span class="hljs-number">66</span>.<span class="hljs-number">25</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">024</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">5923</span> Acc:<span class="hljs-number">70</span>.<span class="hljs-number">59</span>%<br></code></pre></td></tr></table></figure>
+
+<p>训练了 25 个 epoch 后的准确率为：70.59%。</p>
+<p>训练的 loss 曲线如下：</p>
+<p><img src="/img/pytorchtrain7/1.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="使用-Finetune"><a href="#使用-Finetune" class="headerlink" title="使用 Finetune"></a>使用 Finetune</h3><p>然后我们把下载的模型参数加载到模型中：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs stylus">path_pretrained_model = enviroments<span class="hljs-selector-class">.resnet18_path</span><br>state_dict_load = torch<span class="hljs-selector-class">.load</span>(path_pretrained_model)<br>resnet18_ft<span class="hljs-selector-class">.load_state_dict</span>(state_dict_load)<br></code></pre></td></tr></table></figure>
+
+<h4 id="不冻结卷积层"><a href="#不冻结卷积层" class="headerlink" title="不冻结卷积层"></a>不冻结卷积层</h4><p>这时我们不冻结卷积层，所有层都是用相同的学习率，输出如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">use</span> device :cpu<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">000</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">6299</span> Acc:<span class="hljs-number">65</span>.<span class="hljs-number">62</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">000</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">3387</span> Acc:<span class="hljs-number">90</span>.<span class="hljs-number">20</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">001</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">3122</span> Acc:<span class="hljs-number">90</span>.<span class="hljs-number">00</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">001</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">2150</span> Acc:<span class="hljs-number">94</span>.<span class="hljs-number">12</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">002</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">2748</span> Acc:<span class="hljs-number">85</span>.<span class="hljs-number">62</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">002</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">2423</span> Acc:<span class="hljs-number">91</span>.<span class="hljs-number">50</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">003</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1440</span> Acc:<span class="hljs-number">94</span>.<span class="hljs-number">38</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">003</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1666</span> Acc:<span class="hljs-number">95</span>.<span class="hljs-number">42</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">004</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1983</span> Acc:<span class="hljs-number">92</span>.<span class="hljs-number">50</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">004</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1809</span> Acc:<span class="hljs-number">94</span>.<span class="hljs-number">77</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">005</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1840</span> Acc:<span class="hljs-number">92</span>.<span class="hljs-number">50</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">005</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">2437</span> Acc:<span class="hljs-number">91</span>.<span class="hljs-number">50</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">006</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1921</span> Acc:<span class="hljs-number">93</span>.<span class="hljs-number">12</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">006</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">2014</span> Acc:<span class="hljs-number">95</span>.<span class="hljs-number">42</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">007</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1311</span> Acc:<span class="hljs-number">93</span>.<span class="hljs-number">12</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">007</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1890</span> Acc:<span class="hljs-number">96</span>.<span class="hljs-number">08</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">008</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1395</span> Acc:<span class="hljs-number">94</span>.<span class="hljs-number">38</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">008</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1907</span> Acc:<span class="hljs-number">95</span>.<span class="hljs-number">42</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">009</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1390</span> Acc:<span class="hljs-number">93</span>.<span class="hljs-number">75</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">009</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1933</span> Acc:<span class="hljs-number">95</span>.<span class="hljs-number">42</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">010</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1065</span> Acc:<span class="hljs-number">96</span>.<span class="hljs-number">88</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">010</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1865</span> Acc:<span class="hljs-number">95</span>.<span class="hljs-number">42</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">011</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">0845</span> Acc:<span class="hljs-number">98</span>.<span class="hljs-number">12</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">011</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1851</span> Acc:<span class="hljs-number">96</span>.<span class="hljs-number">08</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">012</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1068</span> Acc:<span class="hljs-number">95</span>.<span class="hljs-number">62</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">012</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1862</span> Acc:<span class="hljs-number">95</span>.<span class="hljs-number">42</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">013</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">0986</span> Acc:<span class="hljs-number">96</span>.<span class="hljs-number">25</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">013</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1803</span> Acc:<span class="hljs-number">96</span>.<span class="hljs-number">73</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">014</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1083</span> Acc:<span class="hljs-number">96</span>.<span class="hljs-number">88</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">014</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1867</span> Acc:<span class="hljs-number">96</span>.<span class="hljs-number">08</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">015</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">0683</span> Acc:<span class="hljs-number">98</span>.<span class="hljs-number">12</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">015</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1863</span> Acc:<span class="hljs-number">95</span>.<span class="hljs-number">42</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">016</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1271</span> Acc:<span class="hljs-number">96</span>.<span class="hljs-number">25</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">016</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1842</span> Acc:<span class="hljs-number">94</span>.<span class="hljs-number">77</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">017</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">0857</span> Acc:<span class="hljs-number">97</span>.<span class="hljs-number">50</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">017</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1776</span> Acc:<span class="hljs-number">96</span>.<span class="hljs-number">08</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">018</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1338</span> Acc:<span class="hljs-number">94</span>.<span class="hljs-number">38</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">018</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1736</span> Acc:<span class="hljs-number">96</span>.<span class="hljs-number">08</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">019</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1381</span> Acc:<span class="hljs-number">95</span>.<span class="hljs-number">62</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">019</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1852</span> Acc:<span class="hljs-number">93</span>.<span class="hljs-number">46</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">020</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">0936</span> Acc:<span class="hljs-number">96</span>.<span class="hljs-number">25</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">020</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1820</span> Acc:<span class="hljs-number">95</span>.<span class="hljs-number">42</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">021</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1818</span> Acc:<span class="hljs-number">93</span>.<span class="hljs-number">75</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">021</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1949</span> Acc:<span class="hljs-number">92</span>.<span class="hljs-number">81</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">022</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1525</span> Acc:<span class="hljs-number">93</span>.<span class="hljs-number">75</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">022</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1816</span> Acc:<span class="hljs-number">95</span>.<span class="hljs-number">42</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">023</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1942</span> Acc:<span class="hljs-number">93</span>.<span class="hljs-number">12</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">023</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1744</span> Acc:<span class="hljs-number">96</span>.<span class="hljs-number">08</span>%<br><span class="hljs-attribute">Training</span>:Epoch[<span class="hljs-number">024</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">016</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1268</span> Acc:<span class="hljs-number">96</span>.<span class="hljs-number">25</span>%<br><span class="hljs-attribute">Valid</span>:     Epoch[<span class="hljs-number">024</span>/<span class="hljs-number">025</span>] Iteration[<span class="hljs-number">010</span>/<span class="hljs-number">010</span>] Loss: <span class="hljs-number">0</span>.<span class="hljs-number">1808</span> Acc:<span class="hljs-number">96</span>.<span class="hljs-number">08</span>%<br></code></pre></td></tr></table></figure>
+
+<p>训练了 25 个 epoch 后的准确率为：96.08%。</p>
+<p>训练的 loss 曲线如下：</p>
+<p><img src="/img/pytorchtrain7/2.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="冻结卷积层"><a href="#冻结卷积层" class="headerlink" title="冻结卷积层"></a>冻结卷积层</h4><h5 id="设置requires-grad-False"><a href="#设置requires-grad-False" class="headerlink" title="设置requires_grad=False"></a>设置<code>requires_grad=False</code></h5><p>这里先冻结所有参数，然后再替换全连接层，相当于冻结了卷积层的参数：</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver"><span class="hljs-keyword">for</span> <span class="hljs-built_in">param</span> <span class="hljs-keyword">in</span> resnet18_ft.parameters():<br>    <span class="hljs-built_in">param</span>.requires_grad = False<br>    <span class="hljs-comment"># 首先拿到 fc 层的输入个数</span><br>num_ftrs = resnet18_ft.fc.in_features<br><span class="hljs-comment"># 然后构造新的 fc 层替换原来的 fc 层</span><br>resnet18_ft.fc = nn.Linear(num_ftrs, classes)<br></code></pre></td></tr></table></figure>
+
+<p>这里不提供实验结果。</p>
+<h5 id="设置学习率为-0"><a href="#设置学习率为-0" class="headerlink" title="设置学习率为 0"></a>设置学习率为 0</h5><p>这里把卷积层的学习率设置为 0，需要在优化器里设置不同的学习率。首先获取全连接层参数的地址，然后使用 filter 过滤不属于全连接层的参数，也就是保留卷积层的参数；接着设置优化器的分组学习率，传入一个 list，包含 2 个元素，每个元素是字典，对应 2 个参数组。其中卷积层的学习率设置为 全连接层的 0.1 倍。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># 首先获取全连接层参数的地址</span><br><span class="hljs-attr">fc_params_id</span> = list(map(id, resnet18_ft.fc.parameters()))     <span class="hljs-comment"># 返回的是parameters的 内存地址</span><br><span class="hljs-comment"># 然后使用 filter 过滤不属于全连接层的参数，也就是保留卷积层的参数</span><br><span class="hljs-attr">base_params</span> = filter(lambda p: id(p) not in fc_params_id, resnet18_ft.parameters())<br><span class="hljs-comment"># 设置优化器的分组学习率，传入一个 list，包含 2 个元素，每个元素是字典，对应 2 个参数组</span><br><span class="hljs-attr">optimizer</span> = optim.SGD([&#123;<span class="hljs-string">&#x27;params&#x27;</span>: base_params, <span class="hljs-string">&#x27;lr&#x27;</span>: <span class="hljs-number">0</span>&#125;, &#123;<span class="hljs-string">&#x27;params&#x27;</span>: resnet18_ft.fc.parameters(), <span class="hljs-string">&#x27;lr&#x27;</span>: LR&#125;], momentum=<span class="hljs-number">0.9</span>)<br></code></pre></td></tr></table></figure>
+
+<p>这里不提供实验结果。</p>
+<h4 id="使用分组学习率"><a href="#使用分组学习率" class="headerlink" title="使用分组学习率"></a>使用分组学习率</h4><p>这里不冻结卷积层，而是对卷积层使用较小的学习率，对全连接层使用较大的学习率，需要在优化器里设置不同的学习率。首先获取全连接层参数的地址，然后使用 filter 过滤不属于全连接层的参数，也就是保留卷积层的参数；接着设置优化器的分组学习率，传入一个 list，包含 2 个元素，每个元素是字典，对应 2 个参数组。其中卷积层的学习率设置为 全连接层的 0.1 倍。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># 首先获取全连接层参数的地址</span><br><span class="hljs-attr">fc_params_id</span> = list(map(id, resnet18_ft.fc.parameters()))     <span class="hljs-comment"># 返回的是parameters的 内存地址</span><br><span class="hljs-comment"># 然后使用 filter 过滤不属于全连接层的参数，也就是保留卷积层的参数</span><br><span class="hljs-attr">base_params</span> = filter(lambda p: id(p) not in fc_params_id, resnet18_ft.parameters())<br><span class="hljs-comment"># 设置优化器的分组学习率，传入一个 list，包含 2 个元素，每个元素是字典，对应 2 个参数组</span><br><span class="hljs-attr">optimizer</span> = optim.SGD([&#123;<span class="hljs-string">&#x27;params&#x27;</span>: base_params, <span class="hljs-string">&#x27;lr&#x27;</span>: LR*<span class="hljs-number">0</span>&#125;, &#123;<span class="hljs-string">&#x27;params&#x27;</span>: resnet18_ft.fc.parameters(), <span class="hljs-string">&#x27;lr&#x27;</span>: LR&#125;], momentum=<span class="hljs-number">0.9</span>)<br></code></pre></td></tr></table></figure>
+
+<p>这里不提供实验结果。</p>
+<h2 id="使用-GPU-训练模型"><a href="#使用-GPU-训练模型" class="headerlink" title="使用 GPU 训练模型"></a>使用 GPU 训练模型</h2><p>PyTorch 模型使用 GPU，可以分为 3 步：</p>
+<ol>
+<li>首先获取 device：<code>device = torch.device(&quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;)</code></li>
+<li>把模型加载到 device：<code>model.to(device)</code></li>
+<li>在 data_loader 取数据的循环中，把每个 mini-batch 的数据和 label 加载到 device：<code>inputs, labels = inputs.to(device), labels.to(device)</code></li>
+</ol>
+<p>在数据运算时，两个数据进行运算，那么它们必须同时存放在同一个设备，要么同时是 CPU，要么同时是 GPU。而且数据和模型都要在同一个设备上。数据和模型可以使用<code>to()</code>方法从一个设备转移到另一个设备。而数据的<code>to()</code>方法还可以转换数据类型。</p>
+<ul>
+<li><p>从 CPU 到 GPU</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs abnf"><span class="hljs-attribute">device</span> <span class="hljs-operator">=</span> torch.device(<span class="hljs-string">&quot;cuda&quot;</span>)<br><span class="hljs-attribute">tensor</span> <span class="hljs-operator">=</span> tensor.to(device)<br>module.to(device)<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>从 GPU 到 CPU</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs abnf"><span class="hljs-attribute">device</span> <span class="hljs-operator">=</span> torch.device(cpu)<br><span class="hljs-attribute">tensor</span> <span class="hljs-operator">=</span> tensor.to(<span class="hljs-string">&quot;cpu&quot;</span>)<br>module.to(<span class="hljs-string">&quot;cpu&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p><code>tensor</code>和<code>module</code>的 <code>to()</code>方法的区别是：<code>tensor.to()</code>执行的不是 inplace 操作，因此需要赋值；<code>module.to()</code>执行的是 inplace 操作。</p>
+</li>
+</ul>
+<p>下面的代码是转换数据类型</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">x</span> = torch.<span class="hljs-literal">on</span>es((<span class="hljs-number">3</span>,<span class="hljs-number">3</span>))<br><span class="hljs-attr">x</span> = x.to(torch.float64)<br></code></pre></td></tr></table></figure>
+
+<h3 id="tensor-to-和-module-to"><a href="#tensor-to-和-module-to" class="headerlink" title="tensor.to() 和 module.to()"></a><code>tensor.to()</code> 和 <code>module.to()</code></h3><p>首先导入库，获取 GPU 的 device</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs elm"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn<br><span class="hljs-title">device</span> = torch.device(<span class="hljs-string">&quot;cuda:0&quot;</span> <span class="hljs-keyword">if</span> torch.cuda.is_available() <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;cpu&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>下面的代码是执行<code>Tensor</code>的<code>to()</code>方法</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs stylus">x_cpu = torch<span class="hljs-selector-class">.ones</span>((<span class="hljs-number">3</span>, <span class="hljs-number">3</span>))<br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;x_cpu:\ndevice: &#123;&#125; is_cuda: &#123;&#125; id: &#123;&#125;&quot;</span>.format(x_cpu.device, x_cpu.is_cuda, id(x_cpu)</span></span>))<br><br>x_gpu = x_cpu<span class="hljs-selector-class">.to</span>(device)<br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;x_gpu:\ndevice: &#123;&#125; is_cuda: &#123;&#125; id: &#123;&#125;&quot;</span>.format(x_gpu.device, x_gpu.is_cuda, id(x_gpu)</span></span>))<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs nix"><span class="hljs-params">x_cpu:</span><br><span class="hljs-params">device:</span> cpu <span class="hljs-params">is_cuda:</span> False <span class="hljs-params">id:</span> <span class="hljs-number">1415020820304</span><br><span class="hljs-params">x_gpu:</span><br><span class="hljs-params">device:</span> cpu <span class="hljs-params">is_cuda:</span> True <span class="hljs-params">id:</span> <span class="hljs-number">2700061800153</span><br></code></pre></td></tr></table></figure>
+
+<p>可以看到<code>Tensor</code>的<code>to()</code>方法不是 inplace 操作，<code>x_cpu</code>和<code>x_gpu</code>的内存地址不一样。</p>
+<p>下面代码执行的是<code>Module</code>的<code>to()</code>方法</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs stylus">net = nn<span class="hljs-selector-class">.Sequential</span>(nn<span class="hljs-selector-class">.Linear</span>(<span class="hljs-number">3</span>, <span class="hljs-number">3</span>))<br><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;\nid:&#123;&#125; is_cuda: &#123;&#125;&quot;</span>.format(id(net)</span></span>, <span class="hljs-built_in">next</span>(net<span class="hljs-selector-class">.parameters</span>()).is_cuda))<br><br>net<span class="hljs-selector-class">.to</span>(device)<br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;\nid:&#123;&#125; is_cuda: &#123;&#125;&quot;</span>.format(id(net)</span></span>, <span class="hljs-built_in">next</span>(net<span class="hljs-selector-class">.parameters</span>()).is_cuda))<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-built_in">id</span>:<span class="hljs-number">2325748158192</span> is_cuda: <span class="hljs-literal">False</span><br><span class="hljs-built_in">id</span>:<span class="hljs-number">2325748158192</span> is_cuda: <span class="hljs-literal">True</span><br></code></pre></td></tr></table></figure>
+
+<p>可以看到<code>Module</code>的<code>to()</code>方法是 inplace 操作，内存地址一样。</p>
+<h3 id="torch-cuda常用方法"><a href="#torch-cuda常用方法" class="headerlink" title="torch.cuda常用方法"></a><code>torch.cuda</code>常用方法</h3><ul>
+<li>torch.cuda.device_count()：返回当前可见可用的 GPU 数量</li>
+<li>torch.cuda.get_device_name()：获取 GPU 名称</li>
+<li>torch.cuda.manual_seed()：为当前 GPU 设置随机种子</li>
+<li>torch.cuda.manual_seed_all()：为所有可见 GPU 设置随机种子</li>
+<li>torch.cuda.set_device()：设置主 GPU 为哪一个物理 GPU，此方法不推荐使用</li>
+<li>os.environ.setdefault(“CUDA_VISIBLE_DEVICES”, “2”, “3”)：设置可见 GPU</li>
+</ul>
+<p>在 PyTorch 中，有物理 GPU 可以逻辑 GPU 之分，可以设置它们之间的对应关系。</p>
+<p><img src="/img/pytorchtrain7/3.png" srcset="/img/loading.gif" lazyload><br> 在上图中，如果执行了<code>os.environ.setdefault(&quot;CUDA_VISIBLE_DEVICES&quot;, &quot;2&quot;, &quot;3&quot;)</code>，那么可见 GPU 数量只有 2 个。对应关系如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">逻辑 GPU</th>
+<th align="center">物理 GPU</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">gpu0</td>
+<td align="center">gpu2</td>
+</tr>
+<tr>
+<td align="center">gpu1</td>
+<td align="center">gpu3</td>
+</tr>
+</tbody></table>
+<p>如果执行了<code>os.environ.setdefault(&quot;CUDA_VISIBLE_DEVICES&quot;, &quot;0&quot;, &quot;3&quot;, &quot;2&quot;)</code>，那么可见 GPU 数量只有 3 个。对应关系如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">逻辑 GPU</th>
+<th align="center">物理 GPU</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">gpu0</td>
+<td align="center">gpu0</td>
+</tr>
+<tr>
+<td align="center">gpu1</td>
+<td align="center">gpu3</td>
+</tr>
+<tr>
+<td align="center">gpu2</td>
+<td align="center">gpu2</td>
+</tr>
+</tbody></table>
+<p>设置的原因是可能系统中有很多用户和任务在使用 GPU，设置 GPU 编号，可以合理分配 GPU。通常默认<code>gpu0</code>为主 GPU。主 GPU 的概念与多 GPU 的分发并行机制有关。</p>
+<h3 id="多-GPU-的分发并行"><a href="#多-GPU-的分发并行" class="headerlink" title="多 GPU 的分发并行"></a>多 GPU 的分发并行</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torch.nn.DataParallel(module, <span class="hljs-attribute">device_ids</span>=None, <span class="hljs-attribute">output_device</span>=None, <span class="hljs-attribute">dim</span>=0)<br></code></pre></td></tr></table></figure>
+
+<p>功能：包装模型，实现分发并行机制。可以把数据平均分发到各个 GPU 上，每个 GPU 实际的数据量为 $\frac{batch_size}{GPU 数量}$，实现并行计算。</p>
+<p>主要参数：</p>
+<ul>
+<li>module：需要包装分发的模型</li>
+<li>device_ids：可分发的 GPU，默认分发到所有可见可用的 GPU</li>
+<li>output_device：结果输出设备</li>
+</ul>
+<p>需要注意的是：使用 <code>DataParallel</code> 时，<code>device</code> 要指定某个 GPU 为 主 GPU，否则会报错：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">RuntimeError</span>: module must have its parameters and buffers <span class="hljs-literal">on</span> device cuda:<span class="hljs-number">1</span> (device_ids[<span class="hljs-number">0</span>]) but found one of them <span class="hljs-literal">on</span> device: cuda:<span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
+
+<p>这是因为，使用多 GPU 需要有一个主 GPU，来把每个 batch 的数据分发到每个 GPU，并从每个 GPU 收集计算好的结果。如果不指定主 GPU，那么数据就直接分发到每个 GPU，会造成有些数据在某个 GPU，而另一部分数据在其他 GPU，计算出错。</p>
+<p>详情请参考 <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/59249563/runtimeerror-module-must-have-its-parameters-and-buffers-on-device-cuda1-devi">[RuntimeError: module must have its parameters and buffers on device cuda:1 (device_ids[0]) but found one of them on device: cuda:2</a>](<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/59249563/runtimeerror-module-must-have-its-parameters-and-buffers-on-device-cuda1-devi">RuntimeError: module must have its parameters and buffers on device cuda:1 (device_ids[0]) but found one of them on device: cuda:2</a>)</p>
+<p>下面的代码设置两个可见 GPU，batch_size 为 2，那么每个 GPU 每个 batch 拿到的数据数量为 8，在模型的前向传播中打印数据的数量。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 设置 2 个可见 GPU</span><br>gpu_list = [0,1]<br>gpu_list_str = <span class="hljs-string">&#x27;,&#x27;</span>.join(map(str, gpu_list))<br>os.environ.setdefault(<span class="hljs-string">&quot;CUDA_VISIBLE_DEVICES&quot;</span>, gpu_list_str)<br><span class="hljs-comment"># 这里注意，需要指定一个 GPU 作为主 GPU。</span><br><span class="hljs-comment"># 否则会报错：module must have its parameters and buffers on device cuda:1 (device_ids[0]) but found one of them on device: cuda:2</span><br><span class="hljs-comment"># 参考：https://stackoverflow.com/questions/59249563/runtimeerror-module-must-have-its-parameters-and-buffers-on-device-cuda1-devi</span><br>device = torch.device(<span class="hljs-string">&quot;cuda:0&quot;</span> <span class="hljs-keyword">if</span> torch.cuda.is_available() <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;cpu&quot;</span>)<br><br>batch_size = 16<br><br><span class="hljs-comment"># data</span><br>inputs = torch.randn(batch_size, 3)<br>labels = torch.randn(batch_size, 3)<br><br>inputs, labels = inputs.<span class="hljs-keyword">to</span>(device), labels.<span class="hljs-keyword">to</span>(device)<br><br><span class="hljs-comment"># model</span><br>net = FooNet(<span class="hljs-attribute">neural_num</span>=3, <span class="hljs-attribute">layers</span>=3)<br>net = nn.DataParallel(net)<br>net.<span class="hljs-keyword">to</span>(device)<br><br><span class="hljs-comment"># training</span><br><span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> range(1):<br><br>    outputs = net(inputs)<br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;model outputs.size: &#123;&#125;&quot;</span>.format(outputs.size()))<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;CUDA_VISIBLE_DEVICES :&#123;&#125;&quot;</span>.format(os.environ[<span class="hljs-string">&quot;CUDA_VISIBLE_DEVICES&quot;</span>]))<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;device_count :&#123;&#125;&quot;</span>.format(torch.cuda.device_count()))<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">batch</span> size in forward: <span class="hljs-number">8</span><br><span class="hljs-attribute">model</span> outputs.size: torch.Size([<span class="hljs-number">16</span>, <span class="hljs-number">3</span>])<br><span class="hljs-attribute">CUDA_VISIBLE_DEVICES</span> :<span class="hljs-number">0</span>,<span class="hljs-number">1</span><br><span class="hljs-attribute">device_count</span> :<span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
+
+<p>下面的代码是根据 GPU 剩余内存来排序。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs scss">def <span class="hljs-built_in">get_gpu_memory</span>():<br>    import platform<br>    if <span class="hljs-string">&#x27;Windows&#x27;</span> != platform.<span class="hljs-built_in">system</span>():<br>        import os<br>        os.<span class="hljs-built_in">system</span>(<span class="hljs-string">&#x27;nvidia-smi -q -d Memory | grep -A4 GPU | grep Free &gt; tmp.txt&#x27;</span>)<br>        memory_gpu = [<span class="hljs-built_in">int</span>(x.<span class="hljs-built_in">split</span>()[<span class="hljs-number">2</span>]) for x in <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;tmp.txt&#x27;</span>, <span class="hljs-string">&#x27;r&#x27;</span>).<span class="hljs-built_in">readlines</span>()]<br>        os.<span class="hljs-built_in">system</span>(<span class="hljs-string">&#x27;rm tmp.txt&#x27;</span>)<br>    else:<br>        memory_gpu = False<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;显存计算功能暂不支持windows操作系统&quot;</span>)<br>    return memory_gpu<br><br><br>gpu_memory = <span class="hljs-built_in">get_gpu_memory</span>()<br>if not gpu_memory:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\ngpu free memory: &#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(gpu_memory))<br>    gpu_list = np.<span class="hljs-built_in">argsort</span>(gpu_memory)[::-<span class="hljs-number">1</span>]<br><br>    gpu_list_str = <span class="hljs-string">&#x27;,&#x27;</span>.<span class="hljs-built_in">join</span>(<span class="hljs-built_in">map</span>(str, gpu_list))<br>    os.environ.<span class="hljs-built_in">setdefault</span>(<span class="hljs-string">&quot;CUDA_VISIBLE_DEVICES&quot;</span>, gpu_list_str)<br>    device = torch.<span class="hljs-built_in">device</span>(<span class="hljs-string">&quot;cuda&quot;</span> if torch.cuda.<span class="hljs-built_in">is_available</span>() else <span class="hljs-string">&quot;cpu&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>其中<code>nvidia-smi -q -d Memory</code>是查询所有 GPU 的内存信息，<code>-q</code>表示查询，<code>-d</code>是指定查询的内容。</p>
+<p><code>nvidia-smi -q -d Memory | grep -A4 GPU</code>是截取 GPU 开始的 4 行，如下：</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc">Attached GPUs                       : 2<br>GPU 00000000:1A:00.0<br><span class="hljs-code">    FB Memory Usage</span><br><span class="hljs-code">        Total                       : 24220 MiB</span><br><span class="hljs-code">        Used                        : 845 MiB</span><br><span class="hljs-section">        Free                        : 23375 MiB</span><br><span class="hljs-section">--</span><br>GPU 00000000:68:00.0<br><span class="hljs-code">    FB Memory Usage</span><br><span class="hljs-code">        Total                       : 24217 MiB</span><br><span class="hljs-code">        Used                        : 50 MiB</span><br><span class="hljs-code">        Free                        : 24167 MiB</span><br></code></pre></td></tr></table></figure>
+
+<p><code>nvidia-smi -q -d Memory | grep -A4 GPU | grep Free</code>是提取<code>Free</code>所在的行，也就是提取剩余内存的信息，如下：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ada">Free                        : 23375 <span class="hljs-type">MiB</span><br>Free                        : 24167 <span class="hljs-type">MiB</span><br></code></pre></td></tr></table></figure>
+
+<p><code>nvidia-smi -q -d Memory | grep -A4 GPU | grep Free &gt; tmp.txt</code>是把剩余内存的信息保存到<code>tmp.txt</code>中。</p>
+<p><code>[int(x.split()[2]) for x in open(&#39;tmp.txt&#39;, &#39;r&#39;).readlines()]</code>是用列表表达式对每行进行处理。</p>
+<p>假设<code>x=&quot; Free : 23375 MiB&quot;</code>，那么<code>x.split()</code>默认以空格分割，结果是：</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scheme">[<span class="hljs-symbol">&#x27;Free</span>&#x27;, <span class="hljs-symbol">&#x27;:</span>&#x27;, <span class="hljs-symbol">&#x27;23375</span>&#x27;, <span class="hljs-symbol">&#x27;MiB</span>&#x27;]<br></code></pre></td></tr></table></figure>
+
+<p><code>x.split()[2]</code>的结果是<code>23375</code>。</p>
+<p>假设<code>gpu_memory=[&#39;5&#39;,&#39;9&#39;,&#39;3&#39;]</code>，<code>np.argsort(gpu_memory)</code>的结果是<code>array([2, 0, 1], dtype=int64)</code>，是从小到大取排好序后的索引。<code>np.argsort(gpu_memory)[::-1]</code>的结果是<code>array([1, 0, 2], dtype=int64)</code>，也就是把元素的顺序反过来。</p>
+<p>在 Python 中，<code>list[&lt;start&gt;:&lt;stop&gt;:&lt;step&gt;]</code>表示从<code>start</code>到<code>stop</code>取出元素，间隔为<code>step</code>，<code>step=-1</code>表示从<code>stop</code>到<code>start</code>取出元素。<code>start</code>默认为第一个元素的位置，<code>stop</code>默认为最后一个元素的位置。</p>
+<p><code>&#39;,&#39;.join(map(str, gpu_list))</code>的结果是<code>&#39;1,0,2&#39;</code>。</p>
+<p>最后<code>os.environ.setdefault(&quot;CUDA_VISIBLE_DEVICES&quot;, gpu_list_str)</code>就是根据 GPU 剩余内存从大到小设置对应关系，这样默认最大剩余内存的 GPU 为主 GPU。</p>
+<h3 id="提高-GPU-的利用率"><a href="#提高-GPU-的利用率" class="headerlink" title="提高 GPU 的利用率"></a>提高 GPU 的利用率</h3><p><code>nvidia-smi</code>命令查看可以 GPU 的利用率，如下图所示。</p>
+<p><img src="/img/pytorchtrain7/4.png" srcset="/img/loading.gif" lazyload><br> 上面的截图中，有两张显卡（GPU），其中<strong>上半部分显示的是显卡的信息</strong>，<strong>下半部分显示的是每张显卡运行的进程</strong>。可以看到编号为 0 的 GPU 运行的是 PID 为 14383 进程。<code>Memory Usage</code>表示显存的使用率，编号为 0 的 GPU 使用了 <code>16555 MB</code> 显存，显存的利用率大概是70% 左右。<code>Volatile GPU-Util</code>表示计算 GPU 实际运算能力的利用率，编号为 0 的 GPU 只有 27% 的使用率。</p>
+<p>虽然使用 GPU 可以加速训练模型，但是如果GPU 的 <code>Memory Usage</code> 和 <code>Volatile GPU-Util</code> 太低，表示并没有充分利用 GPU。</p>
+<p>因此，使用 GPU 训练模型，需要尽量提高 GPU 的 <code>Memory Usage</code> 和 <code>Volatile GPU-Util</code> 这两个指标，可以更进一步加速你的训练过程。</p>
+<p>下面谈谈如何提高这两个指标。</p>
+<h4 id="Memory-Usage"><a href="#Memory-Usage" class="headerlink" title="Memory Usage"></a>Memory Usage</h4><p>这个指标是由数据量主要是由模型大小，以及数据量的大小决定的。</p>
+<p>模型大小是由网络的参数和网络结构决定的，模型越大，训练反而越慢。</p>
+<p>我们主要调整的是每个 batch 训练的数据量的大小，也就是 <strong>batch_size</strong>。</p>
+<p>在模型结构固定的情况下，尽量将<code>batch size</code>设置得比较大，充分利用 GPU 的内存。</p>
+<h4 id="Volatile-GPU-Util"><a href="#Volatile-GPU-Util" class="headerlink" title="Volatile GPU-Util"></a>Volatile GPU-Util</h4><p>上面设置比较大的 <code>batch size</code>可以提高 GPU 的内存使用率，却不一定能提高 GPU 运算单元的使用率。</p>
+<p>从前面可以看到，我们的数据首先读取到 CPU 中的，并在循环训练的时候，通过<code>tensor.to()</code>方法从 CPU 加载到 CPU 中，如下代码所示。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs haskell"><span class="hljs-meta"># 遍历 train_loader 取数据</span><br><span class="hljs-title">for</span> i, <span class="hljs-class"><span class="hljs-keyword">data</span> in enumerate(<span class="hljs-title">train_loader</span>):</span><br>    inputs, labels = <span class="hljs-class"><span class="hljs-keyword">data</span></span><br>    inputs = inputs.to(device) # 把数据从 <span class="hljs-type">CPU</span> 加载到 <span class="hljs-type">GPU</span><br>    labels = labels.to(device) # 把数据从 <span class="hljs-type">CPU</span> 加载到 <span class="hljs-type">GPU</span><br>    .<br>    .<br>    .<br></code></pre></td></tr></table></figure>
+
+<p>如果<code>batch size</code>得比较大，那么在 <code>Dataset</code>和 <code>DataLoader</code> ，CPU 处理一个 batch 的数据就会很慢，这时你会发现<code>Volatile GPU-Util</code>的值会在 <code>0%，20%，70%，95%，0%</code> 之间不断变化。</p>
+<blockquote>
+<p><code>nvidia-smi</code>命令查看可以 GPU 的利用率，但不能动态刷新显示。如果你想每隔一秒刷新显示 GPU 信息，可以使用<code>watch -n 1 nvidia-smi</code> 。</p>
+</blockquote>
+<p>其实这是因为 GPU 处理数据非常快，而 CPU 处理数据较慢。GPU 每接收到一个 batch 的数据，使用率就跳到逐渐升高，处理完这个 batch 的数据后，使用率又逐渐降低，等到 CPU 把下一个 batch 的数据传过来。</p>
+<p>解决方法是：设置 <code>Dataloader</code>的两个参数：</p>
+<ul>
+<li>num_workers：默认只使用一个 CPU 读取和处理数据。可以设置为 4、8、16 等参数。但线程数<strong>并不是越大越好</strong>。因为，多核处理需要把数据分发到每个 CPU，处理完成后需要从多个 CPU 收集数据，这个过程也是需要时间的。如果设置<code>num_workers</code>过大，分发和收集数据等操作占用了太多时间，反而会降低效率。</li>
+<li>pin_memory：如果内存较大，<strong>建议设置为 True</strong>。<ul>
+<li>设置为 True，表示把数据直接映射到 GPU 的相关内存块上，省掉了一点数据传输时间。</li>
+<li>设置为 False，表示从 CPU 传入到缓存 RAM 里面，再给传输到 GPU 上。</li>
+</ul>
+</li>
+</ul>
+<h3 id="GPU-相关的报错"><a href="#GPU-相关的报错" class="headerlink" title="GPU 相关的报错"></a>GPU 相关的报错</h3><h4 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h4><p>如果模型是在 GPU 上保存的，在无 GPU 设备上加载模型时<code>torch.load(path_state_dict)</code>,会出现下面的报错：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">RuntimeError: Attempting <span class="hljs-keyword">to</span> deserialize <span class="hljs-keyword">object</span> <span class="hljs-keyword">on</span> a CUDA device but torch.cuda.is_available() <span class="hljs-keyword">is</span> <span class="hljs-keyword">False</span>. <span class="hljs-keyword">If</span> you are running <span class="hljs-keyword">on</span> a CPU-<span class="hljs-keyword">only</span> machine, please use torch.<span class="hljs-keyword">load</span> <span class="hljs-keyword">with</span> map_location=torch.device(<span class="hljs-string">&#x27;cpu&#x27;</span>) <span class="hljs-keyword">to</span> map your storages <span class="hljs-keyword">to</span> the CPU.<br></code></pre></td></tr></table></figure>
+
+<p>可能的原因：gpu训练的模型保存后，在无gpu设备上无法直接加载。解决方法是设置<code>map_location=&quot;cpu&quot;</code>：<code>torch.load(path_state_dict, map_location=&quot;cpu&quot;)</code></p>
+<h4 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h4><p>如果模型经过<code>net = nn.DataParallel(net)</code>包装后，那么所有网络层的名称前面都会加上<code>mmodule.</code>。保存模型后再次加载时没有使用<code>nn.DataParallel()</code>包装，就会加载失败，因为<code>state_dict</code>中参数的名称对应不上。</p>
+<figure class="highlight sas"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sas"><span class="hljs-keyword">Missing</span> <span class="hljs-keyword">key</span>(s) <span class="hljs-keyword">in</span> state_dict: xxxxxxxxxx<br><br>Unexpected <span class="hljs-keyword">key</span>(s) <span class="hljs-keyword">in</span> state_dict:xxxxxxxxxx<br></code></pre></td></tr></table></figure>
+
+<p>解决方法是加载参数后，遍历 state_dict 的参数，如果名字是以<code>module.</code>开头，则去掉<code>module.</code>。代码如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs stylus">from collections import OrderedDict<br>new_state_dict = <span class="hljs-built_in">OrderedDict</span>()<br><span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> state_dict<span class="hljs-selector-class">.items</span>():<br>    namekey = k<span class="hljs-selector-attr">[7:]</span> <span class="hljs-keyword">if</span> k<span class="hljs-selector-class">.startswith</span>(<span class="hljs-string">&#x27;module.&#x27;</span>) <span class="hljs-keyword">else</span> k<br>    new_state_dict<span class="hljs-selector-attr">[namekey]</span> = v<br></code></pre></td></tr></table></figure>
+
+<p>然后再把参数加载到模型中。</p>
+<h2 id="PyTorch常见报错汇总"><a href="#PyTorch常见报错汇总" class="headerlink" title="PyTorch常见报错汇总"></a>PyTorch常见报错汇总</h2><p>请查看：<a target="_blank" rel="noopener" href="https://shimo.im/docs/bdV4DBxQwUMLrfX5/read">https://shimo.im/docs/bdV4DBxQwUMLrfX5/read</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="print-no-link">#深度学习</a>
+      
+        <a href="/tags/pytorch/" class="print-no-link">#pytorch</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深度学习-14-pytorch-7-模型补充操作</div>
+      <div>https://truth-zheng.github.io/2021/08/14/pytorchtrain7/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zheng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年8月14日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/08/15/pytorchtrain8/" title="深度学习-15-pytorch-8-具体网络分析">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深度学习-15-pytorch-8-具体网络分析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/14/pytorchtrain6/" title="深度学习-13-pytorch-6-正则化">
+                        <span class="hidden-mobile">深度学习-13-pytorch-6-正则化</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/mermaid@8.10.1/dist/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com" target="_blank" rel="nofollow noopener"><span>Github</span></a> <i class="iconfont icon-love"></i> <a href="https://scholar.google.com/" target="_blank" rel="nofollow noopener"><span>GoogleScholar</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

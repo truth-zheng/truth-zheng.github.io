@@ -1,0 +1,844 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar/tou.jpeg">
+  <link rel="icon" href="/img/avatar/tou.jpeg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zheng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Self-attention的详细阐述">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-7-Self attention">
+<meta property="og:url" content="https://truth-zheng.github.io/2021/07/30/selfattention/index.html">
+<meta property="og:site_name" content="Sage的生活学习笔记">
+<meta property="og:description" content="Self-attention的详细阐述">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+<meta property="article:published_time" content="2021-07-29T18:00:00.000Z">
+<meta property="article:modified_time" content="2021-08-05T01:24:21.000Z">
+<meta property="article:author" content="zheng">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="Self-attention">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>深度学习-7-Self attention - Sage的生活学习笔记</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"truth-zheng.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"gtag":null,"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sage的学习生活笔记</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/2.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深度学习-7-Self attention"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-07-30 02:00" pubdate>
+          2021年7月30日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          5.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          46 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">深度学习-7-Self attention</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年8月5日 上午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>创作声明：主要为李宏毅老师的听课笔记，附视频链接：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Wv411h7kN?p=23">https://www.bilibili.com/video/BV1Wv411h7kN?p=23</a></p>
+</blockquote>
+<h2 id="Sophisticated-Input"><a href="#Sophisticated-Input" class="headerlink" title="Sophisticated Input"></a>Sophisticated Input</h2><p>之前的笔记提到的Network的Input都是一个向量，不管是在预测YouTube观看人数的问题上还是影像处理上，我们的输入都可以看作是一个向量，我们的输出，可能是一个数值，这个是Regression，可能是一个类别，这是Classification。</p>
+<p>但假设我们遇到更复杂的问题，比如我们说输入是多个向量，而且这个输入的向量的数目是会改变的，或者我们刚才在讲图像识别的时候，还特别强调我们假设输入的图像大小都是一样的，那现在每次我们Model输入的Sequence的数目，Sequence的长度都不一样呢，那这个时候应该要怎么处理？这个问题就是<strong>Sophisticated Input（复杂信息输入）</strong>。</p>
+<p>而Sophisticated Input的目的是什么呢？</p>
+<p>假设我们今天要Network的输入是一个句子，每一个句子的长度都不一样，每个句子里面词汇的数目都不一样，<br><img src="/img/selfattention/1.png" srcset="/img/loading.gif" lazyload><br>如果我们把一个句子里面的每一个词汇，都描述成一个向量，那我们的Model的输入，就会是一个Vector Set，而且这个Vector Set的大小，每次都不一样，句子的长度不一样，那你的Vector Set的大小就不一样。</p>
+<p>把一个词汇表示成一个向量，最简单的做法是One-Hot的Encoding，<br><img src="/img/selfattention/2.png" srcset="/img/loading.gif" lazyload><br>开一个很长很长的向量，这个向量的长度跟世界上存在的词汇的数目是一样多的，每一个维度对应到一个词汇，Apple就是100，Bag就是010，Cat就是001，以此类推。</p>
+<p>但是这样的表示方法有一个非常严重的问题，它假设所有的词汇彼此之间都是没有关系的，从这个向量里面你看不到：Cat跟Dog都是动物所以他们比较接近，Cat跟Apple一个动物一个植物，所以他们比较不相像。这个向量里面，没有任何这些关系的信息。</p>
+<p>有另外一个方法叫做<strong>Word Embedding（单词嵌入）</strong>，如果将word看作文本的最小单元，可以将Word Embedding理解为一种映射，其过程是：将文本空间中的某个word，通过一定的方法，映射或者说嵌入（embedding）到另一个数值向量空间。<br><img src="/img/selfattention/3.png" srcset="/img/loading.gif" lazyload><br>这个向量具有语义的信息，如果把Word Embedding画出来的话，你会发现，所有的动物可能聚集成一团，所有的植物可能聚集成一团，所有的动词可能聚集成一团。</p>
+<h2 id="What-is-the-output？"><a href="#What-is-the-output？" class="headerlink" title="What is the output？"></a>What is the output？</h2><p>输入可以是一堆向量，那这个时候，我们有可能有什么样的输出呢，有三种可能性：</p>
+<ol>
+<li><strong>每一个向量都有一个对应的Label</strong><br>当你的模型，看到输入是四个向量的时候，它就要输出四个Label，而每一个Label，它可能是一个数值，那就是Regression的问题，如果每个Label是一个Class，那就是一个Classification的问题。</li>
+</ol>
+<p>举例来说在文字处理上，假设你今天要做的是<strong>POS Tagging（词性标注）</strong>，你要让机器自动决定每一个词汇它是什么样的词性，它是名词还是动词还是形容词等等。</p>
+<p>这个任务其实并不容易，举例来说，你现在看到一个句子，I saw a saw.并不是“我看一个看”，而是“我看到一个锯子”，这个第二个saw当名词用的时候，它是锯子，所以机器要知道第一个saw是个动词，第二个saw虽然它也是个saw，但它是名词。</p>
+<p>这个任务输入跟输出的长度是一样的，这个就是属于第一个类型的输出。<br>2. <strong>一整个Sequence，只需要输出一个Label</strong><br>举例来说，<strong>Sentiment Analysis（情感分析）</strong>，Sentiment Analysis就是给机器看一段话，它要决定这段话是正面的还是负面的。  </p>
+<p>假设你的公司开发了一个产品，这个产品上线了，你想要知道网友的评价怎么样，但是你又不可能一则一则网友的留言都去分析，那可以用Sentiment Analysis的技术，让机器自动去判断当一则贴文里面有提到某个产品的时候，它是正面的还是负面的，这个是Sentiment Analysis，给一整个句子，只需要一个Label，Positive或Negative，这个就是第二类的输出<br>。<br>3. <strong>计算机自己决定应该要输出多少个Label</strong><br>我们不知道应该输出多少个Label，机器要自己决定，应该要输出多少个Label，可能你输入是N个向量，输出可能是N’个Label，为什么是N’，机器自己决定，这种任务又叫做sequence to sequence的任务。翻译就是sequence to sequence的任务，因为输入输出是不同的语言，它们的词汇的数目本来就不会一样多。</p>
+<p>今天先拿第一种情况举例。</p>
+<h2 id="Sequence-Labeling"><a href="#Sequence-Labeling" class="headerlink" title="Sequence Labeling"></a>Sequence Labeling</h2><p>输入跟输出数目一样多的状况又叫做Sequence Labeling，你要给Sequence里面的每一个向量，都给它一个Label，那要如何处理Sequence Labeling的问题呢？</p>
+<p>直觉的想法是我们就用Fully-Connected Network，虽然这个输入是一个Sequence，但我们就各个击破，不要管它是不是一个Sequence，把每一个向量，分别输入到Fully-Connected的Network里面，然后Fully-Connected的Network就会给我们输出。</p>
+<p>那这么做显然有非常大的瑕疵，假设今天是词性标记的问题，给机器一个句子，I saw a saw，对Fully-Connected Network来说，后面这一个saw跟前面这个saw完全一模一样，它们是同一个词汇，既然Fully-Connected的Network输入同一个词汇，它没有理由输出不同的东西，但实际上，你期待第一个saw要输出动词，第二个saw要输出名词，但对Network来说它不可能做到，因为这两个saw明明是一模一样的，你叫它一个要输出动词，一个要输出名词，它完全不知道要怎么处理。</p>
+<p>所以有没有可能让Fully-Connected的Network，考虑更多的信息，比如说上下文这样的信息呢？</p>
+<p>这是有可能的，把前后几个向量都串起来，一起丢到Fully-Connected的Network就结束了，让它可以考虑一些跟我现在要考虑的这个向量相邻的其他向量的新鞋，但是真正的问题，但是如果今天我们有某一个任务，不是考虑一部分就可以解决的，而是要考虑一整个Sequence才能够解决的话，那要怎么办呢？</p>
+<p>有人可能会说这个很容易，把Window开大一点然后把整个Sequence盖住就结束了，但是今天Sequence的长度是有长有短的，我们输入给我们的Model的Sequence的长度，每次可能都不一样，那你可能要统计一下你的训练数据，然后看看你的训练数据里面，最长的Sequence有多长，然后开一个Window比最长的Sequence还要长，你才有可能把整个Sequence盖住。</p>
+<p>但是你开一个这么大的Window，意味着Fully-Connected Network，它需要非常多的参数，不只运算量很大，可能还容易Overfitting</p>
+<p>所以有没有更好的方法，来考虑整个Input Sequence的信息呢，这就要用到**Self-Attention（自注意力）**这个机制。</p>
+<h2 id="Self-Attention"><a href="#Self-Attention" class="headerlink" title="Self-Attention"></a>Self-Attention</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>Self-Attention的运作方式就是，Self-Attention会接收一整个Sequence的信息，然后你Input几个Vector，它就输出几个Vector，这边输入4个Vector，它就Output 4个Vector<br>，这4个Vector，他们都是考虑一整个Sequence以后才得到的。<br><img src="/img/selfattention/4.png" srcset="/img/loading.gif" lazyload><br>如此一来，Fully-Connected Network就不是只考虑一个非常小的范围，而是考虑整个Sequence的信息，再来决定现在应该要输出什么样的结果，这个就是Self-Attention。</p>
+<p>Self-Attention可以叠加使用。  </p>
+<p>Fully-Connected Network，跟Self-Attention交替使用，Self-Attention处理整个Sequence的信息，Fully-Connected Network专注于处理某一个位置的信息，<br>再用Self-Attention，再把整个Sequence信息再处理一次，然后交替使用Self-Attention跟Fully-Connected。</p>
+<h3 id="Self-Attention过程"><a href="#Self-Attention过程" class="headerlink" title="Self-Attention过程"></a>Self-Attention过程</h3><p>Self-Attention的Input，它就是一串的Vector，那这串Vector可能是你整个Network的Input，它也可能是某个Hidden Layer的Output，所以我们这边不用$x$来表示它，我们用$a$来表示它，代表它有可能是前面已经做过一些处理，它是某个Hidden Layer的Output，那Input一排a这个向量以后，Self-Attention要Output另外一排$b$这个向量。<br><img src="/img/selfattention/5.png" srcset="/img/loading.gif" lazyload><br>每一个b都是考虑了所有的a以后才生成出来的，所以这边刻意画了非常非常多的箭头，告诉你$b^1$考虑了$a^1$到$a^4$产生的，$b^2$考虑了$a^1$到$a^4$产生的，b3b4也都是考虑整个input的sequence才产生的。<br>以$b^1$为例，阐述b产生过程。<br>这里有一个特别的机制，这个机制是根据$a^1$这个向量找出整个很长的sequence里面，到底哪些部分是重要的，哪些部分跟判断$a^1$是哪一个label有关系的，哪些部分是我们要决定$a^1$的class，决定$a^1$的regression数值的时候，所需要用到的信息。<br><img src="/img/selfattention/6.png" srcset="/img/loading.gif" lazyload><br>每一个向量跟$a^1$的关联的程度，用一个数值叫α来表示。</p>
+<p>self-attention的module，怎么自动决定两个向量之间的关联性呢，你给它两个向量$a^1$跟$a^4$，它怎么决定$a^1$跟$a^4$有多相关，然后给它一个数值α，这边需要一个计算attention的模组。<br><img src="/img/selfattention/7.png" srcset="/img/loading.gif" lazyload><br>计算attention的模组拿两个向量作为输入，然后直接输出α那个数值，<strong>计算这个α的数值有各种不同的做法</strong>，我们提一种方法，这是今日最常用的方法，也是用在Transformer里面的方法:    </p>
+<ul>
+<li>用<strong>dot product（数量积）</strong>，输入的这两个向量分别乘上两个不同的矩阵，左边这个向量乘上$W^q$矩阵得到矩阵q，右边这个向量乘上$W^k$矩阵得到矩阵k。</li>
+<li>q与k做dot product（把他们做element-wise的相乘再全部加起来）以后就得到一个scalar，这个scalar就是α。</li>
+</ul>
+<p>我们需要把$a^1$去跟$a^2a^3a^4$，分别都去计算他们之间的关联性，也就是计算他们之间的α，<br><img src="/img/selfattention/8.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>你把$a^1$乘上$W^q$得到$q^1$，q我们叫做Query，它就像是你搜寻相关文章的关键字，所以这边叫做Query，然后$a^2a^3a^4$都要乘上$W^k$，得到$k$这个Vector，这个Vector叫做Key。</p>
+</li>
+<li><p>把Query q1，跟这个Key k2，算dot product就得到$\alpha_{1,2}$（往往除以维度的平方根，使得梯度更加稳定）。</p>
+</li>
+<li><p>$\alpha_{1,2}$代表Query是1提供的，Key是2提供的时候，这个1跟2他们之间的关联性，α的这个关联性也叫做Attention的Score，以此类推$\alpha_{1,3}$，$\alpha_{1,4}$ 。</p>
+</li>
+</ul>
+<p><strong>实际中，$a^1$也会跟自己算关联性。</strong></p>
+<p>计算出，a1跟每一个向量的关联性以后，接下来这边会接入一个<strong>Soft-Max</strong><br><img src="/img/selfattention/9.png" srcset="/img/loading.gif" lazyload><br>这个Soft-Max跟分类的时候的那个Soft-Max是一模一样的，所以Soft-Max的输出就是一排α，这一排α通过Soft-Max就得到$\alpha^\prime$。</p>
+<p>这边不一定要用Soft-Max，用别的替代也没问题，比如说有人尝试过做ReLU，结果发现还比Soft-Max好一点，其实不一定要用Soft-Max，这边你要用什么Activation Function都行，Soft-Max是最常见的，可以自己尝试，看能不能试出比Soft-Max更好的结果。</p>
+<p>得到$\alpha^\prime$以后，我们要根据这个$\alpha^\prime$去抽取出这个Sequence里面重要的信息，根据这个α我们已经知道哪些向量跟$a^1$是最有关系的，怎么抽取重要的信息呢？<br><img src="/img/selfattention/10.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>首先把$a^1$到$a^4$这边每一个向量乘上$W^v$得到新的向量，这边分别用$v^1v^2v^3v^4$来表示。</li>
+<li>接下来把这边的$v^1$到$v^4$，每一个向量都去乘上Attention的分数（$\alpha^\prime$），</li>
+<li>然后再把它加起来，得到b1</li>
+</ul>
+<p>如果某一个向量它得到的分数越高，比如说$a^1$跟$a^2$的关联性很强，$\alpha^\prime$得到的值很大，那我们今天在做Weighted Sum以后得到的的值，就可能会比较接近$v^2$。</p>
+<p>所以谁的Attention的分数最大，谁的$v$就会Dominant你抽出来的结果，这边就讲了怎么从一整个Sequence得到$b^1$。</p>
+<p>从这一排vector得到$b^2$，跟从这一排vector得到$b^1$的操作是一模一样的。要强调一点是$b^1$到$b^4$，它们并不需要依序产生，它们是一次同时被计算出来的。</p>
+<h3 id="从矩阵的角度Self-Attention过程"><a href="#从矩阵的角度Self-Attention过程" class="headerlink" title="从矩阵的角度Self-Attention过程"></a>从矩阵的角度Self-Attention过程</h3><p>我们已知每一个a都产生q k v，<br><img src="/img/selfattention/11.png" srcset="/img/loading.gif" lazyload><br>用矩阵运算表示这个操作，<br><img src="/img/selfattention/12.png" srcset="/img/loading.gif" lazyload><br>每一个a都要乘上$W^q$，得到$q^i$，这些不同的a你可以把它合起来，当作一个矩阵来看待，这个矩阵我们用I来表示，这个矩阵的四个column就是$a^1$到$a^4$，I乘上$W^q$就得到另外一个矩阵$Q$，$Q$就是把$q^1$到$q^4$这四个vector拼起来，就是$Q$的四个column，$W^q$其实是network的参数，它是会被learn出来的。</p>
+<p>接下来产生k跟v的操作跟q是一模一样的，vector sequence乘上三个不同的矩阵，你就得到了q，k，v。</p>
+<p>下一步是，每一个q都会去跟每一个k，去计算attention的分数，得到attention分数这一件事情，如果从矩阵操作的角度来看，它在做什么样的事情呢？<br><img src="/img/selfattention/13.png" srcset="/img/loading.gif" lazyload><br>$q^1$跟$k^1$做inner product得到$α_{1,1}$，实际上是$k^1$的<strong>transpose</strong>与$q^1$向量乘法，以此类推四次，那四次的操作，其实可以把它拼起来，看作是矩阵跟向量相乘。<br><img src="/img/selfattention/14.png" srcset="/img/loading.gif" lazyload><br>那从$q^1$以此类推四次，那四次的操作，其实可以把它拼起来，看作是矩阵跟矩阵相乘。<br><img src="/img/selfattention/15.png" srcset="/img/loading.gif" lazyload><br>我们会把attention的分数，做一下normalization，比如softmax，你会对这边的每一个column，每一个column做softmax，让每一个column里面的值相加是1，我们用$A^\prime$来表示通过softmax以后的结果。</p>
+<p>把$v^1$到$v^4$当成是V这个矩阵的四个column，然后接下来你把v乘上$A^\prime$的第一个column以后，你得到的结果就是$b^1$（线性代数），以此类推，最后如图得到<br><img src="/img/selfattention/16.png" srcset="/img/loading.gif" lazyload><br>所以我们等于就是把$A^\prime$这个矩阵，乘上V这个矩阵，得到O这个矩阵，O这个矩阵里面的每一个column，就是Self-attention的输出，也就是$b^1$到$b^4$。</p>
+<p>总结如下图：<br><img src="/img/selfattention/17.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="Multi-head-Self-attention"><a href="#Multi-head-Self-attention" class="headerlink" title="Multi-head Self-attention"></a>Multi-head Self-attention</h2><p>Self-attention 进阶的版本 Multi-head Self-attention今天的使用非常广泛。</p>
+<p>我们在做这个Self-attention的时候，我们就是用q去找相关的k，但是相关这件事情有很多种不同的形式，有很多种不同的定义，<strong>所以我们不能只有一个q，我们应该要有多个q，不同的q负责不同种类的相关性</strong>。</p>
+<p>需要用多少的head，这个又是另外一个hyperparameter。</p>
+<p>以两个head为例:<br><img src="/img/selfattention/18.png" srcset="/img/loading.gif" lazyload><br>总之，各忙各的。<br>i是指$a^i$的上角标，$b^{i,1}$是$a^i$在第一个head下的输出，$b^{i,2}$是$a^i$在第二个head下的输出。<br>接下来你可能会把$b^{i,1}$与$b^{i,2}$接起来，然后再通过一个 transform也就是再乘上一个矩阵，然后得到 bi，再送到下一层去，这个就是 Multi-head attention，一个 Self-attention 的变形。</p>
+<h2 id="Positional-Encoding"><a href="#Positional-Encoding" class="headerlink" title="Positional Encoding"></a>Positional Encoding</h2><p>思考到现在，你会发现Self-attention的layer少了一个也许很重要的信息，这个信息是位置的信息</p>
+<p>对一个Self-attention layer而言，每一个input，它是出现在sequence的最前面，还是最后面，它是完全没有这个信息的。</p>
+<p>所以对Self-attention而言，位置1跟位置2跟位置3跟位置4，完全没有任何差别，这四个位置的操作其实是一模一样，对它来说q1到跟q4的距离，并没有特别远，2跟3的距离也没有特别近。</p>
+<p>但是这样设计可能会有一些问题，因为有时候位置的信息也许很重要，举例来说，我们在做这个POS tagging，就是词性标记的时候，比如你知道说动词比较不容易出现在句首，所以如果我们知道某一个词汇它是放在句首的，那它是动词的可能性可能就比较低，这样子的位置的信息往往也是有用的。</p>
+<p>我们采用**positional encoding（位置编码）**的方法去添加位置信息。<br><img src="/img/selfattention/19.png" srcset="/img/loading.gif" lazyload><br>我们为每一个位置设定一个vector，叫做positional vector，这边用$e^i$来表示，上标i代表是位置，每一个不同的位置，就有不同的vector，比如$e^1$是一个vector，$e^2$是一个vector，$e^112$是一个vector，不同的位置都有一个它专属的e，然后把这个e加到$a^i$上面作为新的$a^i$参与后面的运算过程，就结束了。</p>
+<p>positional encoding的具体方法仍然是一个尚待研究的问题，你可以创造自己新的方法，或甚至positional encoding，是可以根据数据学出来的。<br>在 Transformer 中采用了手工设计的公式，计算公式如下：<br><img src="/img/selfattention/20.png" srcset="/img/loading.gif" lazyload><br>pos表示token在sequence中的位置，i或者准确以上是2i和2i+1便是了positionnal encoding的维度，i的取值范围是：[0,……，$d_{model&#x2F;2}$)。底数是10000，为什么要使用10000呢？这个就类似于玄学了，原论文中完全没有提，这里不得不说说论文的readability的问题，即便是很多高引的文章，最基本的内容都讨论不清楚，所以才出现像上面提问里的讨论，说实话这些论文还远远没有做到easy to follow。<br>关于positional encoding和三角函数有什么关系？<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/347678607/answer/864217252">可以参照这位的理解</a></p>
+<h2 id="Applications-for-Image"><a href="#Applications-for-Image" class="headerlink" title="Applications  for Image"></a>Applications  for Image</h2><p>其实一张图片，我们也可以换一个观点，把它看作是一个vector的set，一个分辨率5乘以10的图片可以看作是一个tensor，这个tensor的大小是5乘以10乘以3，3代表RGB这3个channel。（笔者研究图像处理，所以对于attention在并行化上甩开RNN等自然语言处理方向问题不再赘述）</p>
+<p>你可以把每一个位置的pixel，看作是一个三维的向量，所以每一个pixel，其实就是一个三维的向量，那整张图片，其实就是5乘以10个向量的set。</p>
+<p>所以我们其实可以换一个角度，图像这个东西，其实也是一个vector set，它既然也是一个vector set的话，你完全可以用Self-attention来处理一张图片。</p>
+<p>我们可以来比较一下，<strong>Self-attention跟CNN之间，有什么样的差异或者是关联性</strong>。</p>
+<p>如果我们今天用Self-attention来处理一张图片，假设这个是你要考虑的pixel，那它产生query，其他pixel产生key，</p>
+<p><img src="/img/selfattention/21.png" srcset="/img/loading.gif" lazyload></p>
+<p>我们在做inner product的时候，你考虑的不是一个小的receptive field的信息，而是整张图像的信息</p>
+<p>但是在做CNN的时候，会画出一个receptive field，每一个filter，每一个neural，只考虑receptive field范围里面的信息。</p>
+<p>所以比较CNN跟Self-attention的话，<strong>CNN可以看作是一种简化版的Self-attention，因为在做CNN的时候，我们只考虑receptive field里面的信息，而在做Self-attention的时候，我们是考虑整张图片的信息，或者是你可以反过来说，Self-attention是一个复杂化的CNN</strong>。</p>
+<p>在CNN里面，我们要划定receptive field，每一个neural，只考虑receptive field里面的信息，而receptive field的范围跟大小，是人决定的，而对Self-attention而言，我们用attention，去找出相关的pixel，就好像是receptive field是自动被学出的，network自己决定receptive field的形状长什么样子，network自己决定说，以这个pixel为中心，哪些pixel是我们真正需要考虑的，哪些pixel是相关的。<br>所以<strong>receptive field的范围，不再是人工划定，而是让机器自己学出来</strong>。</p>
+<p>在这篇paper里面，会用数学的方式严谨的告诉你说，其实CNN就是Self-attention的特例，Self-attention只要设定合适的参数，它可以做到跟CNN一模一样的事情<br><img src="/img/selfattention/22.png" srcset="/img/loading.gif" lazyload><br>所以self attention，是更flexible的CNN，而CNN是有受限制的Self-attention，Self-attention只要通过某些设计和限制，它就会变成CNN。</p>
+<p>所以Self-attention它弹性比较大，所以需要比较多的训练数据，训练数据少的时候，就会overfitting<br>而CNN它弹性比较小，在训练数据少的时候，结果比较好，但训练数据多的时候，它没有办法从更大量的训练数据得到好处，如下图实验结果：<br><img src="/img/selfattention/23.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>Self-attention有非常非常多的变形，你可以看一篇paper叫做Long Range Arena，里面比较了各种不同的Self-attention的变形:<br><img src="/img/selfattention/24.png" srcset="/img/loading.gif" lazyload></p>
+<p>Self-attention它最大的问题就是，它的运算量非常地大，所以怎么样减少Self-attention的运算量，是一个未来的重点，可以看到这边有各种Self-attention的变形。</p>
+<p>可以看到，横轴代表它运算的速度，纵轴代表是performance，所以有很多各式各样新的xxformer，它们的速度会比原来的Transformer快，但是快的速度带来的就是performance变差，到底什么样的Self-attention，才能够又快又好，这仍然是一个<strong>尚待研究的问题</strong>。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="print-no-link">#深度学习</a>
+      
+        <a href="/tags/Self-attention/" class="print-no-link">#Self-attention</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深度学习-7-Self attention</div>
+      <div>https://truth-zheng.github.io/2021/07/30/selfattention/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zheng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年7月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/08/03/transformer/" title="深度学习-8-Transformer">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深度学习-8-Transformer</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/07/29/cnn/" title="深度学习-6-CNN">
+                        <span class="hidden-mobile">深度学习-6-CNN</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/mermaid@8.10.1/dist/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com" target="_blank" rel="nofollow noopener"><span>Github</span></a> <i class="iconfont icon-love"></i> <a href="https://scholar.google.com/" target="_blank" rel="nofollow noopener"><span>GoogleScholar</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

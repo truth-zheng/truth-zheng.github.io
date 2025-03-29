@@ -1,0 +1,846 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar/tou.jpeg">
+  <link rel="icon" href="/img/avatar/tou.jpeg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zheng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Batch Normalization的基本原理与应用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-4-Batch Normalization">
+<meta property="og:url" content="https://truth-zheng.github.io/2021/07/28/batchnormlization/index.html">
+<meta property="og:site_name" content="Sage的生活学习笔记">
+<meta property="og:description" content="Batch Normalization的基本原理与应用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+<meta property="article:published_time" content="2021-07-27T18:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-31T11:55:48.000Z">
+<meta property="article:author" content="zheng">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="Batch Normalization">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>深度学习-4-Batch Normalization - Sage的生活学习笔记</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"truth-zheng.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"gtag":null,"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sage的学习生活笔记</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/2.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深度学习-4-Batch Normalization"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-07-28 02:00" pubdate>
+          2021年7月28日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          4.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          34 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">深度学习-4-Batch Normalization</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年7月31日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>创作声明：主要为李宏毅老师的听课笔记，附视频链接：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Wv411h7kN?p=15">https://www.bilibili.com/video/BV1Wv411h7kN?p=15</a></p>
+</blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>回答在optimization那篇笔记的问题，<strong>Batch Normalization（批归一化）</strong> 就是其中一个把山推平的想法。</p>
+<p>假设有两个参数，它们对loss的斜率差别非常大，在w1这个方向上你的斜率变化很小，在w2这个方向上的斜率变化很大。</p>
+<p><img src="/img/dlbn/1.png" srcset="/img/loading.gif" lazyload></p>
+<p>如果是固定的learning rate，可能很难得到好的结果，所以才需要adaptive learning rate、Adam等等比较进阶的optimization的方法，才能够得到好的结果。</p>
+<p>现在从另外一个方向想，直接把难做的error surface改掉，看能不能够改得好做一点。</p>
+<p>在做这件事之前，我们需要思考这种状况是怎么产生的？</p>
+<p>假设现在有一个linear model，没有activation function，它的输入是x1跟x2 ，对应的参数是w1和w2。</p>
+<p>当我们对w1有一个小小的改变，比如说加上delta w1的时候，L也会有一个改变，这是通过改变w1的时候改变了y，y改变的时候就改变了e，然后接下来就改变了L。<br><img src="/img/dlbn/2.png" srcset="/img/loading.gif" lazyload><br>那什么时候w1的改变会对L的影响很小呢，也就是它在error surface上的斜率会很小呢？</p>
+<p>当你的<strong>input很小</strong>的时候，假设x1的值在不同的training example里面它的值都很小，因为x1是直接乘上w1，如果x1的值很小，w1有变化的时候，它对y的影响也是小的，对e的影响也是小的，它对L的影响就会是小的。</p>
+<p>反之，如果是x2，<br><img src="/img/dlbn/3.png" srcset="/img/loading.gif" lazyload><br>假设x2值偏大，它对L的影响也会是大的。</p>
+<p>所以在这个linear model里面，当我们输入的feature的每一个dimension的值，它的scale差距很大的时候，我们就可能产生像这样子的error surface，就可能产生不同方向斜率非常不同，坡度非常不同的error surface。</p>
+<p>所以我们有没有可能给feature里面不同的dimension，让它有同样的数值的范围？<br><img src="/img/dlbn/4.png" srcset="/img/loading.gif" lazyload><br>如果我们可以给不同的dimension同样的数值范围的话，那我们可能就可以制造比较好的error surface，让training变得比较容易一点。</p>
+<p>其实有很多不同的方法，这些不同的方法，往往就合起来统称为<strong>Feature Normalization（特征归一化）</strong></p>
+<h2 id="Feature-Normalization"><a href="#Feature-Normalization" class="headerlink" title="Feature Normalization"></a>Feature Normalization</h2><p>我们探讨Feature Normalization的一种可能性，它并不是Feature Normalization的全部。<br><img src="/img/dlbn/5.png" srcset="/img/loading.gif" lazyload><br>假设$x^1$到$x^R$，是我们所有的训练资料的<strong>feature vector（特征向量）</strong>，<br>那我们把不同数据的feature vector，同一个dimension里面的数值取出来，然后去计算某一个dimension的<strong>mean（平均）</strong>，它的mean就是$m_i$，我们计算第i个dimension的，<strong>standard deviation（标准差）</strong>，我们用$\sigma_i$表示它,接下来我们就可以做一种normalization，那这种normalization叫做<strong>standardization(标准化）</strong>，这边为了行文方便，暂时先都统称normalization。</p>
+<p>我们是把某一个数值$x_i^r$，减掉这一个dimension算出来的mean，再除掉这个dimension，算出来的standard deviation，得到新的数值叫做$\widetilde{x}_i^r$<br>然后得到新的数值以后，再把新的数值代替原先的数值。</p>
+<p>做完normalize以后有什么好处呢？</p>
+<p><img src="/img/dlbn/6.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>做完normalize以后，这个dimension上面的数值平均是0，然后它的**variance（方差）**就会是1，所以这一排数值的分布就都会在0上下。</li>
+<li>对每一个dimension都做一样的normalization，就会发现所有feature不同dimension的数值都在0上下，那你可能就可以制造一个比较好的error surface。</li>
+</ul>
+<p>所以Feature Normalization往往对你的training有帮助，它可以让你在做gradient descent的时候，这个gradient descent，它的Loss收敛更快一点，训练更顺利一点。</p>
+<h2 id="Considering-Deep-Learning"><a href="#Considering-Deep-Learning" class="headerlink" title="Considering Deep Learning"></a>Considering Deep Learning</h2><p><img src="/img/dlbn/7.png" srcset="/img/loading.gif" lazyload></p>
+<p>深度学习的神经网络会有很多层，如上图：</p>
+<p>以$\widetilde{x}^1$为例，虽然它已经做 normalize 了,但是通过w1以后它就没有做 normalize，如果$\widetilde{x}^1$ 通过 w1得到是$z^1$，而 $z^1$不同的 dimension 间，它的数值的分布仍然有很大的差异的话，那我们要 train 第二层的参数，会不会也有困难呢？</p>
+<p>对w2来说，这边的a或这边的z其实也是一种feature，我们应该要对这些feature也做normalization。</p>
+<p>如果选择的是Sigmoid，那比较推荐对z做Feature Normalization，因为Sigmoid是一个s的形状，那它在0附近斜率比较大，所以如果你对z做Feature Normalization，把所有的值都挪到0附近，那你到时候算gradient的时候，算出来的值会比较大。</p>
+<p>因为不一定是用sigmoid，所以不一定要把Feature Normalization放在z这个地方，如果是选别的，也许你选a也会有好的结果，在实际操作上，可能没有太大的差别、</p>
+<p>这边对z做一下Feature Normalization。</p>
+<p><img src="/img/dlbn/8.png" srcset="/img/loading.gif" lazyload></p>
+<p>方法也是一样的，但是现在需要注意的是：</p>
+<p>本来，如果我们没有做Feature Normalization的时候，改变$z^1$的值，只会改变这边$a^1$值，但是现在当你改变$z^1$的值的时候，$\mu$跟$\sigma$也会跟着改变，接着$z^2$的值$a^2$的值，$z^3$的值$a^3$的值，也会跟着改变。</p>
+<p>所以之前，$\widetilde{x}^1$$\widetilde{x}^2$$\widetilde{x}^3$，它是独立分开处理的，但是在做Feature Normalization以后，这三个example，它们变得彼此关联了。</p>
+<p>所以当你做Feature Normalization的时候，要把这一整个流程（就是收集一堆feature，把这堆feature算出$\mu$和$\sigma$这件事情）当做是network的一部分。</p>
+<p>也就是说之前的network，每次都只有一个input，得到一个output，现在你有一个比较大的network，这个大的network，它是头一堆input，用这堆input在这个network里面，要算出$\mu$和$\sigma$，然后接下来产生一堆output。</p>
+<p><strong>那这边就会有一个问题</strong>，因为你的训练资料里面的data非常多，现在一个data set，benchmark corpus都上百万数据，GPU的内存没有办法，把所有data set的data都load进去。</p>
+<p>在实际操作的时候，不会network考虑整个training data里面的所有example，只会考虑一个batch里面的example，举例来说，batch size设64，那network就是把64个data读进去，算这64个data的，算这64个data的，对这64个data都去做normalization。</p>
+<p>因为我们在实际操作的时候我们只对一个batch里面的data，做normalization，所以这招叫做Batch Normalization。</p>
+<p>这种Batch Normalization有一个问题就是，<strong>你一定要有一个够大的batch</strong>，你才算得出$\mu$和$\sigma$，假设batch size设1，那你就没有什么$\mu$和$\sigma$可以算。</p>
+<p>所以这个Batch Normalization，是适用于batch size比较大的时候，因为batch size如果比较大，也许这个batch size里面的data就足以表示整个data set的分布，这个时候就可以，把这个本来要对整个data set，做Feature Normalization这件事情，改成只在一个batch上做Feature Normalization，作为approximation，</p>
+<p>在做Batch Normalization的时候，往往还会有这样的设计：</p>
+<p>算出$\widetilde{z}$以后，把这个$\widetilde{z}$与另外一个向量$\gamma$做<strong>element wise multiplication（直译为元素智能乘积，也就是两两做相乘）</strong>。<br>再加上向量$\beta$，得到$\hat{z}$，$\gamma$和$\beta$是network的参数，也是另外被learn出来的，<br><img src="/img/dlbn/9.png" srcset="/img/loading.gif" lazyload></p>
+<p>那为什么要加上$\gamma$和$\beta$的设计呢？</p>
+<p>如果我们做normalization以后，那这边的$\widetilde{z}$的平均就一定是0，如果平均是0的话，就是给那network一些限制，那也许这个限制会带来什么负面的影响，所以我们利用$\gamma$和$\beta$让network自己去learn这个$\gamma$和$\beta$，来调整一下输出的分布。</p>
+<p>可能有疑问是刚才说做Batch Normalization就是，为了要让每一个不同的dimension的range都一样，现在有$\gamma$和$\beta$的影响，会不会造成不同的dimension的range又不一样了？</p>
+<p>有可能，但是你实际上在训练的时候，这个$\gamma$和$\beta$的初始的element分别是全是1和全是0，one vector和zero vector。</p>
+<p>所以network在一开始训练的时候，每一个dimension的分布，是比较接近的，而当已经训练够长的一段时间，也许已经找到一个比较好的error surface，那再把$\gamma$和$\beta$调整好（来自实验经验的考虑确实会效果更好）。</p>
+<h2 id="Batch-Normalization-testing"><a href="#Batch-Normalization-testing" class="headerlink" title="Batch Normalization  testing"></a>Batch Normalization  testing</h2><p>在这里，testing有时候又叫inference。</p>
+<p><strong>为什么testing也要 normalization呢，不是直接test就好了嘛？</strong><br>个人认为：神经网络在训练时候数据进行了归一化处理，而且引入相关学习的参数，那么本身归一化就是神经网络的一部分，他的参数也被学习到了。在testing的时候，自然也需要归一化。</p>
+<p>在做Batch Normalization的时候，一个$\widetilde{z}$，也就是一个normalization过的feature进来，然后得到一个z，z要减掉$\mu$然后除$\sigma$，而$\mu$和$\sigma$是用一整个batch的资料算出来的。</p>
+<p>如果今天是在做作业，一次有所有的testing的资料，确实也可以在testing的资料上面，制造一个一个batch。</p>
+<p>但实际应用时可能是个在线问题，是一个真正的线上的app，要求尽快出结果，此时比如说你的batch size设64，我一定要等64个数据都进来，我才做运算吗，这显然是不行的，但是没有成batch，又没办法去算$\mu$和$\sigma$。</p>
+<p><img src="/img/dlbn/10.png" srcset="/img/loading.gif" lazyload></p>
+<p>实际上的解法是这个样子的，如果看那个PyTorch的话，Batch Normalization在testing的时候，你并不需要做什么特别的处理，PyTorch帮你处理好了，处理的方法如下:</p>
+<p>在training的时候，如果有做Batch Normalization的话，那么你每一个batch计算出来的$\mu$和$\sigma$都会拿出来算<strong>moving average（流动平均数）</strong>。</p>
+<p>取第一个batch出来的时候，你就会算一个$\mu^1$，取第二个batch出来的时候，你就会算一个$\mu^1$，一直到取第t个batch出来的时候，你会算一个$\mu^t$，你会把你现在算出来的的一个平均值，叫做$\bar\mu$，乘上一个常数，这也是一个hyper parameter，也是需要调的。</p>
+<p>在PyTorch里面，它设为0.1，然后加上(1-p)*$\mu^t$，然后来更新$\mu$的平均值，然后最后在testing的时候，你就不用算batch里面的$\mu$和$\sigma$。</p>
+<p>因为testing的时候，在真正的application上，也没有batch这个东西，我们是直接拿$\bar\mu$和$\bar\sigma$来取代这边的$\mu$和$\sigma$，以上就是Batch Normalization在testing的时候的处理方法。</p>
+<h2 id="Batch-Normalization的实际效果和原因猜想"><a href="#Batch-Normalization的实际效果和原因猜想" class="headerlink" title="Batch Normalization的实际效果和原因猜想"></a>Batch Normalization的实际效果和原因猜想</h2><h3 id="实际效果"><a href="#实际效果" class="headerlink" title="实际效果"></a>实际效果</h3><p>以下是从介绍Batch Normalization原始的paper上面截出来的一个实验结果，在原始的文件上还讲了很多其他的东西，举例来说有Batch Normalization用在CNN上要怎么用，更多的内容需要自己去读一下原始的文献：</p>
+<p><img src="/img/dlbn/11.png" srcset="/img/loading.gif" lazyload></p>
+<p>横轴代表的是训练的过程，纵轴代表的是validation set上面的accuracy。</p>
+<p>黑色的虚线是没有做Batch Normalization的结果。</p>
+<p>然后如果有做Batch Normalization，会得到红色的这一条虚线，红色这一条虚线，它训练的速度显然比黑色的虚线还要快很多，虽然最后收敛的结果只要给它足够的训练的时间，可能都跑到差不多的accuracy，但是红色这一条虚线，可以在比较短的时间内，就跑到一样的accuracy。这个蓝色的菱形，代表说这几个点的accuracy是一样的。</p>
+<p>粉红色的线是sigmoid function，实际上我们一般都会选择ReLu，而不是用sigmoid function，因为sigmoid function它的training是比较困难的，但是这边想要强调的是，就算是sigmoid function它的training是比较困难的，加上Batch Normalization，还可以train的起来，图中没有sigmoid不做Batch Normalization的结果，因为在这个实验上，作者有说，sigmoid不加Batch Normalization，根本都train不起来。</p>
+<p>蓝色的实线跟这个蓝色的虚线，是把learning rate设比较大一点，乘5和乘30，因为如果你做Batch Normalization的话，那error surface会比较平滑比较容易训练，所以可以把learning rate设大一点，这边不好解释的地方是不知道为什么learning rate设30倍的时候比5倍差，作者也没有解释，大家也都知道做deep learning就是有时候会产生不知道怎么解释的现象就是了，作者就是照实把他做出来的实验结果呈现在这个图上面。</p>
+<h3 id="原因猜想"><a href="#原因猜想" class="headerlink" title="原因猜想"></a>原因猜想</h3><p>接下来的问题就是，Batch Normalization为什么会有帮助呢？</p>
+<p>在原始的Batch Normalization那篇paper里面，作者提出来一个概念，叫做<strong>internal covariate shift（内部协变量偏移）</strong>，covariate shift（训练集和预测集样本分布不一致的问题就叫做“covariate shift”现象）这个词汇是原来就有的，internal covariate shift是Batch Normalization的作者自己发明的。</p>
+<p>他认为说今天在train network的时候，会有以下这个问题：</p>
+<p><img src="/img/dlbn/12.png" srcset="/img/loading.gif" lazyload></p>
+<p>network有很多层，<br>x通过第一层以后得到a，<br>a通过第二层以后得到b，<br>计算出gradient以后，把A update成A′，把B这一层的参数update成B′<br>但是作者认为说，我们在计算B update到B′的gradient的时候，这个时候前一层的output是小a，那当前一层从A变成A′的时候，它的output就从a变成a′。</p>
+<p>但是我们计算gradient的时候，我们是根据这个a算出来的啊，所以这个update的方向，也许它适合用在a上，但不适合用在a′上面，如果说Batch Normalization的话，我们会让a跟a′的分布比较接近，也许这样就会对训练有帮助。</p>
+<p>但是有一篇paper叫做How Does Batch Normalization Help Optimization，就反驳了internal covariate shift的这一个观点<br>在这篇paper里面，他告诉你 internal covariate shift，首先它不一定是training network的时候的一个问题，然后Batch Normalization，它会比较好，也不见得是因为它解决了internal covariate shift。<br>在这篇paper里面呢，他做了很多的实验，比如说他比较了训练的时候a的分布的变化发现不管有没有做Batch Normalization，它的变化都不大。</p>
+<p>然后他又说，就算是变化很大，对training也没有太大的伤害，接着他说，不管你是根据a算出来的gradient，还是根据a′算出来的gradient，方向都差不多。</p>
+<p>所以他告诉你说，internal covariate shift，可能不是training network的一个主要问题，它可能也不是Batch Normalization会好的一个的关键，那有关更多的实验，读者可以自己参见这篇文章。</p>
+<p>那为什么Batch Normalization会比较好呢，那在这篇How Does Batch Normalization Help Optimization这篇论文里面，他从实验上，也从理论上，至少支持了Batch Normalization，可以改变error surface，让error surface比较不崎岖这个观点。</p>
+<p><img src="/img/dlbn/13.png" srcset="/img/loading.gif" lazyload></p>
+<p>所以这个观点是有理论的支持，也有实验的佐证的，在这篇文章里面，他还说如果我们要让network，这个error surface变得比较不崎岖，其实不见得要做Batch Normalization，感觉有很多其他的方法，都可以让error surface变得不崎岖，那他就试了一些其他的方法，发现说，跟Batch Normalization performance也差不多，甚至还稍微好一点，所以他就感叹<br>说，positive impact of batchnorm on training，可能是somewhat，serendipitous，什么是serendipitous呢，这个字眼可能可以翻译成偶然的，但偶然并没有完全表达这个词汇的意思，这个词汇的意思是说，你发现了一个什么意料之外的东西。</p>
+<p>举例来说，盘尼西林就是意料之外的发现，盘尼西林的由来就是，弗莱明本来想要培养一些葡萄球菌，然后但是因为他实验没有做好，他的葡萄球菌被感染了，有一些霉菌掉到他的培养皿里面，然后他发现那些霉菌会杀死葡萄球菌，所以他就发现了盘尼西林，所以这是一种偶然的发现。</p>
+<p>那这篇文章的作者也觉得，Batch Normalization也像是盘尼西林一样，是一种偶然的发现，但无论如何，它是一个有用的方法。</p>
+<h2 id="To-learn-more"><a href="#To-learn-more" class="headerlink" title="To learn more"></a>To learn more</h2><p>其实Batch Normalization，不是唯一的normalization，normalization的方法有很多，那这边列举几个比较知名的方法：</p>
+<p>Batch Renormalization<br><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1702.03275">https://arxiv.org/abs/1702.03275</a></p>
+<p>Layer Normalization<br><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1607.06450">https://arxiv.org/abs/1607.06450</a></p>
+<p>Instance Normalization<br><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1607.08022">https://arxiv.org/abs/1607.08022</a></p>
+<p>Group Normalization<br><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1803.08494">https://arxiv.org/abs/1803.08494</a></p>
+<p>Weight Normalization<br><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1602.07868">https://arxiv.org/abs/1602.07868</a></p>
+<p>Spectrum Normalization<br><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1705.10941">https://arxiv.org/abs/1705.10941</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="print-no-link">#深度学习</a>
+      
+        <a href="/tags/Batch-Normalization/" class="print-no-link">#Batch Normalization</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深度学习-4-Batch Normalization</div>
+      <div>https://truth-zheng.github.io/2021/07/28/batchnormlization/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zheng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年7月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/07/28/classfication/" title="深度学习-5-Classification">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深度学习-5-Classification</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/07/27/opti/" title="深度学习-3-降低Loss下篇-Optimization">
+                        <span class="hidden-mobile">深度学习-3-降低Loss下篇-Optimization</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/mermaid@8.10.1/dist/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com" target="_blank" rel="nofollow noopener"><span>Github</span></a> <i class="iconfont icon-love"></i> <a href="https://scholar.google.com/" target="_blank" rel="nofollow noopener"><span>GoogleScholar</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,1067 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar/tou.jpeg">
+  <link rel="icon" href="/img/avatar/tou.jpeg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zheng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="利用pytorch训练你的深度学习模型-2-数据处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-9-pytorch-2-数据处理">
+<meta property="og:url" content="https://truth-zheng.github.io/2021/08/10/pytorchtrain2/index.html">
+<meta property="og:site_name" content="Sage的生活学习笔记">
+<meta property="og:description" content="利用pytorch训练你的深度学习模型-2-数据处理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+<meta property="article:published_time" content="2021-08-10T14:00:00.000Z">
+<meta property="article:modified_time" content="2021-08-11T06:08:50.000Z">
+<meta property="article:author" content="zheng">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="pytorch">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>深度学习-9-pytorch-2-数据处理 - Sage的生活学习笔记</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"truth-zheng.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"gtag":null,"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sage的学习生活笔记</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/2.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深度学习-9-pytorch-2-数据处理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-10 22:00" pubdate>
+          2021年8月10日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          6.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          54 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">深度学习-9-pytorch-2-数据处理</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年8月11日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>创作声明：主要内容参考于张贤同学<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/265394674">https://zhuanlan.zhihu.com/p/265394674</a></p>
+</blockquote>
+<p>数据模块又可以细分为 4 个部分：</p>
+<ul>
+<li>数据收集：样本和标签。</li>
+<li>数据划分：训练集、验证集和测试集</li>
+<li>数据读取：对应于 PyTorch 的 DataLoader。其中 DataLoader 包括 Sampler 和 DataSet。Sampler 的功能是生成索引， DataSet 是根据生成的索引读取样本以及标签。</li>
+<li>数据预处理：对应于 PyTorch 的 transforms</li>
+</ul>
+<h2 id="DataLoader-与-DataSet（数据读取）"><a href="#DataLoader-与-DataSet（数据读取）" class="headerlink" title="DataLoader 与 DataSet（数据读取）"></a>DataLoader 与 DataSet（数据读取）</h2><h3 id="torch-utils-data-DataLoader"><a href="#torch-utils-data-DataLoader" class="headerlink" title="torch.utils.data.DataLoader()"></a>torch.utils.data.DataLoader()</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torch.utils.data.DataLoader(dataset, <span class="hljs-attribute">batch_size</span>=1, <span class="hljs-attribute">shuffle</span>=<span class="hljs-literal">False</span>, <span class="hljs-attribute">sampler</span>=None, <span class="hljs-attribute">batch_sampler</span>=None, <span class="hljs-attribute">num_workers</span>=0, <span class="hljs-attribute">collate_fn</span>=None, <span class="hljs-attribute">pin_memory</span>=<span class="hljs-literal">False</span>, <span class="hljs-attribute">drop_last</span>=<span class="hljs-literal">False</span>, <span class="hljs-attribute">timeout</span>=0, <span class="hljs-attribute">worker_init_fn</span>=None, <span class="hljs-attribute">multiprocessing_context</span>=None)<br></code></pre></td></tr></table></figure>
+<p>功能：构建可迭代的数据装载器</p>
+<ul>
+<li>dataset: Dataset 类，决定数据从哪里读取以及如何读取</li>
+<li>batchsize: 批大小</li>
+<li>num_works:num_works: 是否多进程读取数据</li>
+<li>sheuffle: 每个 epoch 是否乱序</li>
+<li>drop_last: 当样本数不能被 batchsize 整除时，是否舍弃最后一批数据</li>
+</ul>
+<p><strong>Epoch, Iteration, Batchsize</strong></p>
+<ul>
+<li>Epoch: 所有训练样本都已经输入到模型中，称为一个 Epoch</li>
+<li>Iteration: 一批样本输入到模型中，称为一个 Iteration</li>
+<li>Batchsize: 批大小，决定一个 iteration 有多少样本，也决定了一个 Epoch 有多少个 Iteration</li>
+</ul>
+<p>假设样本总数有 80，设置 Batchsize 为 8，则共有 $80 \div 8&#x3D;10$ 个 Iteration。这里 $1 Epoch &#x3D; 10 Iteration$。</p>
+<p>假设样本总数有 86，设置 Batchsize 为 8。如果drop_last&#x3D;True则共有 10 个 Iteration；如果drop_last&#x3D;False则共有 11 个 Iteration。</p>
+<h3 id="torch-utils-data-Dataset"><a href="#torch-utils-data-Dataset" class="headerlink" title="torch.utils.data.Dataset"></a>torch.utils.data.Dataset</h3><p>功能：Dataset 是抽象类，所有自定义的 Dataset 都需要继承该类，并且重写<code>__getitem()__</code>方法和<code>__len__()</code>方法 。<code>__getitem()__</code>方法的作用是接收一个索引，返回索引对应的样本和标签，这是我们自己需要实现的逻辑。<code>__len__()</code>方法是返回所有样本的数量。</p>
+<p>数据读取包含 3 个方面</p>
+<ul>
+<li>读取哪些数据：每个 Iteration 读取一个 Batchsize 大小的数据，每个 Iteration 应该读取哪些数据。</li>
+<li>从哪里读取数据：如何找到硬盘中的数据，应该在哪里设置文件路径参数。</li>
+<li>如何读取数据：不同的文件需要使用不同的读取方法和库。</li>
+</ul>
+<p>这里的路径结构如下，有两类人民币图片：1 元和 100 元，每一类各有 100 张图片。</p>
+<ul>
+<li>RMB_data<ul>
+<li>1</li>
+<li>100<br>首先划分数据集为训练集、验证集和测试集，比例为 8:1:1。<br>数据划分好后的路径构造如下：</li>
+</ul>
+</li>
+<li>rmb_split<ul>
+<li>train<ul>
+<li>1</li>
+<li>100</li>
+</ul>
+</li>
+<li>valid<ul>
+<li>1</li>
+<li>100</li>
+</ul>
+</li>
+<li>test<ul>
+<li>1</li>
+<li>100</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>实现读取数据的 Dataset，编写一个<code>get_img_info()</code>方法，读取每一个图片的路径和对应的标签，组成一个元组，再把所有的元组作为 list 存放到<code>self.data_info</code>变量中，这里需要注意的是标签需要映射到 0 开始的整数: <code>rmb_label = &#123;&quot;1&quot;: 0, &quot;100&quot;: 1&#125;</code>。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@staticmethod</span><br>def <span class="hljs-built_in">get_img_info</span>(data_dir):<br>    data_info = <span class="hljs-built_in">list</span>()<br>    # data_dir 是训练集、验证集或者测试集的路径<br>    for root, dirs, _ in os.<span class="hljs-built_in">walk</span>(data_dir):<br>        # 遍历类别<br>        # dirs [<span class="hljs-string">&#x27;1&#x27;</span>, <span class="hljs-string">&#x27;100&#x27;</span>]<br>        for sub_dir in <span class="hljs-attribute">dirs</span>:<br>            # 文件列表<br>            img_names = os.<span class="hljs-built_in">listdir</span>(os.path.<span class="hljs-built_in">join</span>(root, sub_dir))<br>            # 取出 jpg 结尾的文件<br>            img_names = <span class="hljs-built_in">list</span>(<span class="hljs-built_in">filter</span>(lambda <span class="hljs-attribute">x</span>: x.<span class="hljs-built_in">endswith</span>(<span class="hljs-string">&#x27;.jpg&#x27;</span>), img_names))<br>            # 遍历图片<br>            for i in <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(img_names)):<br>                img_name = img_names[i]<br>                # 图片的绝对路径<br>                path_img = os.path.<span class="hljs-built_in">join</span>(root, sub_dir, img_name)<br>                # 标签，这里需要映射为 <span class="hljs-number">0</span>、<span class="hljs-number">1</span> 两个类别<br>                label = rmb_label[sub_dir]<br>                # 保存在 data_info 变量中<br>                data_info.<span class="hljs-built_in">append</span>((path_img, <span class="hljs-built_in">int</span>(label)))<br>    return data_info<br></code></pre></td></tr></table></figure>
+<p>然后在Dataset 的初始化函数中调用get_img_info()方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, data_dir, transform=<span class="hljs-literal">None</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    rmb面额分类任务的Dataset</span><br><span class="hljs-string">    :param data_dir: str, 数据集所在路径</span><br><span class="hljs-string">    :param transform: torch.transform，数据预处理</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    <span class="hljs-comment"># data_info存储所有图片路径和标签，在DataLoader中通过index读取样本</span><br>    <span class="hljs-variable language_">self</span>.data_info = <span class="hljs-variable language_">self</span>.get_img_info(data_dir)<br>    <span class="hljs-variable language_">self</span>.transform = transform<br></code></pre></td></tr></table></figure>
+<p>然后在<code>__getitem__()</code>方法中根据index 读取self.data_info中路径对应的数据，并在这里做 transform 操作，返回的是样本和标签。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">__getitem__</span>(<span class="hljs-params">self, index</span>):<br>    <span class="hljs-comment"># 通过 index 读取样本</span><br>    path_img, label = <span class="hljs-variable language_">self</span>.data_info[index]<br>    <span class="hljs-comment"># 注意这里需要 convert(&#x27;RGB&#x27;)</span><br>    img = Image.<span class="hljs-built_in">open</span>(path_img).convert(<span class="hljs-string">&#x27;RGB&#x27;</span>)     <span class="hljs-comment"># 0~255</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.transform <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>        img = <span class="hljs-variable language_">self</span>.transform(img)   <span class="hljs-comment"># 在这里做transform，转为tensor等等</span><br>    <span class="hljs-comment"># 返回是样本和标签</span><br>    <span class="hljs-keyword">return</span> img, label<br></code></pre></td></tr></table></figure>
+<p>在<code>__len__()</code>方法中返回self.data_info的长度，即为所有样本的数量。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-comment"># 返回所有样本的数量</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">__len__</span>(<span class="hljs-params"><span class="hljs-variable language_">self</span></span>):<br>    <span class="hljs-keyword">return</span> len(<span class="hljs-variable language_">self</span>.data_info)<br></code></pre></td></tr></table></figure>
+
+<h3 id="简单的训练示范"><a href="#简单的训练示范" class="headerlink" title="简单的训练示范"></a>简单的训练示范</h3><p>在<code>train_lenet.py</code>中，分 5 步构建模型。</p>
+<p>第 1 步设置数据。首先定义训练集、验证集、测试集的路径，定义训练集和测试集的transforms。然后构建训练集和验证集的RMBDataset对象，把对应的路径和transforms传进去。再构建DataLoder，设置 batch_size，其中训练集设置shuffle&#x3D;True，表示每个 Epoch 都打乱样本。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 构建MyDataset实例</span><br>train_data = RMBDataset(<span class="hljs-attribute">data_dir</span>=train_dir, <span class="hljs-attribute">transform</span>=train_transform)<br>valid_data = RMBDataset(<span class="hljs-attribute">data_dir</span>=valid_dir, <span class="hljs-attribute">transform</span>=valid_transform)<br><br><span class="hljs-comment"># 构建DataLoder</span><br><span class="hljs-comment"># 其中训练集设置 shuffle=True，表示每个 Epoch 都打乱样本</span><br>train_loader = DataLoader(<span class="hljs-attribute">dataset</span>=train_data, <span class="hljs-attribute">batch_size</span>=BATCH_SIZE, <span class="hljs-attribute">shuffle</span>=<span class="hljs-literal">True</span>)<br>valid_loader = DataLoader(<span class="hljs-attribute">dataset</span>=valid_data, <span class="hljs-attribute">batch_size</span>=BATCH_SIZE)<br></code></pre></td></tr></table></figure>
+<p>第 2 步构建模型，这里采用经典的 Lenet 图片分类网络。</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs abnf"><span class="hljs-attribute">net</span> <span class="hljs-operator">=</span> LeNet(classes<span class="hljs-operator">=</span><span class="hljs-number">2</span>)<br>net.initialize_weights()<br></code></pre></td></tr></table></figure>
+<p>第 3 步设置损失函数，这里使用交叉熵损失函数。</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs abnf"><span class="hljs-attribute">criterion</span> <span class="hljs-operator">=</span> nn.CrossEntropyLoss()<br></code></pre></td></tr></table></figure>
+<p>第 4 步设置优化器。这里采用 SGD 优化器。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros">optimizer = optim.SGD(net.parameters(), <span class="hljs-attribute">lr</span>=LR, <span class="hljs-attribute">momentum</span>=0.9)                        # 选择优化器<span class="hljs-built_in"></span><br><span class="hljs-built_in">scheduler </span>= torch.optim.lr_scheduler.StepLR(optimizer, <span class="hljs-attribute">step_size</span>=10, <span class="hljs-attribute">gamma</span>=0.1)     # 设置学习率下降策略<br></code></pre></td></tr></table></figure>
+<p>第 5 步迭代训练模型，在每一个 epoch 里面，需要遍历 train_loader 取出数据，每次取得数据是一个 batchsize 大小。这里又分为 4 步。第 1 步进行前向传播，第 2 步进行反向传播求导，第 3 步使用optimizer更新权重，第 4 步统计训练情况。每一个 epoch 完成时都需要使用scheduler更新学习率，和计算验证集的准确率、loss。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs scss">for epoch in <span class="hljs-built_in">range</span>(MAX_EPOCH):<br><br>    loss_mean = <span class="hljs-number">0</span>.<br>    correct = <span class="hljs-number">0</span>.<br>    total = <span class="hljs-number">0</span>.<br><br>    net.<span class="hljs-built_in">train</span>()<br>    # 遍历 train_loader 取数据<br>    for i, data in <span class="hljs-built_in">enumerate</span>(train_loader):<br><br>        # forward<br>        inputs, labels = data<br>        outputs = <span class="hljs-built_in">net</span>(inputs)<br><br>        # backward<br>        optimizer.<span class="hljs-built_in">zero_grad</span>()<br>        loss = <span class="hljs-built_in">criterion</span>(outputs, labels)<br>        loss.<span class="hljs-built_in">backward</span>()<br><br>        # update weights<br>        optimizer.<span class="hljs-built_in">step</span>()<br><br>        # 统计分类情况<br>        _, predicted = torch.<span class="hljs-built_in">max</span>(outputs.data, <span class="hljs-number">1</span>)<br>        total += labels.<span class="hljs-built_in">size</span>(<span class="hljs-number">0</span>)<br>        correct += (predicted == labels).<span class="hljs-built_in">squeeze</span>().<span class="hljs-built_in">sum</span>().<span class="hljs-built_in">numpy</span>()<br><br>        # 打印训练信息<br>        loss_mean += loss.<span class="hljs-built_in">item</span>()<br>        train_curve.<span class="hljs-built_in">append</span>(loss.<span class="hljs-built_in">item</span>())<br>        if (i+<span class="hljs-number">1</span>) % log_interval == <span class="hljs-number">0</span>:<br>            loss_mean = loss_mean / log_interval<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Training:Epoch[&#123;:0&gt;3&#125;/&#123;:0&gt;3&#125;] Iteration[&#123;:0&gt;3&#125;/&#123;:0&gt;3&#125;] Loss: &#123;:.4f&#125; Acc:&#123;:.2%&#125;&quot;</span>.<span class="hljs-built_in">format</span>(<br>                epoch, MAX_EPOCH, i+<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(train_loader), loss_mean, correct / total))<br>            loss_mean = <span class="hljs-number">0</span>.<br><br>    scheduler.<span class="hljs-built_in">step</span>()  # 更新学习率<br>    # 每个 epoch 计算验证集得准确率和loss<br>    ...<br>    ...<br></code></pre></td></tr></table></figure>
+<p>我们可以看到每个 iteration，我们是从train_loader中取出数据的。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-keyword">def</span> <span class="hljs-title function_">__iter__</span>(<span class="hljs-params"><span class="hljs-variable language_">self</span></span>):<br>    <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.num_workers == <span class="hljs-number">0</span>:<br>        <span class="hljs-keyword">return</span> _SingleProcessDataLoaderIter(<span class="hljs-variable language_">self</span>)<br>    <span class="hljs-symbol">else:</span><br>        <span class="hljs-keyword">return</span> _MultiProcessingDataLoaderIter(<span class="hljs-variable language_">self</span>)<br></code></pre></td></tr></table></figure>
+<p>这里我们没有设置多进程，会执行<code>_SingleProcessDataLoaderIter</code>的方法。我们以<code>_SingleProcessDataLoaderIter</code>为例。在<code>_SingleProcessDataLoaderIter</code>里只有一个方法<code>_next_data()</code>，如下：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_next_data</span>(<span class="hljs-params"><span class="hljs-variable language_">self</span></span>):<br>    index = <span class="hljs-variable language_">self</span>._next_index()  <span class="hljs-comment"># may raise StopIteration</span><br>    data = <span class="hljs-variable language_">self</span>._dataset_fetcher.fetch(index)  <span class="hljs-comment"># may raise StopIteration</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.<span class="hljs-symbol">_pin_memory:</span><br>        data = _utils.pin_memory.pin_memory(data)<br>    <span class="hljs-keyword">return</span> data<br></code></pre></td></tr></table></figure>
+<p>在该方法中，<code>self._next_index()</code>是获取一个 batchsize 大小的 index 列表，代码如下：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_next_index</span>(<span class="hljs-params"><span class="hljs-variable language_">self</span></span>):<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">next</span>(<span class="hljs-variable language_">self</span>._sampler_iter)  <span class="hljs-comment"># may raise StopIteration</span><br></code></pre></td></tr></table></figure>
+<p>其中调用的sampler类的__iter__()方法返回 batch_size 大小的随机 index 列表。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">__iter__</span>(<span class="hljs-params">self</span>):<br>    batch = []<br>    <span class="hljs-keyword">for</span> idx <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.sampler:<br>        batch.append(idx)<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(batch) == <span class="hljs-variable language_">self</span>.batch_size:<br>            <span class="hljs-keyword">yield</span> batch<br>            batch = []<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(batch) &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>.drop_last:<br>        <span class="hljs-keyword">yield</span> batch<br></code></pre></td></tr></table></figure>
+<p>然后再返回看 dataloader的_next_data()方法：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_next_data</span>(<span class="hljs-params"><span class="hljs-variable language_">self</span></span>):<br>    index = <span class="hljs-variable language_">self</span>._next_index()  <span class="hljs-comment"># may raise StopIteration</span><br>    data = <span class="hljs-variable language_">self</span>._dataset_fetcher.fetch(index)  <span class="hljs-comment"># may raise StopIteration</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.<span class="hljs-symbol">_pin_memory:</span><br>        data = _utils.pin_memory.pin_memory(data)<br>    <span class="hljs-keyword">return</span> data<br></code></pre></td></tr></table></figure>
+<p>在第二行中调用了self._dataset_fetcher.fetch(index)获取数据。这里会调用_MapDatasetFetcher中的fetch()函数：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-keyword">def</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-params"><span class="hljs-variable language_">self</span>, possibly_batched_index</span>):<br>    <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.<span class="hljs-symbol">auto_collation:</span><br>        data = [<span class="hljs-variable language_">self</span>.dataset[idx] <span class="hljs-keyword">for</span> idx <span class="hljs-keyword">in</span> possibly_batched_index]<br>    <span class="hljs-symbol">else:</span><br>        data = <span class="hljs-variable language_">self</span>.dataset[possibly_batched_index]<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.collate_fn(data)<br></code></pre></td></tr></table></figure>
+<p>这里调用了self.dataset[idx]，这个函数会调用dataset.<strong>getitem</strong>()方法获取具体的数据，所以__getitem__()方法是我们必须实现的。我们拿到的data是一个 list，每个元素是一个 tunple，每个 tunple 包括样本和标签。所以最后要使用self.collate_fn(data)把 data 转换为两个 list，第一个 元素 是样本的batch 形式，形状为 [16, 3, 32, 32] (16 是 batch size，[3, 32, 32] 是图片像素)；第二个元素是标签的 batch 形式，形状为 [16]。</p>
+<p>所以在代码中，我们使用inputs, labels &#x3D; data来接收数据。</p>
+<p>PyTorch 数据读取流程图<br><img src="/img/pytorchtrain2/1.png" srcset="/img/loading.gif" lazyload></p>
+<p>首先在 for 循环中遍历DataLoader，然后根据是否采用多进程，决定使用单进程或者多进程的DataLoaderIter。</p>
+<p>在DataLoaderIter里调用Sampler生成Index的 list，再调用DatasetFetcher根据index获取数据。</p>
+<p>在DatasetFetcher里会调用Dataset的__getitem__()方法获取真正的数据。这里获取的数据是一个 list，其中每个元素是 (img, label) 的元组。</p>
+<p>再使用 collate_fn()函数整理成一个 list，里面包含两个元素，分别是 img 和 label 的tenser。</p>
+<h2 id="PyTorch-的数据增强（数据预处理）"><a href="#PyTorch-的数据增强（数据预处理）" class="headerlink" title="PyTorch 的数据增强（数据预处理）"></a>PyTorch 的数据增强（数据预处理）</h2><p>我们在安装PyTorch时，还安装了torchvision，这是一个计算机视觉工具包。有 3 个主要的模块：</p>
+<ul>
+<li>torchvision.transforms:  里面包括常用的图像预处理方法</li>
+<li>torchvision.datasets: 里面包括常用数据集如 mnist、CIFAR-10、Image-Net 等</li>
+<li>torchvision.models: 里面包括常用的预训练好的模型，如 AlexNet、VGG、ResNet、GoogleNet 等</li>
+</ul>
+<p>深度学习模型是由数据驱动的，数据的数量和分布对模型训练的结果起到决定性作用。所以我们需要对数据进行预处理和数据增强。下面是用数据增强，从一张图片经过各种变换生成 64 张图片，增加了数据的多样性，这可以提高模型的泛化能力。<br><img src="/img/pytorchtrain2/2.png" srcset="/img/loading.gif" lazyload></p>
+<p>常用的图像预处理方法有：</p>
+<ul>
+<li>数据中心化</li>
+<li>数据标准化</li>
+<li>缩放</li>
+<li>裁剪</li>
+<li>旋转</li>
+<li>翻转</li>
+<li>填充</li>
+<li>噪声添加</li>
+<li>灰度变换</li>
+<li>线性变换</li>
+<li>仿射变换</li>
+<li>亮度、饱和度以及对比度变换。</li>
+</ul>
+<p>在人民币图片二分类实验中，我们对数据进行了一定的增强。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># 设置训练集的数据增强和转化</span><br><span class="hljs-attr">train_transform</span> = transforms.Compose([<br>    transforms.Resize((<span class="hljs-number">32</span>, <span class="hljs-number">32</span>)),<span class="hljs-comment"># 缩放</span><br>    transforms.RandomCrop(<span class="hljs-number">32</span>, padding=<span class="hljs-number">4</span>), <span class="hljs-comment">#裁剪</span><br>    transforms.ToTensor(), <span class="hljs-comment"># 转为张量，同时归一化</span><br>    transforms.Normalize(norm_mean, norm_std),<span class="hljs-comment"># 标准化</span><br>])<br><br><span class="hljs-comment"># 设置验证集的数据增强和转化，不需要 RandomCrop</span><br><span class="hljs-attr">valid_transform</span> = transforms.Compose([<br>    transforms.Resize((<span class="hljs-number">32</span>, <span class="hljs-number">32</span>)),<br>    transforms.ToTensor(),<br>    transforms.Normalize(norm_mean, norm_std),<br>])<br></code></pre></td></tr></table></figure>
+<p>当我们需要多个transforms操作时，需要作为一个list放在transforms.Compose中。需要注意的是transforms.ToTensor()是把图片转换为张量，同时进行归一化操作，把每个通道 0<del>255 的值归一化为 0</del>1。在验证集的数据增强中，不再需要transforms.RandomCrop()操作。然后把这两个transform操作作为参数传给Dataset，在Dataset的__getitem__()方法中做图像增强。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">__getitem__</span>(<span class="hljs-params">self, index</span>):<br>    <span class="hljs-comment"># 通过 index 读取样本</span><br>    path_img, label = <span class="hljs-variable language_">self</span>.data_info[index]<br>    <span class="hljs-comment"># 注意这里需要 convert(&#x27;RGB&#x27;)</span><br>    img = Image.<span class="hljs-built_in">open</span>(path_img).convert(<span class="hljs-string">&#x27;RGB&#x27;</span>)     <span class="hljs-comment"># 0~255</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.transform <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>        img = <span class="hljs-variable language_">self</span>.transform(img)   <span class="hljs-comment"># 在这里做transform，转为tensor等等</span><br>    <span class="hljs-comment"># 返回是样本和标签</span><br>    <span class="hljs-keyword">return</span> img, label<br></code></pre></td></tr></table></figure>
+<p>其中self.transform(img)会调用Compose的__call__()函数：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-keyword">def</span> <span class="hljs-title function_">__call__</span>(<span class="hljs-params"><span class="hljs-variable language_">self</span>, img</span>):<br>    <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.<span class="hljs-symbol">transforms:</span><br>        img = t(img)<br>    <span class="hljs-keyword">return</span> img<br></code></pre></td></tr></table></figure>
+<p>可以看到，这里是遍历transforms中的函数，按顺序应用到 img 中。</p>
+<p><strong>transforms.Normalize</strong></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torchvision.transforms.Normalize(mean, std, <span class="hljs-attribute">inplace</span>=<span class="hljs-literal">False</span>)<br></code></pre></td></tr></table></figure>
+<p>功能：逐 channel 地对图像进行标准化<br>output &#x3D; ( input - mean ) &#x2F; std</p>
+<ul>
+<li>mean: 各通道的均值</li>
+<li>std: 各通道的标准差</li>
+<li>inplace: 是否原地操作<br>该方法调用的是F.normalize(tensor, self.mean, self.std, self.inplace)<br>而<code>F.normalize()</code>方法如下：</li>
+</ul>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs routeros">def normalize(tensor, mean, std, <span class="hljs-attribute">inplace</span>=<span class="hljs-literal">False</span>):<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> _is_tensor_image(tensor):<br>        raise TypeError(<span class="hljs-string">&#x27;tensor is not a torch image.&#x27;</span>)<br><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> inplace:<br>        tensor = tensor.clone()<br><br>    dtype = tensor.dtype<br>    mean = torch.as_tensor(mean, <span class="hljs-attribute">dtype</span>=dtype, <span class="hljs-attribute">device</span>=tensor.device)<br>    std = torch.as_tensor(std, <span class="hljs-attribute">dtype</span>=dtype, <span class="hljs-attribute">device</span>=tensor.device)<br>    tensor.sub_(mean[:, None, None]).div_(std[:, None, None])<br>    return tensor<br></code></pre></td></tr></table></figure>
+<p>首先判断是否为 tensor，如果不是 tensor 则抛出异常。然后根据inplace是否为 true 进行 clone，接着把mean 和 std 都转换为tensor (原本是 list)，最后减去均值除以方差：tensor.sub_(mean[:, None, None]).div_(std[:, None, None])<br>对数据进行均值为 0，标准差为 1 的标准化，可以加快模型的收敛。</p>
+<p>在逻辑回归的实验中，我们的数据生成代码如下：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">sample_nums</span> = <span class="hljs-number">100</span><br><span class="hljs-attr">mean_value</span> = <span class="hljs-number">1.7</span><br><span class="hljs-attr">bias</span> = <span class="hljs-number">1</span><br><span class="hljs-attr">n_data</span> = torch.<span class="hljs-literal">on</span>es(sample_nums, <span class="hljs-number">2</span>)<br><span class="hljs-comment"># 使用正态分布随机生成样本，均值为张量，方差为标量</span><br><span class="hljs-attr">x0</span> = torch.normal(mean_value * n_data, <span class="hljs-number">1</span>) + bias      <span class="hljs-comment"># 类别0 数据 shape=(100, 2)</span><br><span class="hljs-comment"># 生成对应标签</span><br><span class="hljs-attr">y0</span> = torch.zeros(sample_nums)                         <span class="hljs-comment"># 类别0 标签 shape=(100, 1)</span><br><span class="hljs-comment"># 使用正态分布随机生成样本，均值为张量，方差为标量</span><br><span class="hljs-attr">x1</span> = torch.normal(-mean_value * n_data, <span class="hljs-number">1</span>) + bias     <span class="hljs-comment"># 类别1 数据 shape=(100, 2)</span><br><span class="hljs-comment"># 生成对应标签</span><br><span class="hljs-attr">y1</span> = torch.<span class="hljs-literal">on</span>es(sample_nums)                          <span class="hljs-comment"># 类别1 标签 shape=(100, 1)</span><br><span class="hljs-attr">train_x</span> = torch.cat((x0, x1), <span class="hljs-number">0</span>)<br><span class="hljs-attr">train_y</span> = torch.cat((y0, y1), <span class="hljs-number">0</span>)<br></code></pre></td></tr></table></figure>
+<h2 id="二十二种-transforms-图片数据预处理方法"><a href="#二十二种-transforms-图片数据预处理方法" class="headerlink" title="二十二种 transforms 图片数据预处理方法"></a>二十二种 transforms 图片数据预处理方法</h2><p>这篇主要分为几个部分介绍 transforms:</p>
+<ul>
+<li>裁剪</li>
+<li>旋转和翻转</li>
+<li>图像变换</li>
+<li>transforms 方法操作</li>
+<li>自定义 transforms 方法</li>
+</ul>
+<p>由于图片经过 transform 操作之后是 tensor，像素值在 0~1 之间，并且标准差和方差不是正常图片的。所以定义了transform_invert()方法。功能是对 tensor 进行反标准化操作，并且把 tensor 转换为 image，方便可视化。</p>
+<p>我们主要修改的是transforms.Compose代码块中的内容，其中transforms.Resize((224, 224))是把图片缩放到 (224, 224) 大小 (下面的所有操作都是基于缩放之后的图片进行的)，然后再进行其他 transform 操作。</p>
+<p>原图如下：<br><img src="/img/pytorchtrain2/3.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>经过缩放之后，图片如下：<br><img src="/img/pytorchtrain2/4.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="裁剪"><a href="#裁剪" class="headerlink" title="裁剪"></a>裁剪</h3><h4 id="transforms-CenterCrop"><a href="#transforms-CenterCrop" class="headerlink" title="transforms.CenterCrop"></a>transforms.CenterCrop</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">torchvision<span class="hljs-selector-class">.transforms</span><span class="hljs-selector-class">.CenterCrop</span>(size)<br></code></pre></td></tr></table></figure>
+<p>功能：从图像中心裁剪图片</p>
+<ul>
+<li>size: 所需裁剪的图片尺寸</li>
+</ul>
+<p>transforms.CenterCrop(196)的效果如下：<br><img src="/img/pytorchtrain2/5.png" srcset="/img/loading.gif" lazyload></p>
+<p>如果裁剪的 size 比原图大，那么会填充值为 0 的像素。transforms.CenterCrop(512)的效果如下：<br><img src="/img/pytorchtrain2/6.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="transforms-RandomCrop"><a href="#transforms-RandomCrop" class="headerlink" title="transforms.RandomCrop"></a>transforms.RandomCrop</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torchvision.transforms.RandomCrop(size, <span class="hljs-attribute">padding</span>=None, <span class="hljs-attribute">pad_if_needed</span>=<span class="hljs-literal">False</span>, <span class="hljs-attribute">fill</span>=0, <span class="hljs-attribute">padding_mode</span>=<span class="hljs-string">&#x27;constant&#x27;</span>)<br></code></pre></td></tr></table></figure>
+<p>功能：从图片中随机裁剪出尺寸为 size 的图片，如果有 padding，那么先进行 padding，再随机裁剪 size 大小的图片。</p>
+<ul>
+<li>size</li>
+<li>padding: 设置填充大小<ul>
+<li>当为 a 时，上下左右均填充 a 个像素</li>
+<li>当为 (a, b) 时，左右填充 a 个像素，上下填充 b 个像素</li>
+<li>当为 (a, b, c, d) 时，左上右下分别填充 a，b，c，d</li>
+</ul>
+</li>
+<li>pad_if_need: 当图片小于设置的 size，是否填充</li>
+<li>padding_mode:<ul>
+<li>constant: 像素值由 fill 设定</li>
+<li>edge: 像素值由图像边缘像素设定</li>
+<li>reflect: 镜像填充，最后一个像素不镜像。([1,2,3,4] -&gt; [3,2,1,2,3,4,3,2])</li>
+<li>symmetric: 镜像填充，最后一个像素也镜像。([1,2,3,4] -&gt; [2,1,1,2,3,4,4,4,3])</li>
+</ul>
+</li>
+<li>fill: 当 padding_mode 为 constant 时，设置填充的像素值<br>transforms.RandomCrop(224, padding&#x3D;16)的效果如下，这里的 padding 为 16，所以会先在 4 边进行 16 的padding，默认填充 0，然后随机裁剪出 (224,224) 大小的图片，这里裁剪了左上角的区域。</li>
+</ul>
+<h4 id="transforms-RandomResizedCrop"><a href="#transforms-RandomResizedCrop" class="headerlink" title="transforms.RandomResizedCrop"></a>transforms.RandomResizedCrop</h4><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">torchvision</span>.transforms.RandomResizedCrop(size, scale=(<span class="hljs-number">0</span>.<span class="hljs-number">08</span>, <span class="hljs-number">1</span>.<span class="hljs-number">0</span>), ratio=(<span class="hljs-number">0</span>.<span class="hljs-number">75</span>, <span class="hljs-number">1</span>.<span class="hljs-number">3333333333333333</span>), interpolation=<span class="hljs-number">2</span>)<br></code></pre></td></tr></table></figure>
+<p>功能：随机大小、随机宽高比裁剪图片。首先根据 scale 的比例裁剪原图，然后根据 ratio 的长宽比再裁剪，最后使用插值法把图片变换为 size 大小。</p>
+<ul>
+<li>size: 裁剪的图片尺寸</li>
+<li>scale: 随机缩放面积比例，默认随机选取 (0.08, 1) 之间的一个数</li>
+<li>ratio: 随机长宽比，默认随机选取 ($\displaystyle\frac{3}{4}$, $\displaystyle\frac{4}{3}$ ) 之间的一个数。因为超过这个比例会有明显的失真</li>
+<li>interpolation: 当裁剪出来的图片小于 size 时，就要使用插值方法 resize<ul>
+<li>PIL.Image.NEAREST</li>
+<li>PIL.Image.BILINEAR</li>
+<li>PIL.Image.BICUBIC</li>
+</ul>
+</li>
+</ul>
+<h4 id="transforms-FiveCrop-TenCrop"><a href="#transforms-FiveCrop-TenCrop" class="headerlink" title="transforms.FiveCrop(TenCrop)"></a>transforms.FiveCrop(TenCrop)</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus">torchvision<span class="hljs-selector-class">.transforms</span><span class="hljs-selector-class">.FiveCrop</span>(size)<br>torchvision<span class="hljs-selector-class">.transforms</span><span class="hljs-selector-class">.TenCrop</span>(size, vertical_flip=False)<br></code></pre></td></tr></table></figure>
+<p>功能：FiveCrop在图像的上下左右以及中心裁剪出尺寸为 size 的 5 张图片。Tencrop对这 5 张图片进行水平或者垂直镜像获得 10 张图片。</p>
+<ul>
+<li>size: 最后裁剪的图片尺寸</li>
+<li>vertical_flip: 是否垂直翻转<br>由于这两个方法返回的是 tuple，每个元素表示一个图片，我们还需要把这个 tuple 转换为一张图片的tensor。代码如下：</li>
+</ul>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus">transforms<span class="hljs-selector-class">.FiveCrop</span>(<span class="hljs-number">112</span>),<br>transforms<span class="hljs-selector-class">.Lambda</span>(lambda crops: torch<span class="hljs-selector-class">.stack</span>(<span class="hljs-selector-attr">[(transforms.ToTensor()(crop)) for crop in crops]</span>))<br></code></pre></td></tr></table></figure>
+<p>并且把transforms.Compose中最后两行注释：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs scss"># transforms<span class="hljs-selector-class">.ToTensor</span>(), # <span class="hljs-built_in">ToTensor</span>()接收的参数是 <span class="hljs-selector-tag">Image</span>，由于上面已经进行了 <span class="hljs-built_in">ToTensor</span>(), 因此这里注释<br># transforms<span class="hljs-selector-class">.Normalize</span>(norm_mean, norm_std), # 由于是 <span class="hljs-number">4</span> 维的 Tensor，因此不能执行 <span class="hljs-built_in">Normalize</span>() 方法<br></code></pre></td></tr></table></figure>
+<ul>
+<li>transforms.ToTensor()接收的参数是 Image，由于上面已经进行了 ToTensor()。因此注释这一行。</li>
+<li>transforms.Normalize()方法接收的是 3 维的 tensor (在 _is_tensor_image()方法 里检查是否满足这一条件，不满足则报错)，而经过transforms.FiveCrop返回的是 4 维张量，因此注释这一行。</li>
+</ul>
+<p>最后的 tensor 形状是 [ncrops, c, h, w]，图片可视化的代码也需要做修改：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">## 展示 FiveCrop 和 TenCrop 的图片<br>ncrops, c, h, w = img_tensor.shape<br><span class="hljs-keyword">columns</span>=<span class="hljs-number">2</span> # 两列<br><span class="hljs-keyword">rows</span>= math.ceil(ncrops/<span class="hljs-number">2</span>) # 计算多少行<br># 把每个 tensor ([c,h,w]) 转换为 image<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(ncrops):<br>    img = transform_invert(img_tensor[i], train_transform)<br>    plt.subplot(<span class="hljs-keyword">rows</span>, <span class="hljs-keyword">columns</span>, i+<span class="hljs-number">1</span>)<br>    plt.imshow(img)<br>plt.<span class="hljs-keyword">show</span>()<br></code></pre></td></tr></table></figure>
+<h3 id="旋转和翻转"><a href="#旋转和翻转" class="headerlink" title="旋转和翻转"></a>旋转和翻转</h3><h4 id="transforms-RandomHorizontalFlip-RandomVerticalFlip"><a href="#transforms-RandomHorizontalFlip-RandomVerticalFlip" class="headerlink" title="transforms.RandomHorizontalFlip(RandomVerticalFlip)"></a>transforms.RandomHorizontalFlip(RandomVerticalFlip)</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">transforms<span class="hljs-selector-class">.RandomHorizontalFlip</span>(<span class="hljs-selector-tag">p</span>)<br></code></pre></td></tr></table></figure>
+<p>功能：根据概率，在水平或者垂直方向翻转图片</p>
+<ul>
+<li>p: 翻转概率</li>
+</ul>
+<p>transforms.RandomHorizontalFlip(p&#x3D;0.5)，那么一半的图片会被水平翻转。</p>
+<p>transforms.RandomHorizontalFlip(p&#x3D;1)，那么所有图片会被水平翻转。</p>
+<h4 id="transforms-RandomRotation"><a href="#transforms-RandomRotation" class="headerlink" title="transforms.RandomRotation"></a>transforms.RandomRotation</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torchvision.transforms.RandomRotation(degrees, <span class="hljs-attribute">resample</span>=<span class="hljs-literal">False</span>, <span class="hljs-attribute">expand</span>=<span class="hljs-literal">False</span>, <span class="hljs-attribute">center</span>=None, <span class="hljs-attribute">fill</span>=None)<br></code></pre></td></tr></table></figure>
+<p>功能：随机旋转图片</p>
+<ul>
+<li>degree: 旋转角度<ul>
+<li>当为 a 时，在 (-a, a) 之间随机选择旋转角度</li>
+<li>当为 (a, b) 时，在 (a, b) 之间随机选择旋转角度</li>
+</ul>
+</li>
+<li>resample: 重采样方法</li>
+<li>expand: 是否扩大矩形框，以保持原图信息。根据中心旋转点计算扩大后的图片。如果旋转点不是中心，即使设置 expand &#x3D; True，还是会有部分信息丢失。</li>
+<li>center: 旋转点设置，是坐标，默认中心旋转。如设置左上角为：(0, 0)</li>
+</ul>
+<h3 id="图像变换"><a href="#图像变换" class="headerlink" title="图像变换"></a>图像变换</h3><h4 id="Pad"><a href="#Pad" class="headerlink" title="Pad"></a>Pad</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torchvision.transforms.Pad(padding, <span class="hljs-attribute">fill</span>=0, <span class="hljs-attribute">padding_mode</span>=<span class="hljs-string">&#x27;constant&#x27;</span>)<br></code></pre></td></tr></table></figure>
+<p>功能：对图像边缘进行填充</p>
+<ul>
+<li>padding: 设置填充大小<ul>
+<li>当为 a 时，上下左右均填充 a 个像素</li>
+<li>当为 (a, b) 时，左右填充 a 个像素，上下填充 b 个像素</li>
+<li>当为 (a, b, c, d) 时，左上右下分别填充 a，b，c，d</li>
+<li>padding_mode: 填充模式，有 4 种模式，constant、edge、reflect、symmetric</li>
+<li>fill: 当 padding_mode 为 constant 时，设置填充的像素值，(R, G, B) 或者 (Gray)</li>
+</ul>
+</li>
+</ul>
+<h4 id="torchvision-transforms-ColorJitter"><a href="#torchvision-transforms-ColorJitter" class="headerlink" title="torchvision.transforms.ColorJitter"></a>torchvision.transforms.ColorJitter</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torchvision.transforms.ColorJitter(<span class="hljs-attribute">brightness</span>=0, <span class="hljs-attribute">contrast</span>=0, <span class="hljs-attribute">saturation</span>=0, <span class="hljs-attribute">hue</span>=0)<br></code></pre></td></tr></table></figure>
+<p>功能：调整亮度、对比度、饱和度、色相。在照片的拍照过程中，可能会由于设备、光线问题，造成色彩上的偏差，因此需要调整这些属性，抵消这些因素带来的扰动。</p>
+<ul>
+<li>brightness: 亮度调整因子</li>
+<li>contrast: 对比度参数</li>
+<li>saturation: 饱和度参数</li>
+<li>brightness、contrast、saturation参数：当为 a 时，从 [max(0, 1-a), 1+a] 中随机选择；当为 (a, b) 时，从 [a, b] 中选择。</li>
+<li>hue: 色相参数<ul>
+<li>当为 a 时，从 [-a, a] 中选择参数。其中 $0\le a \le 0.5$。</li>
+<li>当为 (a, b) 时，从 [a, b] 中选择参数。其中 $0 \le a \le b \le 0.5$。</li>
+</ul>
+</li>
+</ul>
+<h4 id="transforms-Grayscale-RandomGrayscale"><a href="#transforms-Grayscale-RandomGrayscale" class="headerlink" title="transforms.Grayscale(RandomGrayscale)"></a>transforms.Grayscale(RandomGrayscale)</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torchvision.transforms.Grayscale(<span class="hljs-attribute">num_output_channels</span>=1)<br></code></pre></td></tr></table></figure>
+<p>功能：将图片转换为灰度图</p>
+<ul>
+<li>num_output_channels: 输出的通道数。只能设置为 1 或者 3 (如果在后面使用了transforms.Normalize，则要设置为 3，因为transforms.Normalize只能接收 3 通道的输入)</li>
+</ul>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torchvision.transforms.RandomGrayscale(<span class="hljs-attribute">p</span>=0.1, <span class="hljs-attribute">num_output_channels</span>=1)<br></code></pre></td></tr></table></figure>
+<ul>
+<li>p: 概率值，图像被转换为灰度图的概率</li>
+<li>num_output_channels: 输出的通道数。只能设置为 1 或者 3</li>
+</ul>
+<p>功能：根据一定概率将图片转换为灰度图</p>
+<h4 id="transforms-RandomAffine"><a href="#transforms-RandomAffine" class="headerlink" title="transforms.RandomAffine"></a>transforms.RandomAffine</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torchvision.transforms.RandomAffine(degrees, <span class="hljs-attribute">translate</span>=None, <span class="hljs-attribute">scale</span>=None, <span class="hljs-attribute">shear</span>=None, <span class="hljs-attribute">resample</span>=<span class="hljs-literal">False</span>, <span class="hljs-attribute">fillcolor</span>=0)<br></code></pre></td></tr></table></figure>
+<p>功能：对图像进行仿射变换，仿射变换是 2 维的线性变换，由 5 种基本操作组成，分别是旋转、平移、缩放、错切和翻转。</p>
+<ul>
+<li>degree: 旋转角度设置</li>
+<li>translate: 平移区间设置，如 (a, b)，a 设置宽 (width)，b 设置高 (height)。图像在宽维度平移的区间为 $- img_width \times a &lt; dx &lt; img_width \times a$，高同理</li>
+<li>scale: 缩放比例，以面积为单位</li>
+<li>fillcolor: 填充颜色设置</li>
+<li>shear: 错切角度设置，有水平错切和垂直错切<ul>
+<li>若为 a，则仅在 x 轴错切，在 (-a, a) 之间随机选择错切角度</li>
+<li>若为 (a, b)，x 轴在 (-a, a) 之间随机选择错切角度，y 轴在 (-b, b) 之间随机选择错切角度</li>
+<li>若为 (a, b, c, d)，x 轴在 (a, b) 之间随机选择错切角度，y 轴在 (c, d) 之间随机选择错切角度</li>
+</ul>
+</li>
+<li>resample: 重采样方式，有 NEAREST、BILINEAR、BICUBIC。</li>
+</ul>
+<h4 id="transforms-RandomErasing"><a href="#transforms-RandomErasing" class="headerlink" title="transforms.RandomErasing"></a>transforms.RandomErasing</h4><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">torchvision</span>.transforms.RandomErasing(p=<span class="hljs-number">0</span>.<span class="hljs-number">5</span>, scale=(<span class="hljs-number">0</span>.<span class="hljs-number">02</span>, <span class="hljs-number">0</span>.<span class="hljs-number">33</span>), ratio=(<span class="hljs-number">0</span>.<span class="hljs-number">3</span>, <span class="hljs-number">3</span>.<span class="hljs-number">3</span>), value=<span class="hljs-number">0</span>, inplace=False)<br></code></pre></td></tr></table></figure>
+<p>功能：对图像进行随机遮挡。这个操作接收的输入是 tensor。因此在此之前需要先执行transforms.ToTensor()。同时注释掉后面的transforms.ToTensor()。</p>
+<ul>
+<li>p: 概率值，执行该操作的概率</li>
+<li>scale: 遮挡区域的面积。如(a, b)，则会随机选择 (a, b) 中的一个遮挡比例</li>
+<li>ratio: 遮挡区域长宽比。如(a, b)，则会随机选择 (a, b) 中的一个长宽比</li>
+<li>value: 设置遮挡区域的像素值。(R, G, B) 或者 Gray，或者任意字符串。由于之前执行了transforms.ToTensor()，像素值归一化到了 0~1 之间，因此这里设置的 (R, G, B) 要除以 255</li>
+</ul>
+<h4 id="transforms-Lambda"><a href="#transforms-Lambda" class="headerlink" title="transforms.Lambda"></a>transforms.Lambda</h4><p>自定义 transform 方法。在上面的FiveCrop中就用到了transforms.Lambda。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus">transforms<span class="hljs-selector-class">.FiveCrop</span>(<span class="hljs-number">112</span>, vertical_flip=False),<br>transforms<span class="hljs-selector-class">.Lambda</span>(lambda crops: torch<span class="hljs-selector-class">.stack</span>(<span class="hljs-selector-attr">[(transforms.ToTensor()(crop)) for crop in crops]</span>))<br></code></pre></td></tr></table></figure>
+<p>transforms.FiveCrop返回的是长度为 5 的 tuple，因此需要使用transforms.Lambda 把 tuple 转换为 4D 的 tensor。</p>
+<h3 id="transforms-的操作"><a href="#transforms-的操作" class="headerlink" title="transforms 的操作"></a>transforms 的操作</h3><h4 id="torchvision-transforms-RandomChoice"><a href="#torchvision-transforms-RandomChoice" class="headerlink" title="torchvision.transforms.RandomChoice"></a>torchvision.transforms.RandomChoice</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">torchvision<span class="hljs-selector-class">.transforms</span><span class="hljs-selector-class">.RandomChoice</span>(<span class="hljs-selector-attr">[transforms1, transforms2, transforms3]</span>)<br></code></pre></td></tr></table></figure>
+<p>功能：从一系列 transforms 方法中随机选择一个</p>
+<h4 id="transforms-RandomApply"><a href="#transforms-RandomApply" class="headerlink" title="transforms.RandomApply"></a>transforms.RandomApply</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">torchvision<span class="hljs-selector-class">.transforms</span><span class="hljs-selector-class">.RandomApply</span>(<span class="hljs-selector-attr">[transforms1, transforms2, transforms3]</span>, p=<span class="hljs-number">0.5</span>)<br></code></pre></td></tr></table></figure>
+<p>功能：根据概率执行一组 transforms 操作，要么全部执行，要么全部不执行。</p>
+<h4 id="transforms-RandomOrder"><a href="#transforms-RandomOrder" class="headerlink" title="transforms.RandomOrder"></a>transforms.RandomOrder</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">transforms<span class="hljs-selector-class">.RandomOrder</span>(<span class="hljs-selector-attr">[transforms1, transforms2, transforms3]</span>)<br></code></pre></td></tr></table></figure>
+<p>功能：对一组 transforms 操作打乱顺序</p>
+<h3 id="自定义transforms"><a href="#自定义transforms" class="headerlink" title="自定义transforms"></a>自定义transforms</h3><p>自定义 transforms 有两个要素：仅接受一个参数，返回一个参数；注意上下游的输入与输出，上一个 transform 的输出是下一个 transform 的输入。</p>
+<p>我们这里通过自定义 transforms 实现椒盐噪声。椒盐噪声又称为脉冲噪声，是一种随机出现的白点或者黑点，白点称为盐噪声，黑点称为椒噪声。信噪比 (Signal-Noise Rate，SNR) 是衡量噪声的比例，图像中正常像素占全部像素的占比。</p>
+<p>我们定义一个AddPepperNoise类，作为添加椒盐噪声的 transform。在构造函数中传入信噪比和概率，在__call__()函数中执行具体的逻辑，返回的是 image。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">import</span> random<br><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image<br><br><span class="hljs-comment"># 自定义添加椒盐噪声的 transform</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">AddPepperNoise</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;增加椒盐噪声</span><br><span class="hljs-string">    Args:</span><br><span class="hljs-string">        snr （float）: Signal Noise Rate</span><br><span class="hljs-string">        p (float): 概率值，依概率执行该操作</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, snr, p=<span class="hljs-number">0.9</span></span>):<br>        <span class="hljs-keyword">assert</span> <span class="hljs-built_in">isinstance</span>(snr, <span class="hljs-built_in">float</span>) <span class="hljs-keyword">or</span> (<span class="hljs-built_in">isinstance</span>(p, <span class="hljs-built_in">float</span>))<br>        <span class="hljs-variable language_">self</span>.snr = snr<br>        <span class="hljs-variable language_">self</span>.p = p<br><br>    <span class="hljs-comment"># transform 会调用该方法</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__call__</span>(<span class="hljs-params">self, img</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        Args:</span><br><span class="hljs-string">            img (PIL Image): PIL Image</span><br><span class="hljs-string">        Returns:</span><br><span class="hljs-string">            PIL Image: PIL image.</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        <span class="hljs-comment"># 如果随机概率小于 seld.p，则执行 transform</span><br>        <span class="hljs-keyword">if</span> random.uniform(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>) &lt; <span class="hljs-variable language_">self</span>.p:<br>            <span class="hljs-comment"># 把 image 转为 array</span><br>            img_ = np.array(img).copy()<br>            <span class="hljs-comment"># 获得 shape</span><br>            h, w, c = img_.shape<br>            <span class="hljs-comment"># 信噪比</span><br>            signal_pct = <span class="hljs-variable language_">self</span>.snr<br>            <span class="hljs-comment"># 椒盐噪声的比例 = 1 -信噪比</span><br>            noise_pct = (<span class="hljs-number">1</span> - <span class="hljs-variable language_">self</span>.snr)<br>            <span class="hljs-comment"># 选择的值为 (0, 1, 2)，每个取值的概率分别为 [signal_pct, noise_pct/2., noise_pct/2.]</span><br>            <span class="hljs-comment"># 椒噪声和盐噪声分别占 noise_pct 的一半</span><br>            <span class="hljs-comment"># 1 为盐噪声，2 为 椒噪声</span><br>            mask = np.random.choice((<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>), size=(h, w, <span class="hljs-number">1</span>), p=[signal_pct, noise_pct/<span class="hljs-number">2.</span>, noise_pct/<span class="hljs-number">2.</span>])<br>            mask = np.repeat(mask, c, axis=<span class="hljs-number">2</span>)<br>            img_[mask == <span class="hljs-number">1</span>] = <span class="hljs-number">255</span>   <span class="hljs-comment"># 盐噪声</span><br>            img_[mask == <span class="hljs-number">2</span>] = <span class="hljs-number">0</span>     <span class="hljs-comment"># 椒噪声</span><br>            <span class="hljs-comment"># 再转换为 image</span><br>            <span class="hljs-keyword">return</span> Image.fromarray(img_.astype(<span class="hljs-string">&#x27;uint8&#x27;</span>)).convert(<span class="hljs-string">&#x27;RGB&#x27;</span>)<br>        <span class="hljs-comment"># 如果随机概率大于 seld.p，则直接返回原图</span><br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">return</span> img<br></code></pre></td></tr></table></figure>
+
+<h3 id="综合代码"><a href="#综合代码" class="headerlink" title="综合代码"></a>综合代码</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># -*- coding: utf-8 -*-</span><br><br>import os<br>import numpy as np<br>import torch<br>import random<br>import math<br>import torchvision.transforms as transforms<br><span class="hljs-keyword">from</span> PIL import Image<br><span class="hljs-keyword">from</span> matplotlib import pyplot as plt<br><span class="hljs-keyword">from</span> enviroments import rmb_split_dir<br><span class="hljs-keyword">from</span> lesson2.transforms.addPepperNoise import AddPepperNoise<br>def set_seed(<span class="hljs-attribute">seed</span>=1):<br>    random.seed(seed)<br>    np.random.seed(seed)<br>    torch.manual_seed(seed)<br>    torch.cuda.manual_seed(seed)<br><br>set_seed(1)  # 设置随机种子<br><br><span class="hljs-comment"># 参数设置</span><br>MAX_EPOCH = 10<br>BATCH_SIZE = 1<br>LR = 0.01<br>log_interval = 10<br>val_interval = 1<br>rmb_label = &#123;<span class="hljs-string">&quot;1&quot;</span>: 0, <span class="hljs-string">&quot;100&quot;</span>: 1&#125;<br><br><span class="hljs-comment">#对 tensor 进行反标准化操作，并且把 tensor 转换为 image，方便可视化。</span><br>def transform_invert(img_, transform_train):<br>    <span class="hljs-string">&quot;&quot;</span><span class="hljs-string">&quot;</span><br><span class="hljs-string">    将data 进行反transfrom操作</span><br><span class="hljs-string">    :param img_: tensor</span><br><span class="hljs-string">    :param transform_train: torchvision.transforms</span><br><span class="hljs-string">    :return: PIL image</span><br><span class="hljs-string">    &quot;</span><span class="hljs-string">&quot;&quot;</span><br><br>    # 如果有标准化操作<br>    <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;Normalize&#x27;</span> <span class="hljs-keyword">in</span> str(transform_train):<br>        # 取出标准化的 transform<br>        norm_transform = list(filter(lambda x: isinstance(x, transforms.Normalize), transform_train.transforms))<br>        # 取出均值<br>        mean = torch.tensor(norm_transform[0].mean, <span class="hljs-attribute">dtype</span>=img_.dtype, <span class="hljs-attribute">device</span>=img_.device)<br>        # 取出标准差<br>        std = torch.tensor(norm_transform[0].std, <span class="hljs-attribute">dtype</span>=img_.dtype, <span class="hljs-attribute">device</span>=img_.device)<br>        # 乘以标准差，加上均值<br>        img_.mul_(std[:, None, None]).add_(mean[:, None, None])<br><br>    # 把 C*H*W 变为 H*W<span class="hljs-number">*C</span><br>    img_ = img_.transpose(0, 2).transpose(0, 1)  # C*H*W --&gt; H*W<span class="hljs-number">*C</span><br>    # 把 0~1 的值变为 0~255<br>    img_ = np.array(img_) * 255<br><br>    # 如果是 RGB 图<br>    <span class="hljs-keyword">if</span> img_.shape[2] == 3:<br>        img_ = Image.fromarray(img_.astype(<span class="hljs-string">&#x27;uint8&#x27;</span>)).convert(<span class="hljs-string">&#x27;RGB&#x27;</span>)<br>        # 如果是灰度图<br>    elif img_.shape[2] == 1:<br>        img_ = Image.fromarray(img_.astype(<span class="hljs-string">&#x27;uint8&#x27;</span>).squeeze())<br>    <span class="hljs-keyword">else</span>:<br>        raise Exception(<span class="hljs-string">&quot;Invalid img shape, expected 1 or 3 in axis 2, but got &#123;&#125;!&quot;</span>.format(img_.shape[2]) )<br><br>    return img_<br><br><br>norm_mean = [0.485, 0.456, 0.406]<br>norm_std = [0.229, 0.224, 0.225]<br><br>train_transform = transforms.Compose([<br>    # 缩放到 (224, 224) 大小，会拉伸<br>    transforms.Resize((224, 224)),<br><br>    # 1 CenterCrop 中心裁剪<br>    # transforms.CenterCrop(512),     # 512<br>    # transforms.CenterCrop(196),     # 512<br><br>    # 2 RandomCrop<br>    # transforms.RandomCrop(224, <span class="hljs-attribute">padding</span>=16),<br>    # transforms.RandomCrop(224, padding=(16, 64)),<br>    # transforms.RandomCrop(224, <span class="hljs-attribute">padding</span>=16, fill=(255, 0, 0)),<br>    # transforms.RandomCrop(512, <span class="hljs-attribute">pad_if_needed</span>=<span class="hljs-literal">True</span>),   # <span class="hljs-attribute">pad_if_needed</span>=<span class="hljs-literal">True</span><br>    # transforms.RandomCrop(224, <span class="hljs-attribute">padding</span>=64, <span class="hljs-attribute">padding_mode</span>=<span class="hljs-string">&#x27;edge&#x27;</span>),<br>    # transforms.RandomCrop(224, <span class="hljs-attribute">padding</span>=64, <span class="hljs-attribute">padding_mode</span>=<span class="hljs-string">&#x27;reflect&#x27;</span>),<br>    # transforms.RandomCrop(1024, <span class="hljs-attribute">padding</span>=1024, <span class="hljs-attribute">padding_mode</span>=<span class="hljs-string">&#x27;symmetric&#x27;</span>),<br><br>    # 3 RandomResizedCrop<br>    # transforms.RandomResizedCrop(<span class="hljs-attribute">size</span>=224, scale=(0.08, 1)),<br>    # transforms.RandomResizedCrop(<span class="hljs-attribute">size</span>=224, scale=(0.5, 0.5)),<br><br>    # 4 FiveCrop<br>    # transforms.FiveCrop(112),<br>    # 返回的是 tuple，因此需要转换为 tensor<br>    # transforms.Lambda(lambda crops: torch.stack([(transforms.ToTensor()(crop)) <span class="hljs-keyword">for</span> crop <span class="hljs-keyword">in</span> crops])),<br><br>    # 5 TenCrop<br>    # transforms.TenCrop(112, <span class="hljs-attribute">vertical_flip</span>=<span class="hljs-literal">False</span>),<br>    # transforms.Lambda(lambda crops: torch.stack([(transforms.ToTensor()(crop)) <span class="hljs-keyword">for</span> crop <span class="hljs-keyword">in</span> crops])),<br><br>    # 1 Horizontal Flip<br>    # transforms.RandomHorizontalFlip(<span class="hljs-attribute">p</span>=1),<br><br>    # 2 Vertical Flip<br>    # transforms.RandomVerticalFlip(<span class="hljs-attribute">p</span>=1),<br><br>    # 3 RandomRotation<br>    # transforms.RandomRotation(90),<br>    # transforms.RandomRotation((90), <span class="hljs-attribute">expand</span>=<span class="hljs-literal">True</span>),<br>    # transforms.RandomRotation(30, center=(0, 0)),<br>    # transforms.RandomRotation(30, center=(0, 0), <span class="hljs-attribute">expand</span>=<span class="hljs-literal">True</span>),   # expand only <span class="hljs-keyword">for</span> center rotation<br><br><br>    # 1 Pad<br>    # transforms.Pad(<span class="hljs-attribute">padding</span>=32, fill=(255, 0, 0), <span class="hljs-attribute">padding_mode</span>=<span class="hljs-string">&#x27;constant&#x27;</span>),<br>    # transforms.Pad(padding=(8, 64), fill=(255, 0, 0), <span class="hljs-attribute">padding_mode</span>=<span class="hljs-string">&#x27;constant&#x27;</span>),<br>    # transforms.Pad(padding=(8, 16, 32, 64), fill=(255, 0, 0), <span class="hljs-attribute">padding_mode</span>=<span class="hljs-string">&#x27;constant&#x27;</span>),<br>    # transforms.Pad(padding=(8, 16, 32, 64), fill=(255, 0, 0), <span class="hljs-attribute">padding_mode</span>=<span class="hljs-string">&#x27;symmetric&#x27;</span>),<br><br>    # 2 ColorJitter<br>    # transforms.ColorJitter(<span class="hljs-attribute">brightness</span>=0.5),<br>    # transforms.ColorJitter(<span class="hljs-attribute">contrast</span>=0.5),<br>    # transforms.ColorJitter(<span class="hljs-attribute">saturation</span>=0.5),<br>    # transforms.ColorJitter(<span class="hljs-attribute">hue</span>=0.3),<br><br>    # 3 Grayscale<br>    # transforms.Grayscale(<span class="hljs-attribute">num_output_channels</span>=3),<br><br>    # 4 Affine<br>    # transforms.RandomAffine(<span class="hljs-attribute">degrees</span>=30),<br>    # transforms.RandomAffine(<span class="hljs-attribute">degrees</span>=0, translate=(0.2, 0.2), fillcolor=(255, 0, 0)),<br>    # transforms.RandomAffine(<span class="hljs-attribute">degrees</span>=0, scale=(0.7, 0.7)),<br>    # transforms.RandomAffine(<span class="hljs-attribute">degrees</span>=0, shear=(0, 0, 0, 45)),<br>    # transforms.RandomAffine(<span class="hljs-attribute">degrees</span>=0, <span class="hljs-attribute">shear</span>=90, fillcolor=(255, 0, 0)),<br><br>    # 5 Erasing<br>    # transforms.ToTensor(),<br>    # transforms.RandomErasing(<span class="hljs-attribute">p</span>=1, scale=(0.02, 0.33), ratio=(0.3, 3.3), value=(254/255, 0, 0)),<br>    # transforms.RandomErasing(<span class="hljs-attribute">p</span>=1, scale=(0.02, 0.33), ratio=(0.3, 3.3), <span class="hljs-attribute">value</span>=<span class="hljs-string">&#x27;fads43&#x27;</span>),<br><br>    # 1 RandomChoice<br>    # transforms.RandomChoice([transforms.RandomVerticalFlip(<span class="hljs-attribute">p</span>=1), transforms.RandomHorizontalFlip(<span class="hljs-attribute">p</span>=1)]),<br><br>    # 2 RandomApply<br>    # transforms.RandomApply([transforms.RandomAffine(<span class="hljs-attribute">degrees</span>=0, <span class="hljs-attribute">shear</span>=45, fillcolor=(255, 0, 0)),<br>    #                         transforms.Grayscale(<span class="hljs-attribute">num_output_channels</span>=3)], <span class="hljs-attribute">p</span>=0.5),<br>    # 3 RandomOrder<br>    # transforms.RandomOrder([transforms.RandomRotation(15),<br>    #                         transforms.Pad(<span class="hljs-attribute">padding</span>=32),<br>    #                         transforms.RandomAffine(<span class="hljs-attribute">degrees</span>=0, translate=(0.01, 0.1), scale=(0.9, 1.1))]),<br><br>    AddPepperNoise(0.9, <span class="hljs-attribute">p</span>=0.5),<br>    transforms.ToTensor(),<br>    transforms.Normalize(norm_mean, norm_std),<br>])<br><br><span class="hljs-attribute">path_img</span>=os.path.join(rmb_split_dir, <span class="hljs-string">&quot;train&quot;</span>, <span class="hljs-string">&quot;100&quot;</span>,<span class="hljs-string">&quot;0A4DSPGE.jpg&quot;</span>)<br>img = Image.open(path_img).convert(<span class="hljs-string">&#x27;RGB&#x27;</span>)  # 0~255<br><span class="hljs-attribute">img</span>=transforms.Resize((224, 224))(img)<br>img_tensor = train_transform(img)<br><br><br><br><span class="hljs-comment">## 展示单张图片</span><br><span class="hljs-comment"># 这里把转换后的 tensor 再转换为图片</span><br><span class="hljs-attribute">convert_img</span>=transform_invert(img_tensor, train_transform)<br>plt.subplot(1, 2, 1)<br>plt.imshow(img)<br>plt.subplot(1, 2, 2)<br>plt.imshow(convert_img)<br>plt.show()<br>plt.pause(0.5)<br>plt.close()<br><br><br><span class="hljs-comment">## 展示 FiveCrop 和 TenCrop 的图片</span><br><span class="hljs-comment"># ncrops, c, h, w = img_tensor.shape</span><br><span class="hljs-comment"># columns=2 # 两列</span><br><span class="hljs-comment"># rows= math.ceil(ncrops/2) # 计算多少行</span><br><span class="hljs-comment"># # 把每个 tensor ([c,h,w]) 转换为 image</span><br><span class="hljs-comment"># for i in range(ncrops):</span><br><span class="hljs-comment">#     img = transform_invert(img_tensor[i], train_transform)</span><br><span class="hljs-comment">#     plt.subplot(rows, columns, i+1)</span><br><span class="hljs-comment">#     plt.imshow(img)</span><br><span class="hljs-comment"># plt.show()</span><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="print-no-link">#深度学习</a>
+      
+        <a href="/tags/pytorch/" class="print-no-link">#pytorch</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深度学习-9-pytorch-2-数据处理</div>
+      <div>https://truth-zheng.github.io/2021/08/10/pytorchtrain2/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zheng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/08/11/pytorchtrain3/" title="深度学习-10-pytorch-3-模型构建">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深度学习-10-pytorch-3-模型构建</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/09/pytorchtrain/" title="深度学习-9-pytorch-1-基本概念">
+                        <span class="hidden-mobile">深度学习-9-pytorch-1-基本概念</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/mermaid@8.10.1/dist/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com" target="_blank" rel="nofollow noopener"><span>Github</span></a> <i class="iconfont icon-love"></i> <a href="https://scholar.google.com/" target="_blank" rel="nofollow noopener"><span>GoogleScholar</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

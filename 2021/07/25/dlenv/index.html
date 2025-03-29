@@ -1,0 +1,919 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar/tou.jpeg">
+  <link rel="icon" href="/img/avatar/tou.jpeg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zheng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="详细全面的深度学习环境配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-0-环境配置">
+<meta property="og:url" content="https://truth-zheng.github.io/2021/07/25/dlenv/index.html">
+<meta property="og:site_name" content="Sage的生活学习笔记">
+<meta property="og:description" content="详细全面的深度学习环境配置">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+<meta property="article:published_time" content="2021-07-25T10:00:00.000Z">
+<meta property="article:modified_time" content="2021-08-02T13:01:56.000Z">
+<meta property="article:author" content="zheng">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="环境配置">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>深度学习-0-环境配置 - Sage的生活学习笔记</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"truth-zheng.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"gtag":null,"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sage的学习生活笔记</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/2.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深度学习-0-环境配置"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-07-25 18:00" pubdate>
+          2021年7月25日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          6.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          57 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">深度学习-0-环境配置</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年8月2日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>创作声明：主要内容为互联网内容整合，其中关于开发环境配置主要参考为知乎稚辉的专栏教程：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/336429888">https://zhuanlan.zhihu.com/p/336429888</a></p>
+</blockquote>
+<h2 id="硬件篇"><a href="#硬件篇" class="headerlink" title="硬件篇"></a><strong>硬件篇</strong></h2><p><strong>建议Intel+NVIDIA</strong><br>作为生产力工具考虑到软件库的兼容性问题，决定选择Intel+NVIDIA平台。</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs subunit">有钱: <br>3090<span class="hljs-string">+10</span>代i9<span class="hljs-string">+64</span>g内存<span class="hljs-string">+2</span>T固态<span class="hljs-string">+12</span>T机械<br>  GPU方面3090，24G的显存跟TITAN RTX持平了（价格却只要一半）...硬盘的设计是这样的：1T的NVME固态做系统盘，12T的机械盘作为数据集仓库，另外一个1T SATA固态作为训练时的数据集缓存，因为IO读写速度也是会影响训练效率的，所以相比于直接从机械盘里面读取数据，加一块SSD做cache效果会好很多。<br>没钱: <br>3060<span class="hljs-string">+11</span>代i5<span class="hljs-string">+32</span>g内存<span class="hljs-string">+512</span>g固态<span class="hljs-string">+1</span>T机械<br></code></pre></td></tr></table></figure>
+<h2 id="系统篇"><a href="#系统篇" class="headerlink" title="系统篇"></a><strong>系统篇</strong></h2><p>工作站配置为<strong>Windows+Ubuntu双系统</strong>  </p>
+<ul>
+<li><strong>安装windows系统</strong><br>建议使用微PE工具进行安装。（网上有许多相关教程）  </li>
+<li><strong>安装Ubuntu系统</strong></li>
+</ul>
+<ol>
+<li>在官网下载Ubuntu镜像：Ubuntu 20.04.1 LTS Destop image版本，得到.iso镜像文件，在<a href="rufus.ie/zh/">rufus</a>下载rufus，选择安装系统镜像，分区选择GPT，目标系统UEFI，之后点击开始，等待进度条走完，然后点击[关闭]，弹出U盘就ok了。</li>
+<li>重启电脑，启动时连续按F2，进入BIOS，关闭安全启动(不同主板设置不同，请自行查找相关资料进行修改)。</li>
+<li>在BIOS选择U盘启动项进入临时的Ubuntu系统，在图形界面中选择Install Ubuntu，所有配置都可以使用默认的，改一下用户名和密码即可。 这里建议使用英文作为默认语言，避免给自己日后开发找麻烦，安装过程中会联网下载一些软件包更新，可以直接点skip掉，在安装好系统之后再换源手动更新更快。</li>
+<li>关于分区（建议系统默认安装自动分区，在Ubuntu分区时选择“向导──使用最大的连续空闲空间”）</li>
+</ol>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs coq">手动分区：<br>一共分出<span class="hljs-number">5</span>个系统分区。<br>(<span class="hljs-number">1</span>). 设置efi引导<br>因为是u盘的uefi启动，因此设置一个efi引导项。<br>具体参数：<br>大小: <span class="hljs-number">500</span>到<span class="hljs-number">1024</span>mb即可<br>（视自身的存储空间而定）<br>新分区的类型： 逻辑分区<br>新分区的位置： 空间起始位置<br>用于： EFI系统分区<br>(<span class="hljs-number">2</span>).<span class="hljs-built_in">swap</span><br><span class="hljs-built_in">swap</span>用作虚拟内存，根据自身的物理内存决定。<br>如果物理内存在<span class="hljs-number">8</span>G以下，则<span class="hljs-built_in">swap</span>设置为物理内存一样的大小，如果超过<span class="hljs-number">8</span>G，则一般设置为<span class="hljs-number">8</span>G大小的虚拟内存就足够了。根据自身的使用需求，也可以适当增大<span class="hljs-built_in">swap</span>大小。<br>我的电脑用了两个<span class="hljs-number">8</span>g的内存条，因此大小设置为了<span class="hljs-number">16</span>g*<span class="hljs-number">1024</span>=<span class="hljs-number">16384</span>MB。<br>具体参数：<br>大小: （视自身的物理内存而定）<br>新分区的类型： 主分区<br>新分区的位置： 空间起始位置<br>用于： 交换空间<br>(<span class="hljs-number">3</span>). 挂载点/<br>主要用来存放ubuntu系统文件。有固态硬盘的可以安在固态盘中。<br>具体参数：<br>大小: <span class="hljs-number">100</span>G<br>（视自身的存储空间而定）<br>新分区的类型： 逻辑分区<br>新分区的位置： 空间起始位置<br>用于： Ext4日志文件系统<br>挂载点： /<br>(<span class="hljs-number">4</span>).挂载点/home<br>存放用户文件。这个分区尽量设置大一些，因为我安装了机械盘，因此分配了<span class="hljs-number">300</span>g的存储空间给它。<br>具体参数：<br>大小: <span class="hljs-number">300</span>G<br>（视自身的存储空间而定）<br>新分区的类型： 逻辑分区<br>新分区的位置： 空间起始位置<br>用于： Ext4日志文件系统<br>挂载点： /home<br>分区完成之后，设置安装启动器设备，注意，这里选择刚刚分出来的efi分区，具体的设备号最好再三对照表格中的数据。<br>完成后，会弹出一个确认界面，再一次确认是否分区正确。<br></code></pre></td></tr></table></figure>
+<ol start="5">
+<li>进入系统后设置一下root账户密码：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> passwd root<br></code></pre></td></tr></table></figure>
+<p>同时为了避免每次sudo都要输入密码，这里配置一下visudo：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> visudo<br></code></pre></td></tr></table></figure>
+<p>在文件最后加上一句（改为自己的用户名）：</p>
+<figure class="highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nsis"><span class="hljs-literal">user</span> <span class="hljs-literal">ALL</span>=(<span class="hljs-literal">ALL</span>) NOPASSWD: <span class="hljs-literal">ALL</span><br></code></pre></td></tr></table></figure>
+<ol start="6">
+<li>替换软件源<br>提升后续安装软件时的速度<br>备份原来的源：</li>
+</ol>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-keyword">cp</span> /etc/apt/sources<span class="hljs-meta">.list</span> /etc/apt/sources<span class="hljs-meta">.list</span>.bak<br></code></pre></td></tr></table></figure>
+<p>将源的内容设置为阿里云镜像：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> vim /etc/apt/sources.list<br></code></pre></td></tr></table></figure>
+<p>内容改为：(自行查找vim基本指令)</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs 1c">deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse</span><br>deb<span class="hljs-punctuation">-</span>src http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse</span><br>deb<span class="hljs-punctuation">-</span>src http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse</span><br>deb<span class="hljs-punctuation">-</span>src http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse</span><br>deb<span class="hljs-punctuation">-</span>src http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse</span><br>deb http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse</span><br>deb<span class="hljs-punctuation">-</span>src http<span class="hljs-punctuation">:</span><span class="hljs-comment">//mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse</span><br></code></pre></td></tr></table></figure>
+<p>更新软件列表：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt update<br><span class="hljs-built_in">sudo</span> apt upgrade<br></code></pre></td></tr></table></figure>
+<ol start="7">
+<li>Ubuntu系统默认自带python，有版本需求的话也可以自己安装一下（不安装也行因为后面会安装conda环境）：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt install python3<br><span class="hljs-built_in">sudo</span> apt install python3-pip<br></code></pre></td></tr></table></figure>
+<p>替换python的pip源建议是一定操作一下的，pip安装速度会快很多：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> ~<br><span class="hljs-built_in">mkdir</span> .pip<br></code></pre></td></tr></table></figure>
+<p>直接新建并编辑pip.conf：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> vim ~/.pip/pip.conf<br></code></pre></td></tr></table></figure>
+<p>改为以下内容（这里用的清华源，也可以试一下阿里、豆瓣等源）：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">[<span class="hljs-keyword">global</span>]<br><span class="hljs-keyword">index</span>-url = https://pypi.tuna.tsinghua.edu.cn/simple/ <br>[install]<br><span class="hljs-keyword">trusted</span>-host = pypi.tuna.tsinghua.edu.cn<br></code></pre></td></tr></table></figure>
+<p>更改默认python版本，python目录默认链接的是python2，而现在基本都是用python3开发了，每次都输入python3很麻烦所以这里直接更换默认的python命令链接。<br>把原来的python软链接删掉：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">rm</span> /usr/bin/python<br></code></pre></td></tr></table></figure>
+<p>新建一个软链接：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">ln</span> -s /usr/bin/python3 /usr/bin/python<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">ln</span> -s /usr/bin/pip3 /usr/bin/pip<br></code></pre></td></tr></table></figure>
+<p>现在输入python就会进入python3环境了。</p>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a><strong>环境搭建</strong></h2><h3 id="远程开发"><a href="#远程开发" class="headerlink" title="远程开发"></a><strong>远程开发</strong></h3><p><strong>安装SSH：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt install ssh<br></code></pre></td></tr></table></figure>
+<p>会自动安装好很多依赖包并启动服务，完成之后用XShell等软件就可以SSH登录服务器了。<br><strong>安装xrdp：</strong><br>Xrdp 是一个微软远程桌面协议（RDP）的开源实现，它允许我们通过图形界面控制远程系统。这里使用RDP而不是VNC作为远程桌面，是因为Windows自带的远程桌面连接软件就可以连接很方便，另外RDP在Windows下的体验非常好，包括速度很快（因为压缩方案做得比较好），可以直接在主机和远程桌面之间复制粘贴等等。<br>安装过程如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt install xrdp <br></code></pre></td></tr></table></figure>
+<p>安装完成xrdp 服务将会自动启动，可以输入下面的命令验证它：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl status xrdp<br></code></pre></td></tr></table></figure>
+<p>默认情况下，xrdp 使用&#x2F;etc&#x2F;ssl&#x2F;private&#x2F;ssl-cert-snakeoil.key，它仅仅对ssl-cert用户组成语可读，所以需要运行下面的命令，将xrdp用户添加到这个用户组：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> adduser xrdp ssl-cert  <br><span class="hljs-built_in">sudo</span> systemctl restart xrdp<br></code></pre></td></tr></table></figure>
+<p><strong>安装frp进行内网穿透</strong> </p>
+<p>前面介绍的SSH和远程桌面都是需要在局域网下通过IP地址进行连接的，而我们配置一台服务器最重要的诉求，应该是可以随时随地去访问服务器。<br>	<br>那在家里面，网络运营商提供的网络服务通过路由器路由到各个设备，此时路由器会同时具备内网地址（路由器之内，局域网，LAN，也就是192.168.x.x）和外网地址（路由器之外，互联网，WAN）。但是其实这个WAN口的IP并不是真正的“公网IP”，而时经过了多层的NAT转换之后的地址，外网的设备是不能通过这个地址访问到路由器的。这个问题的原因是ipv4地址池紧张，如果运营商给每家的路由器都安排一个公网ip的话，那ip地址早就不够用了呀。<br>	<br>因此为了能让外网访问到我们局域网内的设备，就需要跟中国电信等运营商申请公网ip（现在能申请到的概率也已经不大了，而且即使申请到也不是所有端口都可以使用的），或者我们自己动手做一些操作来达到同样的目的。<br>	<br>使用frp之类的软件做反向代理来实现内网穿透，这个方案需要你有一台带公网IP的云服务器的，优点就是完全可控，自己想配置多少个端口的穿透都可以，速度跟你的云服务器带宽有关。<br>为什么需要多个端口？ 是因为不同应用占用的端口不同，比如我们的SSH走的是22号端口，而远程桌面的rdp走的是3389号端口，如果需要自建Web服务的话则是走80&#x2F;443端口、想把工作站作为上外网的代理服务器的话会需要1080端口等等…所以用上面第二个方案显然会方便很多，而且云服务器也不贵，我在腾讯云上购买一年只要200左右。</p>
+<p>如何安装配置frp：<br>	<br>frp分为frps（server）和frpc（client）两个包 </p>
+<p>前者安装到我们的云服务器上，后者安装在需要被外网访问到的各个设备上，这里就是指我们的深度学习工作站。<br>云服务器：<br>在<a target="_blank" rel="noopener" href="https://github.com/fatedier/frp/releases">frp</a>下载适合你服务器系统的frp软件，我这里是用的是腾讯云64位Ubuntu18.04所以选择frp_0.34.3_linux_amd64.tar.gz，下好之后解压：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">tar</span> -zxvf frp_0.<span class="hljs-number">34</span>.<span class="hljs-number">3</span>_linux_amd64.tar.gz<br></code></pre></td></tr></table></figure>
+<p>我们需要编辑的文件是frps.ini :<br>	<br>内容改为：(#后面去掉)</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[common]</span><br><span class="hljs-attr">bind_port</span> = <span class="hljs-number">7000</span> <span class="hljs-comment"># frp服务的端口号，可以自己定</span><br><span class="hljs-attr">dashboard_port</span> = <span class="hljs-number">7500</span> <span class="hljs-comment"># frp的web界面的端口号</span><br><span class="hljs-attr">dashboard_user</span> = user <span class="hljs-comment"># web界面的登陆账户，自己修改</span><br><span class="hljs-attr">dashboard_pwd</span> = pass <span class="hljs-comment"># web界面的登陆密码，自己修改</span><br><span class="hljs-attr">authentication_method</span> = token<br><span class="hljs-attr">token</span> = xxxxx <span class="hljs-comment"># frp客户端连接时的密码，自己修改</span><br></code></pre></td></tr></table></figure>
+<p>保存配置后，使用该命令启动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">./frps -c ./frps.ini<br></code></pre></td></tr></table></figure>
+<p>在浏览器输入 [云服务器的公网ip]:7500 (不用带[])即可访问到 frp的web管理界面。<br>	<br>注意，可能需要去云服务器控制台配置安全组规则开放以上涉及到的端口，否则无法访问。</p>
+<p>本地的深度学习服务器端：<br>下载相应版本的frpc软件包（跟刚刚一样的）：这里选amd64的，下好之后解压到一个临时文件夹。<br>修改frpc.ini配置文件，内容如下：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs makefile">[common]<br>server_addr = xx.xx.xx.xx <span class="hljs-comment"># 你的云服务器的公网ip</span><br>authentication_method = token<br>token = xxxxx <span class="hljs-comment"># 刚刚配置的frp连接密码 </span><br>server_port = 7000 <span class="hljs-comment"># 刚刚配置的frp服务端口</span><br><br>[Fusion-ssh]<br>type = tcp<br>local_ip = 127.0.0.1<br>local_port = 22<br>remote_port = 20022<br>​<br>[Fusion-rdp]<br>type = tcp<br>local_ip = 127.0.0.1<br>local_port = 3389<br>remote_port = 23389<br></code></pre></td></tr></table></figure>
+
+<p>通过上面的脚本就可以把对于云服务器特定端口的访问给重定向到本地服务器的某个端口了，简单地讲就是：假如我用SSH客户端访问 [云服务器ip]:20022，就可以经过反向代理直接访问到[本地的训练服务器ip]:20022；同理需要连接远程桌面的话，只需要访问[云服务器ip]:23389就可以了。<br>添加开机自动启动的脚本，新建一个文件：<br><code>/etc/systemd/system/frpc.service</code>，注意修改其中的路径<br>内容：  </p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs routeros">[Fusion]<br><span class="hljs-attribute">Description</span>=Frp<span class="hljs-built_in"> Server </span>Daemon<br><span class="hljs-attribute">After</span>=syslog.target network.target<br><span class="hljs-attribute">Wants</span>=network.target<br><br>[Service]<br><span class="hljs-attribute">Type</span>=simple<br><span class="hljs-attribute">ExecStart</span>=/usr/local/bin/frp/frpc -c /usr/local/bin/frp/frpc.ini # 修改为你的frp实际安装目录<br><span class="hljs-attribute">ExecStop</span>=/usr/bin/killall frpc<br><span class="hljs-comment">#启动失败1分钟后再次启动</span><br><span class="hljs-attribute">RestartSec</span>=1min<br><span class="hljs-attribute">KillMode</span>=control-group<br><span class="hljs-comment">#重启控制：总是重启</span><br><span class="hljs-attribute">Restart</span>=always<br>​<br>[Install]<br><span class="hljs-attribute">WantedBy</span>=multi-user.target<br></code></pre></td></tr></table></figure>
+<p>然后执行以下命令启用脚本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl <span class="hljs-built_in">enable</span> frpc.service<br><span class="hljs-built_in">sudo</span> systemctl start frpc.service<br></code></pre></td></tr></table></figure>
+<p>通过下面的命令查看服务状态，如果是running的话就说明可以了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl status frpc.service<br></code></pre></td></tr></table></figure>
+<p>这里顺便提一下，按照习惯一般把上面的frp软件解压防止在&#x2F;usr&#x2F;local&#x2F;bin目录下。Linux 的软件安装目录是也是有讲究的，理解这一点，在对系统管理是有益的</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-string">/usr</span>：系统级的目录，可以理解为C:<span class="hljs-string">/Windows/</span><br><span class="hljs-string">/usr/lib</span>：可以理解为C:<span class="hljs-string">/Windows/System32</span><br><span class="hljs-string">/usr/local</span>：用户级的程序目录，可以理解为C:<span class="hljs-string">/Progrem</span> Files/，用户自己编译的软件默认会安装到这个目录下<br><span class="hljs-string">/opt</span>：用户级的程序目录，可以理解为D:<span class="hljs-string">/Software</span>，opt有可选的意思，这里可以用于放置第三方大型软件（或游戏），当你不需要时，直接rm -rf掉即可。在硬盘容量不够时，也可将<span class="hljs-string">/opt</span>单独挂载到其他磁盘上使用<br>源码放哪里？<br><span class="hljs-string">/usr/src</span>：系统级的源码目录<br><span class="hljs-string">/usr/local/src</span>：用户级的源码目录。<br></code></pre></td></tr></table></figure>
+<p><strong>安装SAMBA服务</strong><br>如果能把服务器上的磁盘直接挂载到我们使用的Windows个人PC上是不是很爽？<br>我们可以通过建立局域网SAMBA服务来实现这个效果：<br>安装samba 和samba-common-bin</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">sudo</span> apt-<span class="hljs-meta">get</span> install samba samba-<span class="hljs-meta">common</span>-bin<br></code></pre></td></tr></table></figure>
+<p>配置<code>/etc/samba/smb.conf</code>文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> nano /etc/samba/smb.conf<br></code></pre></td></tr></table></figure>
+<p>在最后一行后面加入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 共享文件夹显示的名称</span><br>[home]<br><span class="hljs-comment"># 说明信息</span><br>comment = Fusion WorkStation Storage<br><span class="hljs-comment"># 可以访问的用户</span><br>valid <span class="hljs-built_in">users</span> = sage,root<br><span class="hljs-comment"># 共享文件的路径</span><br>path = /home/sage/<br><span class="hljs-comment"># 可被其他人看到资源名称（非内容）</span><br>browseable = <span class="hljs-built_in">yes</span><br><span class="hljs-comment"># 可写</span><br>writable = <span class="hljs-built_in">yes</span><br><span class="hljs-comment"># 新建文件的权限为 664</span><br>create mask = 0664<br><span class="hljs-comment"># 新建目录的权限为 775</span><br>directory mask = 0775<br></code></pre></td></tr></table></figure>
+<p>可以把配置文件中你不需要的分享名称删除，例如 [homes], [printers] 等。	<br>运行这个命令测试一下配置文件是否有错误，根据提示做相应修改：</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">testparm</span><br></code></pre></td></tr></table></figure>
+<p>添加登陆账户并创建密码<br>必须是 linux 已存在的用户：</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">sudo smbpasswd -<span class="hljs-keyword">a</span> <span class="hljs-literal">pi</span><br></code></pre></td></tr></table></figure>
+<p>然后重启服务即可：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> /etc/init.d/samba-ad-dc restart<br></code></pre></td></tr></table></figure>
+<p>接下来可以在Windows的网络中发现设备了：<br>但是可能会出现无法点开的情况，这里需要在Windows的凭据管理器中添加账户信息（开始菜单里搜索凭据管理器即可打开），点击添加Windows凭据，输入你的服务器名称和账户密码，接下来就可以点进去看到服务器上的文件了。 为了更加方便地进行文件交互，我们添加对应的磁盘到Windows资源管理器的此电脑中，选择刚刚服务器的网络路径即可添加。</p>
+<h3 id="GPU相关的驱动和环境"><a href="#GPU相关的驱动和环境" class="headerlink" title="GPU相关的驱动和环境"></a><strong>GPU相关的驱动和环境</strong></h3><p><strong>在安装显卡驱动前一定要到BIOS关闭安全启动！</strong><br>系统自带的显卡驱动不是NVIDIA的，先删除这个驱动</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">sudo apt-<span class="hljs-built_in">get</span> <span class="hljs-built_in">remove</span> --purge nvidia*<br></code></pre></td></tr></table></figure>
+<p><strong>NVIDIA驱动</strong><br>最简单的方式是通过系统的软件与更新来安装：<br>进入系统的图形桌面，打开Software &amp; Updates软件，可以看到标签栏有一个Additional Drivers：<br>选择第一个安装Nvidia官方驱动（第二个是开源驱动）即可，根据网络情况稍等大概十分钟，安装完重启服务器，重启完之后更新一下软件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt update<br><span class="hljs-built_in">sudo</span> apt upgrade<br></code></pre></td></tr></table></figure>
+<p>这里会连带Nvidia的驱动一起升级一遍，更新到最新的驱动；更新完可能会出现nvidia-smi命令报错，再重启一下就解决了。<br>安装Cuda<br>	去官网下载cuda安装包：<a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html">cuda</a> （根据实际情况选择）</p>
+<p>运行下面的命令进行安装（换成自己的文件名）：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">chmod</span> +x cuda_11.<span class="hljs-number">0</span>.<span class="hljs-number">2</span>_450.<span class="hljs-number">51</span>.<span class="hljs-number">05</span>_linux.run<br><span class="hljs-attribute">sudo</span> sh ./cuda_11.<span class="hljs-number">0</span>.<span class="hljs-number">2</span>_450.<span class="hljs-number">51</span>.<span class="hljs-number">05</span>_linux.run<br></code></pre></td></tr></table></figure>
+<p>可能会报一个警告<br><img src="/img/dlenv/1.png" srcset="/img/loading.gif" lazyload>	<br>前面已经卸载过旧版本了直接Continue就好。然后根据提示选择安装选项，注意不要勾选第一个安装显卡驱动的，因为之前已经安装过了。 安装完成后提示：<br><img src="/img/dlenv/2.png" srcset="/img/loading.gif" lazyload><br>根据上图提示需要配置环境变量：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">nano  ~/.bashrc<br></code></pre></td></tr></table></figure>
+<p>在文件最后加入以下语句：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">export</span> <span class="hljs-attribute">CUDA_HOME</span>=/usr/local/cuda-11.0<br><span class="hljs-built_in">export</span> <span class="hljs-attribute">LD_LIBRARY_PATH</span>=<span class="hljs-variable">$&#123;CUDA_HOME&#125;</span>/lib64<br><span class="hljs-built_in">export</span> <span class="hljs-attribute">PATH</span>=<span class="hljs-variable">$&#123;CUDA_HOME&#125;</span>/bin:$&#123;PATH&#125;<br></code></pre></td></tr></table></figure>
+<p>然后使其生效：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> ~/.bashrc<br></code></pre></td></tr></table></figure>
+<p>可以使用命令<code>nvcc -V</code>查看安装的版本信息，也可以编译一个程序测试安装是否成功，执行以下几条命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> ~/Softwares/cuda/NVIDIA_CUDA-11.0_Samples/1_Utilities/deviceQuery<br>make<br>./deviceQuery<br></code></pre></td></tr></table></figure>
+<p>正常的话会有相应输出，打印显卡的信息。<br><strong>安装CuDNN</strong><br>进入到<a target="_blank" rel="noopener" href="https://developer.nvidia.com/rdp/cudnn-download">CuDNN</a>的下载官网，点击Download开始选择下载版本，当然在下载之前还有登录，选择版本界面如下：<br><img src="/img/dlenv/3.png" srcset="/img/loading.gif" lazyload><br>我们选择和之前cuda版本对应的cudnn版本：<br><img src="/img/dlenv/4.png" srcset="/img/loading.gif" lazyload><br>下载之后是一个压缩包，对它进行解压，命令如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">tar</span> -xzvf cudnn-<span class="hljs-number">11</span>.<span class="hljs-number">0</span>-linux-x64-v<span class="hljs-number">8.0.5.39</span>.tgz<br></code></pre></td></tr></table></figure>
+<p>使用以下两条命令复制这些文件到CUDA目录下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">cp</span> cuda/lib64/* /usr/local/cuda-11.0/lib64/<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">cp</span> cuda/include/* /usr/local/cuda-11.0/include/<br></code></pre></td></tr></table></figure>
+<p>拷贝完成之后，可以使用以下命令查看CUDNN的版本信息：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gradle">cat <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/cuda/i</span>nclude/cudnn_version.h | <span class="hljs-keyword">grep</span> CUDNN_MAJOR -A <span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
+<p>可以看到版本信息如下，为8.0.5：<br><img src="/img/dlenv/5.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>安装Conda环境</strong><br>不同的训练框架和版本可能会需要不同的python版本相对应，而且有的包比如numpy也对版本有要求，所以比较优雅的方法是给每个配置建立一个虚拟的python环境，在需要的时候可以随时切换，而不需要的时候也能删除不浪费磁盘资源，那在这方面conda是做得最好的。</p>
+<ol>
+<li>在Anaconda官网下载Linux版本安装包：<a target="_blank" rel="noopener" href="https://www.anaconda.com/products/individual">Anaconda</a></li>
+<li>运行下面的命令安装：</li>
+</ol>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs llvm">chmod +<span class="hljs-keyword">x</span> Anaconda<span class="hljs-number">3</span><span class="hljs-number">-2020.11</span>-Linux-<span class="hljs-keyword">x</span><span class="hljs-number">86</span>_<span class="hljs-number">64</span>.sh<br>./Anaconda<span class="hljs-number">3</span><span class="hljs-number">-2020.11</span>-Linux-<span class="hljs-keyword">x</span><span class="hljs-number">86</span>_<span class="hljs-number">64</span>.sh<br></code></pre></td></tr></table></figure>
+<p>一路按ENTER确认，然后根据提示输入yes，这里我为了目录整洁不安装在默认路径，设置为下面的路径：&#x2F;home&#x2F;sage&#x2F;Softwares&#x2F;anaconda<br>然后会询问你是否要初始化conda，输入yes确认，重开终端窗口之后，就可以看到conda环境可用了（base代表默认环境）：<br>conda的使用方法网上搜一下有很多，这里就不赘述了。</p>
+<p><strong>安装Nvidia-Docker</strong><br>Docker也是虚拟化环境的神器，前面说的conda虽然可以提供python的虚拟环境并方便地切换，但是有的时候我们的开发环境并不只是用到python，比如有的native库需要对应gcc版本的编译环境，或者进行交叉编译时要安装很多工具链等等。如果这些操作都在服务器本地上进行，那时间久了就会让服务器的文件系统非常杂乱，而且还会遇到各种软件版本冲突问题。<br>	<br>Docker就可以很好地解决这些问题，它其实可以理解为就是一个非常轻量化的虚拟机，我们可以在宿主服务器上新建很多个这种被称为容器的虚拟机，然后在里面配置我们的开发环境，且这些配置好的环境是可以打包成镜像的，方便随时做分享和重用；不需要的时候，我们直接删除容器就好了，其资源是和我们的服务器宿主机完全隔离的。<br>	<br>Docker的具体使用可以自己搜索一下很多教程，这里主要介绍如何把GPU暴露给Docker的容器（因为大家都知道像是VMware这种虚拟机里面都是无法共享宿主机的GPU的），是通过nvidia-docker实现的。<br>	<br>以前为了配置nvidia-docker，需要安装完docker之后再安装单独的nvidia docker2，而现在只需要安装nvidia container toolkit即可，更加方便了。<br>docker安装在官网上有详细的介绍或者运行下面的命令安装：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs routeros">sudo apt-<span class="hljs-built_in">get</span> update<br>sudo apt-<span class="hljs-built_in">get</span> install docker.io<br>systemctl start docker<br>systemctl <span class="hljs-built_in">enable</span> docker<br></code></pre></td></tr></table></figure>
+<p>可以运行这条命令检查是否安装成功：</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs applescript">docker <span class="hljs-built_in">version</span><br></code></pre></td></tr></table></figure>
+<p>安装NVIDIA Container Toolkit</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">##首先要确保已经安装了nvidia driver</span><br><span class="hljs-comment">#添加源</span><br>distribution=$(. /etc/os-release;<span class="hljs-built_in">echo</span> $ID<span class="hljs-variable">$VERSION_ID</span>)<br>curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | <span class="hljs-built_in">sudo</span> apt-key add -<br>curl -s -L https://nvidia.github.io/nvidia-docker/<span class="hljs-variable">$distribution</span>/nvidia-docker.list | <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tee</span> /etc/apt/sources.list.d/nvidia-docker.list<br><br>安装并重启<br><span class="hljs-built_in">sudo</span> apt-get update &amp;&amp; <span class="hljs-built_in">sudo</span> apt-get install -y nvidia-container-toolkit<br><span class="hljs-built_in">sudo</span> systemctl restart docker<br></code></pre></td></tr></table></figure>
+<p>安装完成后可以新建一个容器测试一下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">sudo</span> docker run -it --name test_nvidia_docker --gpus <span class="hljs-literal">all</span> nvidia/cuda:<span class="hljs-number">11</span>.<span class="hljs-number">1</span>-base <br></code></pre></td></tr></table></figure>
+<p>其中最后的参数nvidia&#x2F;cuda:11.1-base 是Nvidia官方的镜像，需要根据工作站主机中实际安装的cuda版本进行修改，版本可以用nvcc -V查看。<br>进入容器之后可以跑一下<code>nvidia-smi</code>命令看看</p>
+<h3 id="环境测试"><a href="#环境测试" class="headerlink" title="环境测试"></a><strong>环境测试</strong></h3><p>这里通过一个简单的python脚本测试一下GPU训练是否一切正常，跑一个DL里面的Hello World程序，通过两种方法测试：本地conda和docker虚拟机。以后的开发过程中一般还是使用Docker的方式来进行更为优雅。<br><strong>本地Conda环境方式：</strong><br>先用conda新建一个python3.8+pytorch1.7+cuda11.0的虚拟环境：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">conda</span> create --name python_38-pytorch_1.<span class="hljs-number">7</span>.<span class="hljs-number">0</span> python=<span class="hljs-number">3</span>.<span class="hljs-number">8</span><br></code></pre></td></tr></table></figure>
+<p>创建完成后进入环境：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">conda</span> activate python_38-pytorch_1.<span class="hljs-number">7</span>.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+<p>检查一下是否切换到所需环境了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">which</span> pip<br></code></pre></td></tr></table></figure>
+<p>如果看到使用的确实是我们设置的环境目录中的pip的话说明就ok。<br>	<br>安装pytorch，可以参考官网的安装命令</p>
+<p>环境配置就完成了，下面新建一个简单的测试脚本验证功能，新建<code>mnist_train.py</code>，内容如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn<br><span class="hljs-keyword">import</span> torch.nn.functional <span class="hljs-keyword">as</span> F<br><span class="hljs-keyword">import</span> torch.optim <span class="hljs-keyword">as</span> optim<br><span class="hljs-keyword">import</span> torch.backends.cudnn <span class="hljs-keyword">as</span> cudnn<br><span class="hljs-keyword">from</span> torchvision <span class="hljs-keyword">import</span> datasets, transforms<br>	<br>	<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Net</span>(nn.Module):<br>	<span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>	    <span class="hljs-built_in">super</span>(Net, <span class="hljs-variable language_">self</span>).__init__()<br>	    <span class="hljs-variable language_">self</span>.conv1 = nn.Conv2d(<span class="hljs-number">1</span>, <span class="hljs-number">10</span>, kernel_size=<span class="hljs-number">5</span>)<br>	    <span class="hljs-variable language_">self</span>.conv2 = nn.Conv2d(<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, kernel_size=<span class="hljs-number">5</span>)<br>	    <span class="hljs-variable language_">self</span>.conv2_drop = nn.Dropout2d()<br>	    <span class="hljs-variable language_">self</span>.fc1 = nn.Linear(<span class="hljs-number">320</span>, <span class="hljs-number">50</span>)<br>	    <span class="hljs-variable language_">self</span>.fc2 = nn.Linear(<span class="hljs-number">50</span>, <span class="hljs-number">10</span>)<br>	<br>	<br>	<span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, x</span>):<br>	    x = F.relu(F.max_pool2d(<span class="hljs-variable language_">self</span>.conv1(x), <span class="hljs-number">2</span>))<br>	    x = F.relu(F.max_pool2d(<span class="hljs-variable language_">self</span>.conv2_drop(<span class="hljs-variable language_">self</span>.conv2(x)), <span class="hljs-number">2</span>))<br>	    x = x.view(-<span class="hljs-number">1</span>, <span class="hljs-number">320</span>)<br>	    x = F.relu(<span class="hljs-variable language_">self</span>.fc1(x))<br>	    x = F.dropout(x, training=<span class="hljs-variable language_">self</span>.training)<br>	    x = <span class="hljs-variable language_">self</span>.fc2(x)<br>	    <span class="hljs-keyword">return</span> F.log_softmax(x, dim=<span class="hljs-number">1</span>)<br>	<br>	<br>	<span class="hljs-keyword">def</span> <span class="hljs-title function_">train</span>(<span class="hljs-params">model, device, train_loader, optimizer, epoch</span>):<br>	    model.train()<br>	    <span class="hljs-keyword">for</span> batch_idx, (data, target) <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(train_loader):<br>	        data, target = data.to(device), target.to(device)<br>	        optimizer.zero_grad()<br>	        output = model(data)<br>	        loss = F.nll_loss(output, target)<br>	        loss.backward()<br>	        optimizer.step()<br>	        <span class="hljs-keyword">if</span> batch_idx % <span class="hljs-number">10</span> == <span class="hljs-number">0</span>:<br>	            <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;Train Epoch: &#123;&#125; [&#123;&#125;/&#123;&#125; (&#123;:.0f&#125;%)]\tLoss: &#123;:.6f&#125;&#x27;</span>.<span class="hljs-built_in">format</span>(<br>	                epoch, batch_idx * <span class="hljs-built_in">len</span>(data), <span class="hljs-built_in">len</span>(train_loader.dataset),<br>	                       <span class="hljs-number">1.</span>   * batch_idx / <span class="hljs-built_in">len</span>(train_loader), loss.item()))<br>	<br>	<br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>	cudnn.benchmark = <span class="hljs-literal">True</span><br>	torch.manual_seed(<span class="hljs-number">1</span>)<br>	device = torch.device(<span class="hljs-string">&quot;cuda&quot;</span>) <span class="hljs-keyword">if</span> torch.cuda.is_available() <span class="hljs-keyword">else</span> torch.device(<span class="hljs-string">&quot;cpu&quot;</span>)<br>	<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Using device: &#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(device))<br>	kwargs = &#123;<span class="hljs-string">&#x27;num_workers&#x27;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&#x27;pin_memory&#x27;</span>: <span class="hljs-literal">True</span>&#125;<br>	train_loader = torch.utils.data.DataLoader(<br>	    datasets.MNIST(<span class="hljs-string">&#x27;./data&#x27;</span>, train=<span class="hljs-literal">True</span>, download=<span class="hljs-literal">True</span>,<br>	                    transform=transforms.Compose([<br>	                        transforms.ToTensor(),<br>	                        transforms.Normalize((<span class="hljs-number">0.1307</span>,), (<span class="hljs-number">0.3081</span>,))<br>	                    ])),<br>	    batch_size=<span class="hljs-number">64</span>, shuffle=<span class="hljs-literal">True</span>, **kwargs)<br>	<br>	model = Net().to(device)<br>	optimizer = optim.SGD(model.parameters(), lr=<span class="hljs-number">0.01</span>, momentum=<span class="hljs-number">0.5</span>)<br>	<br>	<span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-number">11</span>):<br>	    train(model, device, train_loader, optimizer, epoch)<br>	<br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>	main()<br></code></pre></td></tr></table></figure>
+<p>运行脚本，正常的话就可以看到训练输出了：<br>	<br><strong>Docker环境方式：</strong><br>首先还是新建一个Docker镜像，运行下面的命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> docker run  -it  --name train_mnist \<br>-v /etc/timezone:/etc/timezone \<br>-v /etc/localtime:/etc/localtime \<br>-v /home/user/WorkSpace/_share:/home/workspace/_share  \<br>--gpus all nvidia/cuda:11.1-base<br></code></pre></td></tr></table></figure>
+<p>就进入到了带gpu的ubuntu20.04容器中，效果可以参考文章开头的视频。按照前面的配置方法同样配置好pytorch和其他软件包，然后运行同样的脚本，也可以得到上述输出，说明gpu在docker中正常工作。</p>
+<h3 id="clash的配置"><a href="#clash的配置" class="headerlink" title="clash的配置"></a>clash的配置</h3><p>Clash 项目地址：<a target="_blank" rel="noopener" href="https://github.com/Dreamacro/clash%EF%BC%9B">https://github.com/Dreamacro/clash；</a><br>下载 clash-linux.gz<br>直接双击下好的包解压缩，提取 clash-linux 至你想存放的文件夹下；<br>右键点击 clash-linux，选择属性，权限处勾选允许以程序执行：<br>然后双击 clash-linux，点击运行，此时 clash 已经在后台运行了，并且生成<del>&#x2F;.config&#x2F;clash文件夹；<br>编辑</del>&#x2F;.config&#x2F;clash下的 config.yml文件，即自己的服务器及规则等信息；<br>重新启动 clash-linux 以加载配置文件，可通过 <a target="_blank" rel="noopener" href="http://clash.razord.top/">http://clash.razord.top</a>  进行策略组节点的切换，连接的 ip 和端口根据自己的 config.yml 中的external-controller填写；<br>使用系统代理（推荐），系统代理可在控制中心-&gt;网络-&gt;系统代理-&gt;手动处填写（根据自己配置文件里的端口填写） 配置系统proxy，以ubuntu为例，在Settings -&gt; Network -&gt; Network proxy ，选择手动配置，按config.yaml内容设置相应IP地址和端口值，如果 clash运行在本机那地址写127.0.0.1就行了。</p>
+<p>操作顺序的问题需要注意一下，先运行clash，再打开浏览器进入clash.razord.top，按实际测速结果选择合适的代理服务器，然后打开系统proxy。</p>
+<p>这样做的原因是，如果先打开系统proxy，万一clash默认使用的那个proxy不能工作，那么不但无法正常代理上网，也无法进入clash.razord.top进行proxy选择。</p>
+<p>20.04找个简单办法，搜索应用：启动应用程序，打开添加，然后只需要找到你clash放置的位置，保存即可，再次开机就直接clash在后台了，同样可以平时ps -x<br>找到进程kill掉。</p>
+<h2 id="工作站维护篇"><a href="#工作站维护篇" class="headerlink" title="工作站维护篇"></a><strong>工作站维护篇</strong></h2><ul>
+<li>备份<br>由于Linux本身万物皆文件的设计理念，加上root用户对几乎全部的系统文件都有访问和更改的权限，因此Linux系统的备份和还原其实非常简单，我们直接打包整个根文件系统就可以了。</li>
+</ul>
+<p>我们可以使用tar命令来打包并压缩文件系统，不过这里在打包的过程中需要排除一些不需要文件，或者与新系统文件冲突的文件，包括&#x2F;tmp、&#x2F;proc、&#x2F;lost+found 等目录。<br>	<br>找一个你想保存备份文件的目录，运行下面的命令：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">tar -cvpzf ubuntu_backup@`date +%Y-%m+%d`.tar.gz <span class="hljs-attribute">--exclude</span>=/proc <span class="hljs-attribute">--exclude</span>=/tmp <span class="hljs-attribute">--exclude</span>=/boot  <span class="hljs-attribute">--exclude</span>=/lost+found <span class="hljs-attribute">--exclude</span>=/media <span class="hljs-attribute">--exclude</span>=/mnt <span class="hljs-attribute">--exclude</span>=/run /<br></code></pre></td></tr></table></figure>
+<p>我们会得到一个名为backup.tgz的压缩文件，这个文件包含我们需要备份的系统的全部内容。</p>
+<ul>
+<li>还原</li>
+</ul>
+<p>如果系统没有出问题可以正常启动的话，那直接在刚刚的压缩包找找到想还原的文件替换就好了。而如果系统无法启动了，或者说想换一块硬盘克隆一样的系统，那么可以按一下步骤操作：
+	</p>
+<ol>
+<li>重装干净的Ubuntu系统。<br>跟上面介绍的一样，使用U盘给目标磁盘重装一个干净的系统，这一步是为了省去自己分配存储空间和挂载的麻烦，如果你会自己配置的话那也可以不做这一步。<br>再次使用U盘进入系统，这次选择<code>try ubuntu without installing</code>，然后可以看到挂载好的刚刚安装了干净系统的另一个盘，我们在这里对盘里的根文件系统进行一些文件的提取：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> su<br><br><span class="hljs-comment"># 在tryUbuntu根目录下有media文件夹，里面是U盘文件夹和新安装的系统文件夹，在在里分别用（U盘）和（UBUNTU）表示</span><br><span class="hljs-built_in">cd</span> /media/（U盘）<br>mount -o remount rw ./<br> ​<br><span class="hljs-comment"># 将新系统根目录下/boot/grub/grub.cfg文件备份到U盘中</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">cp</span> /media/(Ubuntu)/boot/grub/grub.cfg ./    <br> ​<br><span class="hljs-comment"># 将新系统根目录下/etc/fstab文件备份到U盘中，fstab是与系统开机挂载有关的文件，grub.cfg是与开机引导有关的文件，所以这一步至关重要</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">cp</span> /media/(UBUNTU)/etc/fstab ./<br> ​<br><span class="hljs-comment"># 这一步删除新装ubuntu全部的系统文件，有用的fstab及grub.cfg已经备份</span><br><span class="hljs-built_in">cd</span> /media/(UBUNTU)<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">rm</span> -rf ./*<br> ​<br><span class="hljs-comment"># 将U盘中backup.tgz复制到该目录下并解压缩</span><br><span class="hljs-built_in">cp</span> /media/(U盘)/backup.tgz ./<br><span class="hljs-built_in">sudo</span> tar xvpfz backup.tgz ./<br> ​<br><span class="hljs-comment"># 创建打包系统时排除的文件</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mkdir</span> proc lost+found mnt sys media<br></code></pre></td></tr></table></figure>
+<p>这一步完成后，在用我们在新系统中备份的fatab及grub.cfg 文件去替换压缩包中解压出来的同名文件，<code>sudo reboot</code>重启后就发现系统已经恢复到备份时的状态，包括各种框架，环境，系统设置。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="print-no-link">#深度学习</a>
+      
+        <a href="/tags/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" class="print-no-link">#环境配置</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深度学习-0-环境配置</div>
+      <div>https://truth-zheng.github.io/2021/07/25/dlenv/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zheng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年7月25日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/07/27/DLover/" title="深度学习-2-降低Loss上篇-Model Bias">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深度学习-2-降低Loss上篇-Model Bias</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/07/24/markdown/" title="Markdown-可靠的标记语言">
+                        <span class="hidden-mobile">Markdown-可靠的标记语言</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/mermaid@8.10.1/dist/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com" target="_blank" rel="nofollow noopener"><span>Github</span></a> <i class="iconfont icon-love"></i> <a href="https://scholar.google.com/" target="_blank" rel="nofollow noopener"><span>GoogleScholar</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

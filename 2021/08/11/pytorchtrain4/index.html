@@ -1,0 +1,1293 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar/tou.jpeg">
+  <link rel="icon" href="/img/avatar/tou.jpeg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zheng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="利用pytorch训练你的深度学习模型-4-损失函数与优化器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-11-pytorch-4-损失函数与优化器">
+<meta property="og:url" content="https://truth-zheng.github.io/2021/08/11/pytorchtrain4/index.html">
+<meta property="og:site_name" content="Sage的生活学习笔记">
+<meta property="og:description" content="利用pytorch训练你的深度学习模型-4-损失函数与优化器">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+<meta property="article:published_time" content="2021-08-11T05:00:00.000Z">
+<meta property="article:modified_time" content="2021-08-11T08:01:55.000Z">
+<meta property="article:author" content="zheng">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="pytorch">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>深度学习-11-pytorch-4-损失函数与优化器 - Sage的生活学习笔记</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"truth-zheng.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"gtag":null,"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sage的学习生活笔记</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/2.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深度学习-11-pytorch-4-损失函数与优化器"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-11 13:00" pubdate>
+          2021年8月11日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          9.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          83 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">深度学习-11-pytorch-4-损失函数与优化器</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年8月11日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>创作声明：主要内容参考于张贤同学<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/265394674">https://zhuanlan.zhihu.com/p/265394674</a></p>
+</blockquote>
+<h2 id="权值初始化"><a href="#权值初始化" class="headerlink" title="权值初始化"></a>权值初始化</h2><p>在搭建好网络模型之后，一个重要的步骤就是对网络模型中的权值进行初始化。适当的权值初始化可以加快模型的收敛，而不恰当的权值初始化可能引发梯度消失或者梯度爆炸，最终导致模型无法收敛。下面分 3 部分介绍。第一部分介绍不恰当的权值初始化是如何引发梯度消失与梯度爆炸的，第二部分介绍常用的 Xavier 方法与 Kaiming 方法，第三部分介绍 PyTorch 中的 10 种初始化方法。</p>
+<h4 id="梯度消失与梯度爆炸"><a href="#梯度消失与梯度爆炸" class="headerlink" title="梯度消失与梯度爆炸"></a>梯度消失与梯度爆炸</h4><p>考虑一个 3 层的全连接网络。<br>$H{1}&#x3D;X \times W{1}$，$H{2}&#x3D;H{1} \times W{2}$，$Out&#x3D;H{2} \times W_{3}$<br><img src="/img/pytorchtrain4/1.png" srcset="/img/loading.gif" lazyload><br>其中第 2 层的权重梯度如下<br><img src="/img/pytorchtrain4/2.png" srcset="/img/loading.gif" lazyload><br>所以$\Delta \mathrm{W}{2}$依赖于前一层的输出$H{1}$。如果$H{1}$ 趋近于零，那么$\Delta \mathrm{W}{2}$也接近于 0，造成梯度消失。如果$H{1}$ 趋近于无穷大，那么$\Delta \mathrm{W}{2}$也接近于无穷大，造成梯度爆炸。要避免梯度爆炸或者梯度消失，就要严格控制网络层输出的数值范围。<br>下面构建 100 层全连接网络，先不使用非线性激活函数，每层的权重初始化为服从$N(0,1)$的正态分布，输出数据使用随机初始化的数据。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs haskell"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn<br><span class="hljs-title">from</span> common_tools <span class="hljs-keyword">import</span> set_seed<br><br><span class="hljs-title">set_seed</span>(<span class="hljs-number">1</span>)  # 设置随机种子<br><span class="hljs-class"></span><br><span class="hljs-class"></span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">MLP</span>(<span class="hljs-title">nn</span>.<span class="hljs-type">Module</span>):</span><br><span class="hljs-class">    def __init__(<span class="hljs-title">self</span>, <span class="hljs-title">neural_num</span>, <span class="hljs-title">layers</span>):</span><br><span class="hljs-class">        super(<span class="hljs-type">MLP</span>, <span class="hljs-title">self</span>).__init__()</span><br><span class="hljs-class">        self.linears = nn.<span class="hljs-type">ModuleList</span>([<span class="hljs-title">nn</span>.<span class="hljs-type">Linear</span>(<span class="hljs-title">neural_num</span>, <span class="hljs-title">neural_num</span>, <span class="hljs-title">bias</span>=<span class="hljs-type">False</span>) for i in range(<span class="hljs-title">layers</span>)])</span><br><span class="hljs-class">        self.neural_num = neural_num</span><br><span class="hljs-class"></span><br><span class="hljs-class">    def forward(<span class="hljs-title">self</span>, <span class="hljs-title">x</span>):</span><br><span class="hljs-class">        for (<span class="hljs-title">i</span>, <span class="hljs-title">linear</span>) in enumerate(<span class="hljs-title">self</span>.<span class="hljs-title">linears</span>):</span><br><span class="hljs-class">            x = linear(<span class="hljs-title">x</span>)</span><br><span class="hljs-class"></span><br><span class="hljs-class"></span><br><span class="hljs-class">        return x</span><br><span class="hljs-class"></span><br><span class="hljs-class">    def initialize(<span class="hljs-title">self</span>):</span><br><span class="hljs-class">        for m in self.modules():</span><br><span class="hljs-class">            # 判断这一层是否为线性层，如果为线性层则初始化权值</span><br><span class="hljs-class">            if isinstance(<span class="hljs-title">m</span>, <span class="hljs-title">nn</span>.<span class="hljs-type">Linear</span>):</span><br><span class="hljs-class">                nn.init.normal_(<span class="hljs-title">m</span>.<span class="hljs-title">weight</span>.<span class="hljs-title">data</span>)    # normal: mean=0, std=1</span><br><span class="hljs-class"></span><br><span class="hljs-class">layer_nums = 100</span><br><span class="hljs-class">neural_nums = 256</span><br><span class="hljs-class">batch_size = 16</span><br><span class="hljs-class"></span><br><span class="hljs-class">net = <span class="hljs-type">MLP</span>(<span class="hljs-title">neural_nums</span>, <span class="hljs-title">layer_nums</span>)</span><br><span class="hljs-class">net.initialize()</span><br><span class="hljs-class"></span><br><span class="hljs-class">inputs = torch.randn((<span class="hljs-title">batch_size</span>, <span class="hljs-title">neural_nums</span>))  # normal: mean=0, std=1</span><br><span class="hljs-class"></span><br><span class="hljs-class">output = net(<span class="hljs-title">inputs</span>)</span><br><span class="hljs-class">print(<span class="hljs-title">output</span>)</span><br></code></pre></td></tr></table></figure>
+<p>输出为：</p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs arcade">tensor([[<span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>,  ..., <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>],<br>        [<span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>,  ..., <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>],<br>        [<span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>,  ..., <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>],<br>        ...,<br>        [<span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>,  ..., <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>],<br>        [<span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>,  ..., <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>],<br>        [<span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>,  ..., <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>, <span class="hljs-literal">nan</span>]], grad_fn=&lt;MmBackward&gt;)<br></code></pre></td></tr></table></figure>
+<p>也就是数据太大(梯度爆炸)或者太小(梯度消失)了。接下来我们在forward()函数中判断每一次前向传播的输出的标准差是否为 nan，如果是 nan 则停止前向传播。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs scss">def <span class="hljs-built_in">forward</span>(self, x):<br>    for (i, linear) in <span class="hljs-built_in">enumerate</span>(self.linears):<br>        x = <span class="hljs-built_in">linear</span>(x)<br><br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;layer:&#123;&#125;, std:&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(i, x.<span class="hljs-built_in">std</span>()))<br>        if torch.<span class="hljs-built_in">isnan</span>(x.<span class="hljs-built_in">std</span>()):<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;output is nan in &#123;&#125; layers&quot;</span>.<span class="hljs-built_in">format</span>(i))<br>            break<br><br>    return x<br></code></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">layer:</span><span class="hljs-number">0</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">15.959932327270508</span><br><span class="hljs-symbol">layer:</span><span class="hljs-number">1</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">256.6237487792969</span><br><span class="hljs-symbol">layer:</span><span class="hljs-number">2</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">4107.24560546875</span><br>.<br>.<br>.<br><span class="hljs-symbol">layer:</span><span class="hljs-number">29</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">1.322983152787379e+36</span><br><span class="hljs-symbol">layer:</span><span class="hljs-number">30</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">2.0786820453988485e+37</span><br><span class="hljs-symbol">layer:</span><span class="hljs-number">31</span>, <span class="hljs-keyword">std</span>:nan<br>output is nan <span class="hljs-keyword">in</span> <span class="hljs-number">31</span> layers<br></code></pre></td></tr></table></figure>
+<p>可以看到每一层的标准差是越来越大的，并在在 31 层时超出了数据可以表示的范围。<br>下面推导为什么网络层输出的标准差越来越大。<br>首先给出 3 个公式：</p>
+<ul>
+<li>$E(X \times Y)&#x3D;E(X) \times E(Y)$：两个相互独立的随机变量的乘积的期望等于它们的期望的乘积。</li>
+<li>$D(X)&#x3D;E(X^{2}) - [E(X)]^{2}$：一个随机变量的方差等于它的平方的期望减去期望的平方</li>
+<li>$D(X+Y)&#x3D;D(X)+D(Y)$：两个相互独立的随机变量之和的方差等于它们的方差的和。</li>
+</ul>
+<p>可以推导出两个随机变量的乘积的方差如下：</p>
+<p>$D(X \times Y)&#x3D;E[(XY)^{2}] - [E(XY)]^{2}&#x3D;D(X) \times D(Y) + D(X) \times [E(Y)]^{2} + D(Y) \times [E(X)]^{2}$</p>
+<p>如果$E(X)&#x3D;0$，$E(Y)&#x3D;0$，那么$D(X \times Y)&#x3D;D(X) \times D(Y)$</p>
+<p>我们以输入层第一个神经元为例：</p>
+<p>$\mathrm{H}{11}&#x3D;\sum{i&#x3D;0}^{n} X{i} \times W{1 i}$</p>
+<p>其中输入 X 和权值 W 都是服从$N(0,1)$的正态分布，所以这个神经元的方差为：</p>
+<p>$\begin{aligned} \mathbf{D}\left(\mathrm{H}{11}\right) &amp;&#x3D;\sum{i&#x3D;0}^{n} \boldsymbol{D}\left(X{i}\right) * \boldsymbol{D}\left(W{1 i}\right) \ &amp;&#x3D;n (1  1) \ &amp;&#x3D;n \end{aligned}$</p>
+<p>标准差为：</p>
+<p>$\operatorname{std}\left(\mathrm{H}{11}\right)&#x3D;\sqrt{\mathbf{D}\left(\mathrm{H}{11}\right)}&#x3D;\sqrt{n}$</p>
+<p>所以每经过一个网络层，方差就会扩大 n 倍，标准差就会扩大$\sqrt{n}$倍，n 为每层神经元个数，直到超出数值表示范围。对比上面的代码可以看到，每层神经元个数为 256，输出数据的标准差为 1，所以第一个网络层输出的标准差为 16 左右，第二个网络层输出的标准差为 256 左右，以此类推，直到 31 层超出数据表示范围。可以把每层神经元个数改为 400，那么每层标准差扩大 20 倍左右。从$D(\mathrm{H}{11})&#x3D;\sum{i&#x3D;0}^{n} D(X{i}) \times D(W{1 i})$，可以看出，每一层网络输出的方差与神经元个数、输入数据的方差、权值方差有关，其中比较好改变的是权值的方差$D(W)$，所以$D(W)&#x3D; \frac{1}{n}$，标准差为$std(W)&#x3D;\sqrt\frac{1}{n}$。因此修改权值初始化代码为nn.init.normal_(m.weight.data, std&#x3D;np.sqrt(1&#x2F;self.neural_num)),结果如下：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">layer:</span><span class="hljs-number">0</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">0.9974957704544067</span><br><span class="hljs-symbol">layer:</span><span class="hljs-number">1</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">1.0024365186691284</span><br><span class="hljs-symbol">layer:</span><span class="hljs-number">2</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">1.002745509147644</span><br>.<br>.<br>.<br><span class="hljs-symbol">layer:</span><span class="hljs-number">94</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">1.031973123550415</span><br><span class="hljs-symbol">layer:</span><span class="hljs-number">95</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">1.0413124561309814</span><br><span class="hljs-symbol">layer:</span><span class="hljs-number">96</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">1.0817031860351562</span><br></code></pre></td></tr></table></figure>
+<p>修改之后，没有出现梯度消失或者梯度爆炸的情况，每层神经元输出的方差均在 1 左右。通过恰当的权值初始化，可以保持权值在更新过程中维持在一定范围之内，不过过大，也不会过小。</p>
+<p>上述是没有使用非线性变换的实验结果，如果在forward()中添加非线性变换tanh，每一层的输出方差会越来越小，会导致梯度消失。因此出现了 Xavier 初始化方法与 Kaiming 初始化方法。</p>
+<h3 id="Xavier-方法"><a href="#Xavier-方法" class="headerlink" title="Xavier 方法"></a>Xavier 方法</h3><p>Xavier 是 2010 年提出的，针对有非线性激活函数时的权值初始化方法，目标是保持数据的方差维持在 1 左右，主要针对饱和激活函数如 sigmoid 和 tanh 等。同时考虑前向传播和反向传播，需要满足两个等式：$\boldsymbol{n}{\boldsymbol{i}} * \boldsymbol{D}(\boldsymbol{W})&#x3D;\mathbf{1}$和$\boldsymbol{n}{\boldsymbol{i+1}} * \boldsymbol{D}(\boldsymbol{W})&#x3D;\mathbf{1}$，可得：$D(W)&#x3D;\frac{2}{n{i}+n{i+1}}$。</p>
+<p>为了使 Xavier 方法初始化的权值服从均匀分布，假设$W$服从均匀分布$U[-a, a]$，那么方差 $D(W)&#x3D;\frac{(-a-a)^{2}}{12}&#x3D;\frac{(2 a)^{2}}{12}&#x3D;\frac{a^{2}}{3}$，令$\frac{2}{n{i}+n{i+1}}&#x3D;\frac{a^{2}}{3}$，解得：$\boldsymbol{a}&#x3D;\frac{\sqrt{6}}{\sqrt{n{i}+n{i+1}}}$，所以$W$服从分布$U\left[-\frac{\sqrt{6}}{\sqrt{n{i}+n{i+1}}}, \frac{\sqrt{6}}{\sqrt{n{i}+n{i+1}}}\right]$<br>所以初始化方法改为：</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver"><span class="hljs-keyword">a</span> = np.<span class="hljs-built_in">sqrt</span>(<span class="hljs-number">6</span> / (self.neural_num + self.neural_num))<br><span class="hljs-comment"># 把 a 变换到 tanh，计算增益</span><br>tanh_gain = nn.init.calculate_gain(<span class="hljs-string">&#x27;tanh&#x27;</span>)<br><span class="hljs-keyword">a</span> *= tanh_gain<br><br>nn.init.uniform_(m.weight.data, -<span class="hljs-keyword">a</span>, <span class="hljs-keyword">a</span>)<br></code></pre></td></tr></table></figure>
+<p>并且每一层的激活函数都使用 tanh，输出如下：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">layer:</span><span class="hljs-number">0</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">0.7571136355400085</span><br><span class="hljs-symbol">layer:</span><span class="hljs-number">1</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">0.6924336552619934</span><br><span class="hljs-symbol">layer:</span><span class="hljs-number">2</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">0.6677976846694946</span><br>.<br>.<br>.<br><span class="hljs-symbol">layer:</span><span class="hljs-number">97</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">0.6426210403442383</span><br><span class="hljs-symbol">layer:</span><span class="hljs-number">98</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">0.6407480835914612</span><br><span class="hljs-symbol">layer:</span><span class="hljs-number">99</span>, <span class="hljs-keyword">std</span>:<span class="hljs-number">0.6442216038703918</span><br></code></pre></td></tr></table></figure>
+<p>可以看到每层输出的方差都维持在 0.6 左右。</p>
+<p>PyTorch 也提供了 Xavier 初始化方法，可以直接调用：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus">tanh_gain = nn<span class="hljs-selector-class">.init</span><span class="hljs-selector-class">.calculate_gain</span>(<span class="hljs-string">&#x27;tanh&#x27;</span>)<br>nn<span class="hljs-selector-class">.init</span><span class="hljs-selector-class">.xavier_uniform_</span>(m<span class="hljs-selector-class">.weight</span><span class="hljs-selector-class">.data</span>, gain=tanh_gain)<br></code></pre></td></tr></table></figure>
+<h3 id="nn-init-calculate-gain"><a href="#nn-init-calculate-gain" class="headerlink" title="nn.init.calculate_gain()"></a>nn.init.calculate_gain()</h3><p>上面的初始化方法都使用了<code>tanh_gain = nn.init.calculate_gain(&#39;tanh&#39;)</code>。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.init.calculate_gain(nonlinearity,<span class="hljs-attribute">param</span>=**None**)<br></code></pre></td></tr></table></figure>
+<p>主要功能是计算经过一个分布的方差经过激活函数后的变化尺度，主要有两个参数：</p>
+<ul>
+<li>nonlinearity：激活函数名称</li>
+<li>param：激活函数的参数，如 Leaky ReLU 的 negative_slop。</li>
+</ul>
+<p>下面是计算标准差经过激活函数的变化尺度的代码。</p>
+<figure class="highlight sas"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sas"><span class="hljs-keyword">x</span> = torch.rand<span class="hljs-meta">n</span>(10000) <br><span class="hljs-keyword">out</span> = torch.<span class="hljs-meta">tanh</span>(<span class="hljs-keyword">x</span>)<br>gain = <span class="hljs-keyword">x</span>.<span class="hljs-meta">std</span>() / <span class="hljs-keyword">out</span>.<span class="hljs-meta">std</span>() <br>pr<span class="hljs-meta">int</span>(<span class="hljs-string">&#x27;gain:&#123;&#125;&#x27;</span>.<span class="hljs-keyword">format</span>(gain))<br>tanh_gain = nn.init.calculate_gai<span class="hljs-meta">n</span>(<span class="hljs-string">&#x27;tanh&#x27;</span>) <br>pr<span class="hljs-meta">int</span>(<span class="hljs-string">&#x27;tanh_gain in PyTorch:&#x27;</span>, tanh_gain)<br></code></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">gain</span>:<span class="hljs-number">1</span>.<span class="hljs-number">5982500314712524</span> <br><span class="hljs-attribute">tanh_gain</span> in PyTorch: <span class="hljs-number">1</span>.<span class="hljs-number">6666666666666667</span><br></code></pre></td></tr></table></figure>
+<p>结果表示，原有数据分布的方差经过 tanh 之后，标准差会变小 1.6 倍左右。</p>
+<h3 id="Kaiming-方法"><a href="#Kaiming-方法" class="headerlink" title="Kaiming 方法"></a>Kaiming 方法</h3><p>虽然 Xavier 方法提出了针对饱和激活函数的权值初始化方法，但是 AlexNet 出现后，大量网络开始使用非饱和的激活函数如 ReLU 等，这时 Xavier 方法不再适用。2015 年针对 ReLU 及其变种等激活函数提出了 Kaiming 初始化方法。</p>
+<p>针对 ReLU，方差应该满足：$\mathrm{D}(W)&#x3D;\frac{2}{n{i}}$；针对 ReLu 的变种，方差应该满足：$\mathrm{D}(W)&#x3D;\frac{2}{n{i}}$，a 表示负半轴的斜率，如 PReLU 方法，标准差满足$\operatorname{std}(W)&#x3D;\sqrt{\frac{2}{\left(1+a^{2}\right) * n{i}}}$。</p>
+<p>代码如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">nn<span class="hljs-selector-class">.init</span><span class="hljs-selector-class">.normal</span>(m<span class="hljs-selector-class">.weight</span><span class="hljs-selector-class">.data</span>, std=np<span class="hljs-selector-class">.sqrt</span>(<span class="hljs-number">2</span> / self.neuralnum))<br></code></pre></td></tr></table></figure>
+<p>或者使用 PyTorch 提供的初始化方法：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">nn<span class="hljs-selector-class">.init</span><span class="hljs-selector-class">.kaiming_normal</span>(m<span class="hljs-selector-class">.weight</span>.data)<br></code></pre></td></tr></table></figure>
+<p>同时把激活函数改为 ReLU。</p>
+<h3 id="常用初始化方法"><a href="#常用初始化方法" class="headerlink" title="常用初始化方法"></a>常用初始化方法</h3><p>PyTorch 中提供了 10 种初始化方法</p>
+<ul>
+<li>Xavier 均匀分布</li>
+<li>Xavier 正态分布</li>
+<li>Kaiming 均匀分布</li>
+<li>Kaiming 正态分布</li>
+<li>均匀分布</li>
+<li>正态分布</li>
+<li>常数分布</li>
+<li>正交矩阵初始化</li>
+<li>单位矩阵初始化</li>
+<li>稀疏矩阵初始化</li>
+</ul>
+<p>每种初始化方法都有它自己使用的场景，原则是保持每一层输出的方差不能太大，也不能太小。</p>
+<h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><p>损失函数是衡量模型输出与真实标签之间的差异。我们还经常听到代价函数和目标函数，它们之间差异如下：</p>
+<ul>
+<li><p>损失函数(Loss Function)是计算<strong>一个</strong>样本的模型输出与真实标签的差异</p>
+<p>Loss $&#x3D;f\left(y^{\wedge}, y\right)$</p>
+</li>
+<li><p>代价函数(Cost Function)是计算整个样本集的模型输出与真实标签的差异，是所有样本损失函数的平均值</p>
+<p>$\cos t&#x3D;\frac{1}{N} \sum_{i}^{N} f\left(y_{i}^{\wedge}, y_{i}\right)$</p>
+</li>
+<li><p>目标函数(Objective Function)就是代价函数加上正则项</p>
+</li>
+</ul>
+<p>在 PyTorch 中的损失函数也是继承于<code>nn.Module</code>，所以损失函数也可以看作网络层。</p>
+<p>在逻辑回归的实验中，我使用了交叉熵损失函数<code>loss_fn = nn.BCELoss()</code>，$BCELoss$的继承关系：<code>nn.BCELoss() -&gt; _WeightedLoss -&gt; _Loss -&gt; Module</code>。在计算具体的损失时<code>loss = loss_fn(y_pred.squeeze(), train_y)</code>，这里实际上在 Loss 中进行一次前向传播，最终调用<code>BCELoss()</code>的<code>forward()</code>函数<code>F.binary_cross_entropy(input, target, weight=self.weight, reduction=self.reduction)</code>。</p>
+<p>下面介绍 PyTorch 提供的损失函数。注意在所有的损失函数中，<code>size_average</code>和<code>reduce</code>参数都不再使用。</p>
+<h3 id="nn-CrossEntropyLoss"><a href="#nn-CrossEntropyLoss" class="headerlink" title="nn.CrossEntropyLoss"></a>nn.CrossEntropyLoss</h3><p><code>nn.CrossEntropyLoss(weight=None, size_average=None, ignore_index=-100, reduce=None, reduction=&#39;mean&#39;)</code></p>
+<p>功能：把<code>nn.LogSoftmax()</code>和<code>nn.NLLLoss()</code>结合，计算交叉熵。<code>nn.LogSoftmax()</code>的作用是把输出值归一化到了 [0,1] 之间。</p>
+<p>主要参数：</p>
+<ul>
+<li>weight：各类别的 loss 设置权值</li>
+<li>ignore_index：忽略某个类别的 loss 计算</li>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>下面介绍熵的一些基本概念</p>
+<ul>
+<li>自信息：$\mathrm{I}(x)&#x3D;-\log [p(x)]$</li>
+<li>信息熵就是求自信息的期望：$\mathrm{H}(\mathrm{P})&#x3D;E_{x \sim p}[I(x)]&#x3D;-\sum_{i}^{N} P\left(x_{i}\right) \log P\left(x_{i}\right)$</li>
+<li>相对熵，也被称为 KL 散度，用于衡量两个分布的相似性(距离)：<img src="/img/pytorchtrain4/3.png" srcset="/img/loading.gif" lazyload>其中 P(X)是真实分布， Q(X)是拟合的分布</li>
+<li>交叉熵：$\mathrm{H}(\boldsymbol{P}, \boldsymbol{Q})&#x3D;-\sum_{i&#x3D;1}^{N} \boldsymbol{P}\left(\boldsymbol{x}_{i}\right) \log \boldsymbol{Q}\left(\boldsymbol{x}_{i}\right)$</li>
+</ul>
+<p>相对熵展开可得：<br><img src="/img/pytorchtrain4/4.png" srcset="/img/loading.gif" lazyload></p>
+<p>所以交叉熵 &#x3D; 信息熵 + 相对熵，即$\mathrm{H}(\boldsymbol{P}, \boldsymbol{Q})&#x3D;\boldsymbol{D}{K \boldsymbol{L}}(\boldsymbol{P}, \boldsymbol{Q})+\mathrm{H}(\boldsymbol{P})$，又由于信息熵$H(P)$是固定的，因此优化交叉熵$H(P,Q)$等价于优化相对熵$D{KL}(P,Q)$。</p>
+<p>所以对于<strong>每一个样本</strong>的 Loss 计算公式为：<br><img src="/img/pytorchtrain4/5.png" srcset="/img/loading.gif" lazyload></p>
+<p>所以$\operatorname{loss}(x, \text { class })&#x3D;-\log \left(\frac{\exp (x[\text { class }])}{\sum_{j} \exp (x[j])}\right)&#x3D;-x[\text { class }]+\log \left(\sum_{j} \exp (x[j])\right)$。</p>
+<p>如果了解类别的权重，则$\operatorname{loss}(x, \text { class })&#x3D;\operatorname{weight}[\text { class }]\left(-x[\text { class }]+\log \left(\sum_{j} \exp (x[j])\right)\right)$。<br>下面设有 3 个样本做 2 分类。inputs 的形状为 $3 \times 2$，表示每个样本有两个神经元输出两个分类。target 的形状为 $3 \times 1$，注意类别从 0 开始，类型为<code>torch.long</code>。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs routeros">import torch<br>import torch.nn as nn<br>import torch.nn.functional as F<br>import numpy as np<br><br><span class="hljs-comment"># fake data</span><br>inputs = torch.tensor([[1, 2], [1, 3], [1, 3]], <span class="hljs-attribute">dtype</span>=torch.float)<br>target = torch.tensor([0, 1, 1], <span class="hljs-attribute">dtype</span>=torch.long)<br><br><span class="hljs-comment"># def loss function</span><br>loss_f_none = nn.CrossEntropyLoss(<span class="hljs-attribute">weight</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;none&#x27;</span>)<br>loss_f_sum = nn.CrossEntropyLoss(<span class="hljs-attribute">weight</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;sum&#x27;</span>)<br>loss_f_mean = nn.CrossEntropyLoss(<span class="hljs-attribute">weight</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br><br><span class="hljs-comment"># forward</span><br>loss_none = loss_f_none(inputs, target)<br>loss_sum = loss_f_sum(inputs, target)<br>loss_mean = loss_f_mean(inputs, target)<br><br><span class="hljs-comment"># view</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Cross Entropy Loss:\n &quot;</span>, loss_none, loss_sum, loss_mean)<br></code></pre></td></tr></table></figure>
+
+<p>输出为：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">Cross</span> Entropy Loss:<br>  <span class="hljs-attribute">tensor</span>([<span class="hljs-number">1</span>.<span class="hljs-number">3133</span>, <span class="hljs-number">0</span>.<span class="hljs-number">1269</span>, <span class="hljs-number">0</span>.<span class="hljs-number">1269</span>]) tensor(<span class="hljs-number">1</span>.<span class="hljs-number">5671</span>) tensor(<span class="hljs-number">0</span>.<span class="hljs-number">5224</span>)<br></code></pre></td></tr></table></figure>
+
+<p>我们根据单个样本的 loss 计算公式$\operatorname{loss}(x, \text { class })&#x3D;-\log \left(\frac{\exp (x[\text { class }])}{\sum_{j} \exp (x[j])}\right)&#x3D;-x[\text { class }]+\log \left(\sum_{j} \exp (x[j])\right)$，可以使用以下代码来手动计算第一个样本的损失</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs makefile">idx = 0<br><br>input_1 = inputs.detach().numpy()[idx]      <span class="hljs-comment"># [1, 2]</span><br>target_1 = target.numpy()[idx]              <span class="hljs-comment"># [0]</span><br><br><span class="hljs-comment"># 第一项</span><br>x_class = input_1[target_1]<br><br><span class="hljs-comment"># 第二项</span><br>sigma_exp_x = np.sum(list(map(np.exp, input_1)))<br>log_sigma_exp_x = np.log(sigma_exp_x)<br><br><span class="hljs-comment"># 输出loss</span><br>loss_1 = -x_class + log_sigma_exp_x<br><br><span class="hljs-section">print(&quot;第一个样本loss为: &quot;, loss_1)</span><br></code></pre></td></tr></table></figure>
+
+<p>结果为：1.3132617</p>
+<p>下面继续看带有类别权重的损失计算，首先设置类别的权重向量<code>weights = torch.tensor([1, 2], dtype=torch.float)</code>，向量的元素个数等于类别的数量，然后在定义损失函数时把<code>weight</code>参数传进去。</p>
+<p>输出为：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">weights</span>:  tensor([<span class="hljs-number">1</span>., <span class="hljs-number">2</span>.])<br><span class="hljs-attribute">tensor</span>([<span class="hljs-number">1</span>.<span class="hljs-number">3133</span>, <span class="hljs-number">0</span>.<span class="hljs-number">2539</span>, <span class="hljs-number">0</span>.<span class="hljs-number">2539</span>]) tensor(<span class="hljs-number">1</span>.<span class="hljs-number">8210</span>) tensor(<span class="hljs-number">0</span>.<span class="hljs-number">3642</span>)<br></code></pre></td></tr></table></figure>
+
+<p>权值总和为：$1+2+2&#x3D;5$，所以加权平均的 loss 为：$1.8210\div5&#x3D;0.3642$，通过手动计算的方式代码如下：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs makefile">weights = torch.tensor([1, 2], dtype=torch.float)<br>weights_all = np.sum(list(map(lambda x: weights.numpy()[x], target.numpy())))  <span class="hljs-comment"># [0, 1, 1]  # [1 2 2]</span><br>mean = 0<br>loss_f_none = nn.CrossEntropyLoss(reduction=&#x27;none&#x27;)<br>loss_none = loss_f_none(inputs, target)<br>loss_sep = loss_none.detach().numpy()<br>for i in range(target.shape[0]):<br><br>x_class = target.numpy()[i]<br>tmp = loss_sep[i] * (weights.numpy()[x_class] / weights_all)<br>mean += tmp<br><br>print(mean)<br></code></pre></td></tr></table></figure>
+
+<p>结果为 0.3641947731375694</p>
+<h3 id="nn-NLLLoss"><a href="#nn-NLLLoss" class="headerlink" title="nn.NLLLoss"></a>nn.NLLLoss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.NLLLoss(<span class="hljs-attribute">weight</span>=None, <span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">ignore_index</span>=-100, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：实现负对数似然函数中的符号功能</p>
+<p>主要参数：</p>
+<ul>
+<li>weight：各类别的 loss 权值设置</li>
+<li>ignore_index：忽略某个类别</li>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>每个样本的 loss 公式为：$l_{n}&#x3D;-w_{y_{n}} x_{n, y_{n}}$。还是使用上面的例子，第一个样本的输出为 [1,2]，类别为 0，则第一个样本的 loss 为 -1；第一个样本的输出为 [1,3]，类别为 1，则第一个样本的 loss 为 -3。</p>
+<p>代码如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs routeros">weights = torch.tensor([1, 1], <span class="hljs-attribute">dtype</span>=torch.float)<br><br>loss_f_none_w = nn.NLLLoss(<span class="hljs-attribute">weight</span>=weights, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;none&#x27;</span>)<br>loss_f_sum = nn.NLLLoss(<span class="hljs-attribute">weight</span>=weights, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;sum&#x27;</span>)<br>loss_f_mean = nn.NLLLoss(<span class="hljs-attribute">weight</span>=weights, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br><br><span class="hljs-comment"># forward</span><br>loss_none_w = loss_f_none_w(inputs, target)<br>loss_sum = loss_f_sum(inputs, target)<br>loss_mean = loss_f_mean(inputs, target)<br><br><span class="hljs-comment"># view</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\nweights: &quot;</span>, weights)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;NLL Loss&quot;</span>, loss_none_w, loss_sum, loss_mean)<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">weights</span>:  tensor([<span class="hljs-number">1</span>., <span class="hljs-number">1</span>.])<br><span class="hljs-attribute">NLL</span> Loss tensor([-<span class="hljs-number">1</span>., -<span class="hljs-number">3</span>., -<span class="hljs-number">3</span>.]) tensor(-<span class="hljs-number">7</span>.) tensor(-<span class="hljs-number">2</span>.<span class="hljs-number">3333</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="nn-BCELoss"><a href="#nn-BCELoss" class="headerlink" title="nn.BCELoss"></a>nn.BCELoss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.BCELoss(<span class="hljs-attribute">weight</span>=None, <span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：计算二分类的交叉熵。需要注意的是：输出值区间为 [0,1]。</p>
+<p>主要参数：</p>
+<ul>
+<li>weight：各类别的 loss 权值设置</li>
+<li>ignore_index：忽略某个类别</li>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>计算公式为：$l_{n}&#x3D;-w_{n}\left[y_{n} \cdot \log x_{n}+\left(1-y_{n}\right) \cdot \log \left(1-x_{n}\right)\right]$</p>
+<p>使用这个函数有两个不同的地方：</p>
+<ul>
+<li>预测的标签需要经过 sigmoid 变换到 [0,1] 之间。</li>
+<li>真实的标签需要转换为 one hot 向量，类型为<code>torch.float</code>。</li>
+</ul>
+<p>代码如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs routeros">inputs = torch.tensor([[1, 2], [2, 2], [3, 4], [4, 5]], <span class="hljs-attribute">dtype</span>=torch.float)<br>target = torch.tensor([[1, 0], [1, 0], [0, 1], [0, 1]], <span class="hljs-attribute">dtype</span>=torch.float)<br><br>target_bce = target<br><br><span class="hljs-comment"># itarget</span><br>inputs = torch.sigmoid(inputs)<br><br>weights = torch.tensor([1, 1], <span class="hljs-attribute">dtype</span>=torch.float)<br><br>loss_f_none_w = nn.BCELoss(<span class="hljs-attribute">weight</span>=weights, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;none&#x27;</span>)<br>loss_f_sum = nn.BCELoss(<span class="hljs-attribute">weight</span>=weights, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;sum&#x27;</span>)<br>loss_f_mean = nn.BCELoss(<span class="hljs-attribute">weight</span>=weights, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br><br><span class="hljs-comment"># forward</span><br>loss_none_w = loss_f_none_w(inputs, target_bce)<br>loss_sum = loss_f_sum(inputs, target_bce)<br>loss_mean = loss_f_mean(inputs, target_bce)<br><br><span class="hljs-comment"># view</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\nweights: &quot;</span>, weights)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;BCE Loss&quot;</span>, loss_none_w, loss_sum, loss_mean)<br></code></pre></td></tr></table></figure>
+
+<p>结果为：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs stylus">BCE Loss <span class="hljs-built_in">tensor</span>(<span class="hljs-selector-attr">[[0.3133, 2.1269]</span>,<br>        <span class="hljs-selector-attr">[0.1269, 2.1269]</span>,<br>        <span class="hljs-selector-attr">[3.0486, 0.0181]</span>,<br>        <span class="hljs-selector-attr">[4.0181, 0.0067]</span>]) <span class="hljs-built_in">tensor</span>(<span class="hljs-number">11.7856</span>) <span class="hljs-built_in">tensor</span>(<span class="hljs-number">1.4732</span>)<br></code></pre></td></tr></table></figure>
+
+<p>第一个 loss 为 0，3133，手动计算的代码如下：</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs maxima">x_i = inputs.detach().numpy()[idx, idx]<br>y_i = target.numpy()[idx, idx]              #<br><br># loss<br># l_i = -[ y_i * <span class="hljs-built_in">np</span>.<span class="hljs-built_in">log</span>(x_i) + (<span class="hljs-number">1</span>-y_i) * <span class="hljs-built_in">np</span>.<span class="hljs-built_in">log</span>(<span class="hljs-number">1</span>-y_i) ]      # <span class="hljs-built_in">np</span>.<span class="hljs-built_in">log</span>(<span class="hljs-number">0</span>) = nan<br>l_i = -y_i * <span class="hljs-built_in">np</span>.<span class="hljs-built_in">log</span>(x_i) <span class="hljs-keyword">if</span> y_i <span class="hljs-keyword">else</span> -(<span class="hljs-number">1</span>-y_i) * <span class="hljs-built_in">np</span>.<span class="hljs-built_in">log</span>(<span class="hljs-number">1</span>-x_i)<br></code></pre></td></tr></table></figure>
+
+<h3 id="nn-BCEWithLogitsLoss"><a href="#nn-BCEWithLogitsLoss" class="headerlink" title="nn.BCEWithLogitsLoss"></a>nn.BCEWithLogitsLoss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.BCEWithLogitsLoss(<span class="hljs-attribute">weight</span>=None, <span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>, <span class="hljs-attribute">pos_weight</span>=None)<br></code></pre></td></tr></table></figure>
+
+<p>功能：结合 sigmoid 与二分类交叉熵。需要注意的是，网络最后的输出不用经过 sigmoid 函数。这个 loss 出现的原因是有时网络模型最后一层输出不希望是归一化到 [0,1] 之间，但是在计算 loss 时又需要归一化到 [0,1] 之间。</p>
+<p>主要参数：</p>
+<ul>
+<li>weight：各类别的 loss 权值设置</li>
+<li>pos_weight：<strong>设置样本类别对应的神经元的输出的 loss 权值</strong></li>
+<li>ignore_index：忽略某个类别</li>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>代码如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs routeros">inputs = torch.tensor([[1, 2], [2, 2], [3, 4], [4, 5]], <span class="hljs-attribute">dtype</span>=torch.float)<br>target = torch.tensor([[1, 0], [1, 0], [0, 1], [0, 1]], <span class="hljs-attribute">dtype</span>=torch.float)<br><br>target_bce = target<br><br><span class="hljs-comment"># itarget</span><br><span class="hljs-comment"># inputs = torch.sigmoid(inputs)</span><br><br>weights = torch.tensor([1], <span class="hljs-attribute">dtype</span>=torch.float)<br>pos_w = torch.tensor([3], <span class="hljs-attribute">dtype</span>=torch.float)        # 3<br><br>loss_f_none_w = nn.BCEWithLogitsLoss(<span class="hljs-attribute">weight</span>=weights, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;none&#x27;</span>, <span class="hljs-attribute">pos_weight</span>=pos_w)<br>loss_f_sum = nn.BCEWithLogitsLoss(<span class="hljs-attribute">weight</span>=weights, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;sum&#x27;</span>, <span class="hljs-attribute">pos_weight</span>=pos_w)<br>loss_f_mean = nn.BCEWithLogitsLoss(<span class="hljs-attribute">weight</span>=weights, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>, <span class="hljs-attribute">pos_weight</span>=pos_w)<br><br><span class="hljs-comment"># forward</span><br>loss_none_w = loss_f_none_w(inputs, target_bce)<br>loss_sum = loss_f_sum(inputs, target_bce)<br>loss_mean = loss_f_mean(inputs, target_bce)<br><br><span class="hljs-comment"># view</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\npos_weights: &quot;</span>, pos_w)<br><span class="hljs-built_in">print</span>(loss_none_w, loss_sum, loss_mean)<br></code></pre></td></tr></table></figure>
+
+<p>输出为</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs stylus">pos_weights:  <span class="hljs-built_in">tensor</span>(<span class="hljs-selector-attr">[3.]</span>)<br><span class="hljs-built_in">tensor</span>(<span class="hljs-selector-attr">[[0.9398, 2.1269]</span>,<br>        <span class="hljs-selector-attr">[0.3808, 2.1269]</span>,<br>        <span class="hljs-selector-attr">[3.0486, 0.0544]</span>,<br>        <span class="hljs-selector-attr">[4.0181, 0.0201]</span>]) <span class="hljs-built_in">tensor</span>(<span class="hljs-number">12.7158</span>) <span class="hljs-built_in">tensor</span>(<span class="hljs-number">1.5895</span>)<br></code></pre></td></tr></table></figure>
+
+<p>与 BCELoss 进行对比</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs stylus">BCE Loss <span class="hljs-built_in">tensor</span>(<span class="hljs-selector-attr">[[0.3133, 2.1269]</span>,<br>        <span class="hljs-selector-attr">[0.1269, 2.1269]</span>,<br>        <span class="hljs-selector-attr">[3.0486, 0.0181]</span>,<br>        <span class="hljs-selector-attr">[4.0181, 0.0067]</span>]) <span class="hljs-built_in">tensor</span>(<span class="hljs-number">11.7856</span>) <span class="hljs-built_in">tensor</span>(<span class="hljs-number">1.4732</span>)<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，样本类别对应的神经元的输出的 loss 都增加了 3 倍。</p>
+<h3 id="nn-L1Loss"><a href="#nn-L1Loss" class="headerlink" title="nn.L1Loss"></a>nn.L1Loss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.L1Loss(<span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：计算 inputs 与 target 之差的绝对值</p>
+<p>主要参数：</p>
+<ul>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>公式：$l_{n}&#x3D;\left|x_{n}-y_{n}\right|$</p>
+<h3 id="nn-MSELoss"><a href="#nn-MSELoss" class="headerlink" title="nn.MSELoss"></a>nn.MSELoss</h3><p>功能：计算 inputs 与 target 之差的平方</p>
+<p>公式：$l_{n}&#x3D;\left(x_{n}-y_{n}\right)^{2}$</p>
+<p>主要参数：</p>
+<ul>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>代码如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs routeros">inputs = torch.ones((2, 2))<br>target = torch.ones((2, 2)) * 3<br><br>loss_f = nn.L1Loss(<span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;none&#x27;</span>)<br>loss = loss_f(inputs, target)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;input:&#123;&#125;\ntarget:&#123;&#125;\nL1 loss:&#123;&#125;&quot;</span>.format(inputs, target, loss))<br><br><span class="hljs-comment"># ------------------------------------------------- 6 MSE loss ----------------------------------------------</span><br><br>loss_f_mse = nn.MSELoss(<span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;none&#x27;</span>)<br>loss_mse = loss_f_mse(inputs, target)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;MSE loss:&#123;&#125;&quot;</span>.format(loss_mse))<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs lua"><span class="hljs-built_in">input</span>:tensor(<span class="hljs-string">[[1., 1.],</span><br><span class="hljs-string">        [1., 1.]]</span>)<br>target:tensor(<span class="hljs-string">[[3., 3.],</span><br><span class="hljs-string">        [3., 3.]]</span>)<br>L1 loss:tensor(<span class="hljs-string">[[2., 2.],</span><br><span class="hljs-string">        [2., 2.]]</span>)<br>MSE loss:tensor(<span class="hljs-string">[[4., 4.],</span><br><span class="hljs-string">        [4., 4.]]</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="nn-SmoothL1Loss"><a href="#nn-SmoothL1Loss" class="headerlink" title="nn.SmoothL1Loss"></a>nn.SmoothL1Loss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.SmoothL1Loss(<span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：平滑的 L1Loss</p>
+<p>公式：<br><img src="/img/pytorchtrain4/6.png" srcset="/img/loading.gif" lazyload></p>
+<p>下图中橙色曲线是 L1Loss，蓝色曲线是 Smooth L1Loss</p>
+<p><img src="/img/pytorchtrain4/7.png" srcset="/img/loading.gif" lazyload><br> 主要参数：</p>
+<ul>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<h3 id="nn-PoissonNLLLoss"><a href="#nn-PoissonNLLLoss" class="headerlink" title="nn.PoissonNLLLoss"></a>nn.PoissonNLLLoss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.PoissonNLLLoss(<span class="hljs-attribute">log_input</span>=<span class="hljs-literal">True</span>, <span class="hljs-attribute">full</span>=<span class="hljs-literal">False</span>, <span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">eps</span>=1e-08, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：泊松分布的负对数似然损失函数</p>
+<p>主要参数：</p>
+<ul>
+<li>log_input：输入是否为对数形式，决定计算公式<ul>
+<li>当 log_input &#x3D;  True，表示输入数据已经是经过对数运算之后的，loss(input, target) &#x3D; exp(input) - target * input</li>
+<li>当 log_input &#x3D;  False，，表示输入数据还没有取对数，loss(input, target) &#x3D; input - target * log(input+eps)</li>
+</ul>
+</li>
+<li>full：计算所有 loss，默认为 loss</li>
+<li>eps：修正项，避免 log(input) 为 nan</li>
+</ul>
+<p>代码如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs routeros">inputs = torch.randn((2, 2))<br>target = torch.randn((2, 2))<br><br>loss_f = nn.PoissonNLLLoss(<span class="hljs-attribute">log_input</span>=<span class="hljs-literal">True</span>, <span class="hljs-attribute">full</span>=<span class="hljs-literal">False</span>, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;none&#x27;</span>)<br>loss = loss_f(inputs, target)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;input:&#123;&#125;\ntarget:&#123;&#125;\nPoisson NLL loss:&#123;&#125;&quot;</span>.format(inputs, target, loss))<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs lua"><span class="hljs-built_in">input</span>:tensor(<span class="hljs-string">[[0.6614, 0.2669],</span><br><span class="hljs-string">        [0.0617, 0.6213]]</span>)<br>target:tensor(<span class="hljs-string">[[-0.4519, -0.1661],</span><br><span class="hljs-string">        [-1.5228,  0.3817]]</span>)<br>Poisson NLL loss:tensor(<span class="hljs-string">[[2.2363, 1.3503],</span><br><span class="hljs-string">        [1.1575, 1.6242]]</span>)<br></code></pre></td></tr></table></figure>
+
+<p>手动计算第一个 loss 的代码如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs stylus">idx = <span class="hljs-number">0</span><br><br>loss_1 = torch<span class="hljs-selector-class">.exp</span>(inputs<span class="hljs-selector-attr">[idx, idx]</span>) - target<span class="hljs-selector-attr">[idx, idx]</span>*inputs<span class="hljs-selector-attr">[idx, idx]</span><br><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;第一个元素loss:&quot;</span>, loss_1)</span></span><br></code></pre></td></tr></table></figure>
+
+<p>结果为：2.2363</p>
+<h3 id="nn-KLDivLoss"><a href="#nn-KLDivLoss" class="headerlink" title="nn.KLDivLoss"></a>nn.KLDivLoss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.KLDivLoss(<span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：计算 KLD(divergence)，KL 散度，相对熵</p>
+<p>注意事项：需要提前将输入计算 log-probabilities，如通过<code>nn.logsoftmax()</code></p>
+<p>主要参数：</p>
+<ul>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)，batchmean(batchsize 维度求平均值)</li>
+</ul>
+<p>公式：$\begin{aligned} D_{K L}(P | Q)&#x3D;E_{x-p}\left[\log \frac{P(x)}{Q(x)}\right] &amp;&#x3D;E_{x-p}[\log P(x)-\log Q(x)] &#x3D;\sum_{i&#x3D;1}^{N} P\left(x_{i}\right)\left(\log P\left(x_{i}\right)-\log Q\left(x_{i}\right)\right) \end{aligned}$</p>
+<p>对于每个样本来说，计算公式如下，其中$y_{n}$是真实值$P(x)$，$x_{n}$是经过对数运算之后的预测值$logQ(x)$。</p>
+<p>$l_{n}&#x3D;y_{n} \cdot\left(\log y_{n}-x_{n}\right)$</p>
+<p>代码如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs stylus">inputs = torch<span class="hljs-selector-class">.tensor</span>(<span class="hljs-selector-attr">[[0.5, 0.3, 0.2]</span>, <span class="hljs-selector-attr">[0.2, 0.3, 0.5]</span>])<br>inputs_log = torch<span class="hljs-selector-class">.log</span>(inputs)<br>target = torch<span class="hljs-selector-class">.tensor</span>(<span class="hljs-selector-attr">[[0.9, 0.05, 0.05]</span>, <span class="hljs-selector-attr">[0.1, 0.7, 0.2]</span>], dtype=torch.<span class="hljs-attribute">float</span>)<br><br>loss_f_none = nn<span class="hljs-selector-class">.KLDivLoss</span>(reduction=<span class="hljs-string">&#x27;none&#x27;</span>)<br>loss_f_mean = nn<span class="hljs-selector-class">.KLDivLoss</span>(reduction=<span class="hljs-string">&#x27;mean&#x27;</span>)<br>loss_f_bs_mean = nn<span class="hljs-selector-class">.KLDivLoss</span>(reduction=<span class="hljs-string">&#x27;batchmean&#x27;</span>)<br><br>loss_none = <span class="hljs-built_in">loss_f_none</span>(inputs, target)<br>loss_mean = <span class="hljs-built_in">loss_f_mean</span>(inputs, target)<br>loss_bs_mean = <span class="hljs-built_in">loss_f_bs_mean</span>(inputs, target)<br><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;loss_none:\n&#123;&#125;\nloss_mean:\n&#123;&#125;\nloss_bs_mean:\n&#123;&#125;&quot;</span>.format(loss_none, loss_mean, loss_bs_mean)</span></span>)<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs subunit">loss_none:<br>tensor([[<span class="hljs-string">-0</span>.5448, <span class="hljs-string">-0</span>.1648, <span class="hljs-string">-0</span>.1598],<br>        [<span class="hljs-string">-0</span>.2503, <span class="hljs-string">-0</span>.4597, <span class="hljs-string">-0</span>.4219]])<br>loss_mean:<br><span class="hljs-string">-0</span>.3335360586643219<br>loss_bs_mean:<br><span class="hljs-string">-1</span>.000608205795288<br></code></pre></td></tr></table></figure>
+
+<p>手动计算第一个 loss 的代码为：</p>
+<figure class="highlight stan"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs stan">idx = <span class="hljs-number">0</span><br>loss_1 = <span class="hljs-built_in">target</span>[idx, idx] * (torch.<span class="hljs-built_in">log</span>(<span class="hljs-built_in">target</span>[idx, idx]) - inputs[idx, idx])<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;第一个元素loss:&quot;</span>, loss_1)<br></code></pre></td></tr></table></figure>
+
+<p>结果为：-0.5448。</p>
+<h3 id="nn-MarginRankingLoss"><a href="#nn-MarginRankingLoss" class="headerlink" title="nn.MarginRankingLoss"></a>nn.MarginRankingLoss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.MarginRankingLoss(<span class="hljs-attribute">margin</span>=0.0, <span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：计算两个向量之间的相似度，用于排序任务</p>
+<p>特别说明：该方法计算 两组数据之间的差异，返回一个$n \times n$ 的 loss 矩阵</p>
+<p>主要参数：</p>
+<ul>
+<li>margin：边界值，$x_{1}$与$x_{2}$之间的差异值</li>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>计算公式：$\operatorname{loss}(x, y)&#x3D;\max (0,-y *(x 1-x 2)+\operatorname{margin})$，$y$的取值有 +1 和 -1。</p>
+<ul>
+<li>当 $y&#x3D;1$时，希望$x_{1} &gt; x_{2}$，当$x_{1} &gt; x_{2}$，不产生 loss</li>
+<li>当 $y&#x3D;-1$时，希望$x_{1} &lt; x_{2}$，当$x_{1} &lt; x_{2}$，不产生 loss</li>
+</ul>
+<p>代码如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs stylus">x1 = torch<span class="hljs-selector-class">.tensor</span>(<span class="hljs-selector-attr">[[1]</span>, <span class="hljs-selector-attr">[2]</span>, <span class="hljs-selector-attr">[3]</span>], dtype=torch.<span class="hljs-attribute">float</span>)<br>x2 = torch<span class="hljs-selector-class">.tensor</span>(<span class="hljs-selector-attr">[[2]</span>, <span class="hljs-selector-attr">[2]</span>, <span class="hljs-selector-attr">[2]</span>], dtype=torch.<span class="hljs-attribute">float</span>)<br><br>target = torch<span class="hljs-selector-class">.tensor</span>(<span class="hljs-selector-attr">[1, 1, -1]</span>, dtype=torch.<span class="hljs-attribute">float</span>)<br><br>loss_f_none = nn<span class="hljs-selector-class">.MarginRankingLoss</span>(<span class="hljs-attribute">margin</span>=<span class="hljs-number">0</span>, reduction=<span class="hljs-string">&#x27;none&#x27;</span>)<br><br>loss = <span class="hljs-built_in">loss_f_none</span>(x1, x2, target)<br><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(loss)</span></span><br></code></pre></td></tr></table></figure>
+
+<p>输出为：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs lua">tensor(<span class="hljs-string">[[1., 1., 0.],</span><br><span class="hljs-string">        [0., 0., 0.],</span><br><span class="hljs-string">        [0., 0., 1.]]</span>)<br></code></pre></td></tr></table></figure>
+
+<p>第一行表示$x_{1}$中的第一个元素分别与$x_{2}$中的 3 个元素计算 loss，以此类推。</p>
+<h3 id="nn-MultiLabelMarginLoss"><a href="#nn-MultiLabelMarginLoss" class="headerlink" title="nn.MultiLabelMarginLoss"></a>nn.MultiLabelMarginLoss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.MultiLabelMarginLoss(<span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：多标签边界损失函数</p>
+<p>举例：4 分类任务，样本 x 属于 0 类和 3 类，那么标签为 [0, 3, -1, -1]，</p>
+<p>主要参数：</p>
+<ul>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>计算公式：$\operatorname{loss}(x, y)&#x3D;\sum_{i j} \frac{\max (0,1-(x[y[j]]-x[i]))}{x \cdot \operatorname{size}(0)}$，表示每个真实类别的神经元输出减去其他神经元的输出。</p>
+<p>代码如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">x</span> = torch.tensor([[<span class="hljs-number">0</span>.<span class="hljs-number">1</span>, <span class="hljs-number">0</span>.<span class="hljs-number">2</span>, <span class="hljs-number">0</span>.<span class="hljs-number">4</span>, <span class="hljs-number">0</span>.<span class="hljs-number">8</span>]])<br><span class="hljs-attribute">y</span> = torch.tensor([[<span class="hljs-number">0</span>, <span class="hljs-number">3</span>, -<span class="hljs-number">1</span>, -<span class="hljs-number">1</span>]], dtype=torch.long)<br><br><span class="hljs-attribute">loss_f</span> = nn.MultiLabelMarginLoss(reduction=&#x27;none&#x27;)<br><br><span class="hljs-attribute">loss</span> = loss_f(x, y)<br><br><span class="hljs-attribute">print</span>(loss)<br></code></pre></td></tr></table></figure>
+
+<p>输出为：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">0</span>.<span class="hljs-number">8500</span><br></code></pre></td></tr></table></figure>
+
+<p>手动计算如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">x</span> = x[<span class="hljs-number">0</span>]<br><span class="hljs-attribute">item_1</span> = (<span class="hljs-number">1</span>-(x[<span class="hljs-number">0</span>] - x[<span class="hljs-number">1</span>])) + (<span class="hljs-number">1</span> - (x[<span class="hljs-number">0</span>] - x[<span class="hljs-number">2</span>]))    #<span class="hljs-meta"> [0]</span><br><span class="hljs-attribute">item_2</span> = (<span class="hljs-number">1</span>-(x[<span class="hljs-number">3</span>] - x[<span class="hljs-number">1</span>])) + (<span class="hljs-number">1</span> - (x[<span class="hljs-number">3</span>] - x[<span class="hljs-number">2</span>]))    #<span class="hljs-meta"> [3]</span><br><br><span class="hljs-attribute">loss_h</span> = (item_1 + item_2) / x.shape[<span class="hljs-number">0</span>]<br><br><span class="hljs-attribute">print</span>(loss_h)<br></code></pre></td></tr></table></figure>
+
+<h3 id="nn-SoftMarginLoss"><a href="#nn-SoftMarginLoss" class="headerlink" title="nn.SoftMarginLoss"></a>nn.SoftMarginLoss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.SoftMarginLoss(<span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：计算二分类的 logistic 损失</p>
+<p>主要参数：</p>
+<ul>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>计算公式：$\operatorname{loss}(x, y)&#x3D;\sum_{i} \frac{\log (1+\exp (-y[i] * x[i]))}{\text { x.nelement } 0}$</p>
+<p>代码如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs stylus">inputs = torch<span class="hljs-selector-class">.tensor</span>(<span class="hljs-selector-attr">[[0.3, 0.7]</span>, <span class="hljs-selector-attr">[0.5, 0.5]</span>])<br>target = torch<span class="hljs-selector-class">.tensor</span>(<span class="hljs-selector-attr">[[-1, 1]</span>, <span class="hljs-selector-attr">[1, -1]</span>], dtype=torch.<span class="hljs-attribute">float</span>)<br><br>loss_f = nn<span class="hljs-selector-class">.SoftMarginLoss</span>(reduction=<span class="hljs-string">&#x27;none&#x27;</span>)<br><br>loss = <span class="hljs-built_in">loss_f</span>(inputs, target)<br><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;SoftMargin: &quot;</span>, loss)</span></span><br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs lua">SoftMargin:  tensor(<span class="hljs-string">[[0.8544, 0.4032],</span><br><span class="hljs-string">        [0.4741, 0.9741]]</span>)<br></code></pre></td></tr></table></figure>
+
+<p>手动计算第一个 loss 的代码如下：</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs maxima">idx = <span class="hljs-number">0</span><br><br>inputs_i = inputs[idx, idx]<br>target_i = target[idx, idx]<br><br>loss_h = <span class="hljs-built_in">np</span>.<span class="hljs-built_in">log</span>(<span class="hljs-number">1</span> + <span class="hljs-built_in">np</span>.<span class="hljs-built_in">exp</span>(-target_i * inputs_i))<br><br><span class="hljs-built_in">print</span>(loss_h)<br></code></pre></td></tr></table></figure>
+
+<p>结果为：0.8544</p>
+<h3 id="nn-MultiLabelSoftMarginLoss"><a href="#nn-MultiLabelSoftMarginLoss" class="headerlink" title="nn.MultiLabelSoftMarginLoss"></a>nn.MultiLabelSoftMarginLoss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.MultiLabelSoftMarginLoss(<span class="hljs-attribute">weight</span>=None, <span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：SoftMarginLoss 的多标签版本</p>
+<p>主要参数：</p>
+<ul>
+<li>weight：各类别的 loss 权值设置</li>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>计算公式：$\operatorname{loss}(x, y)&#x3D;-\frac{1}{C}  <em>\sum_{i} y[i]</em>  \log \left((1+\exp (-x[i]))^{-1}\right)+(1-y[i]) * \log \left(\frac{\exp (-x[i])}{(1+\exp (-x[i]))}\right)$</p>
+<p>代码如下</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs lua">inputs = torch.tensor(<span class="hljs-string">[[0.3, 0.7, 0.8]]</span>)<br>target = torch.tensor(<span class="hljs-string">[[0, 1, 1]]</span>, dtype=torch.float)<br><br>loss_f = nn.MultiLabelSoftMarginLoss(reduction=<span class="hljs-string">&#x27;none&#x27;</span>)<br><br>loss = loss_f(inputs, target)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;MultiLabel SoftMargin: &quot;</span>, loss)<br></code></pre></td></tr></table></figure>
+
+<p>输出为：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">MultiLabel</span> SoftMargin:  tensor([<span class="hljs-number">0</span>.<span class="hljs-number">5429</span>])<br></code></pre></td></tr></table></figure>
+
+<p>手动计算的代码如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs lua">x = torch.tensor(<span class="hljs-string">[[0.1, 0.2, 0.7], [0.2, 0.5, 0.3]]</span>)<br>y = torch.tensor([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>], dtype=torch.long)<br><br>loss_f = nn.MultiMarginLoss(reduction=<span class="hljs-string">&#x27;none&#x27;</span>)<br><br>loss = loss_f(x, y)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Multi Margin Loss: &quot;</span>, loss)<br></code></pre></td></tr></table></figure>
+
+<h3 id="nn-MultiMarginLoss"><a href="#nn-MultiMarginLoss" class="headerlink" title="nn.MultiMarginLoss"></a>nn.MultiMarginLoss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.MultiMarginLoss(<span class="hljs-attribute">p</span>=1, <span class="hljs-attribute">margin</span>=1.0, <span class="hljs-attribute">weight</span>=None, <span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：计算多分类的折页损失</p>
+<p>主要参数：</p>
+<ul>
+<li>p：可以选择 1 或 2</li>
+<li>weight：各类别的 loss 权值设置</li>
+<li>margin：边界值</li>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>计算公式：$\operatorname{loss}(x, y)&#x3D;\frac{\left.\sum_{i} \max (0, \operatorname{margin}-x[y]+x[i])\right)^{p}}{\quad \text { x.size }(0)}$，其中 y 表示真实标签对应的神经元输出，x 表示其他神经元的输出。</p>
+<p>代码如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs lua">x = torch.tensor(<span class="hljs-string">[[0.1, 0.2, 0.7], [0.2, 0.5, 0.3]]</span>)<br>y = torch.tensor([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>], dtype=torch.long)<br><br>loss_f = nn.MultiMarginLoss(reduction=<span class="hljs-string">&#x27;none&#x27;</span>)<br><br>loss = loss_f(x, y)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Multi Margin Loss: &quot;</span>, loss)<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">Multi</span> Margin Loss:  tensor([<span class="hljs-number">0</span>.<span class="hljs-number">8000</span>, <span class="hljs-number">0</span>.<span class="hljs-number">7000</span>])<br></code></pre></td></tr></table></figure>
+
+<p>手动计算第一个 loss 的代码如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">x</span> = x[<span class="hljs-number">0</span>]<br><span class="hljs-attribute">margin</span> = <span class="hljs-number">1</span><br><br><span class="hljs-attribute">i_0</span> = margin - (x[<span class="hljs-number">1</span>] - x[<span class="hljs-number">0</span>])<br><span class="hljs-comment"># i_1 = margin - (x[1] - x[1])</span><br><span class="hljs-attribute">i_2</span> = margin - (x[<span class="hljs-number">1</span>] - x[<span class="hljs-number">2</span>])<br><br><span class="hljs-attribute">loss_h</span> = (i_0 + i_2) / x.shape[<span class="hljs-number">0</span>]<br><br><span class="hljs-attribute">print</span>(loss_h)<br></code></pre></td></tr></table></figure>
+
+<p>输出为：0.8000</p>
+<h3 id="nn-TripletMarginLoss"><a href="#nn-TripletMarginLoss" class="headerlink" title="nn.TripletMarginLoss"></a>nn.TripletMarginLoss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.TripletMarginLoss(<span class="hljs-attribute">margin</span>=1.0, <span class="hljs-attribute">p</span>=2.0, <span class="hljs-attribute">eps</span>=1e-06, <span class="hljs-attribute">swap</span>=<span class="hljs-literal">False</span>, <span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：计算三元组损失，人脸验证中常用</p>
+<p>主要参数：</p>
+<ul>
+<li>p：范数的阶，默认为 2</li>
+<li>margin：边界值</li>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>计算公式：<img src="/img/pytorchtrain4/8.png" srcset="/img/loading.gif" lazyload>，$d\left(x{i}, y{i}\right)&#x3D;\left|\mathbf{x}{i}-\mathbf{y}{i}\right|{p}$，其中$d(a_{i}, p_{i})$表示正样本对之间的距离(距离计算公式与 p 有关)，$d(a_{i}, n_{i})$表示负样本对之间的距离。表示正样本对之间的距离比负样本对之间的距离小 margin，就没有了 loss。</p>
+<p>代码如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs lua">anchor = torch.tensor(<span class="hljs-string">[[1.]]</span>)<br>pos = torch.tensor(<span class="hljs-string">[[2.]]</span>)<br>neg = torch.tensor(<span class="hljs-string">[[0.5]]</span>)<br><br>loss_f = nn.TripletMarginLoss(margin=<span class="hljs-number">1.0</span>, p=<span class="hljs-number">1</span>)<br><br>loss = loss_f(anchor, pos, neg)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Triplet Margin Loss&quot;</span>, loss)<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scss">Triplet <span class="hljs-attribute">Margin</span> Loss <span class="hljs-built_in">tensor</span>(<span class="hljs-number">1.5000</span>)<br></code></pre></td></tr></table></figure>
+
+<p>手动计算的代码如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-attribute">margin</span> = <span class="hljs-number">1</span><br><span class="hljs-selector-tag">a</span>, <span class="hljs-selector-tag">p</span>, n = anchor<span class="hljs-selector-attr">[0]</span>, pos<span class="hljs-selector-attr">[0]</span>, neg<span class="hljs-selector-attr">[0]</span><br><br>d_ap = torch<span class="hljs-selector-class">.abs</span>(a-p)<br>d_an = torch<span class="hljs-selector-class">.abs</span>(a-n)<br><br>loss = d_ap - d_an + <span class="hljs-attribute">margin</span><br><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(loss)</span></span><br></code></pre></td></tr></table></figure>
+
+<h3 id="nn-HingeEmbeddingLoss"><a href="#nn-HingeEmbeddingLoss" class="headerlink" title="nn.HingeEmbeddingLoss"></a>nn.HingeEmbeddingLoss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.HingeEmbeddingLoss(<span class="hljs-attribute">margin</span>=1.0, <span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：计算两个输入的相似性，常用于非线性 embedding 和半监督学习</p>
+<p>特别注意：输入 x 应该为两个输入之差的绝对值</p>
+<p>主要参数：</p>
+<ul>
+<li>margin：边界值</li>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>计算公式：</p>
+<p>!<img src="/img/pytorchtrain4/9.png" srcset="/img/loading.gif" lazyload></p>
+<p>代码如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs lua">inputs = torch.tensor(<span class="hljs-string">[[1., 0.8, 0.5]]</span>)<br>target = torch.tensor(<span class="hljs-string">[[1, 1, -1]]</span>)<br><br>loss_f = nn.HingeEmbeddingLoss(margin=<span class="hljs-number">1</span>, reduction=<span class="hljs-string">&#x27;none&#x27;</span>)<br><br>loss = loss_f(inputs, target)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Hinge Embedding Loss&quot;</span>, loss)<br></code></pre></td></tr></table></figure>
+
+<p>输出为：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">Hinge</span> Embedding Loss tensor([[<span class="hljs-number">1</span>.<span class="hljs-number">0000</span>, <span class="hljs-number">0</span>.<span class="hljs-number">8000</span>, <span class="hljs-number">0</span>.<span class="hljs-number">5000</span>]])<br></code></pre></td></tr></table></figure>
+
+<p>手动计算第三个 loss 的代码如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">margin</span> = <span class="hljs-number">1</span>.<br><span class="hljs-attribute">loss</span> = max(<span class="hljs-number">0</span>, margin - inputs.numpy()[<span class="hljs-number">0</span>, <span class="hljs-number">2</span>])<br><br><span class="hljs-attribute">print</span>(loss)<br></code></pre></td></tr></table></figure>
+
+<p>结果为 0.5</p>
+<h3 id="nn-CosineEmbeddingLoss"><a href="#nn-CosineEmbeddingLoss" class="headerlink" title="nn.CosineEmbeddingLoss"></a>nn.CosineEmbeddingLoss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torch.nn.CosineEmbeddingLoss(<span class="hljs-attribute">margin</span>=0.0, <span class="hljs-attribute">size_average</span>=None, <span class="hljs-attribute">reduce</span>=None, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：采用余弦相似度计算两个输入的相似性</p>
+<p>主要参数：</p>
+<ul>
+<li>margin：边界值，可取值 [-1, 1]，推荐为 [0, 0.5]</li>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>计算公式：</p>
+<p><img src="/img/pytorchtrain4/10.png" srcset="/img/loading.gif" lazyload></p>
+<p>其中$\cos (\theta)&#x3D;\frac{A \cdot B}{|A||B|}&#x3D;\frac{\sum_{i&#x3D;1}^{n} A_{i} \times B_{i}}{\sqrt{\sum_{i&#x3D;1}^{n}\left(A_{i}\right)^{2}} \times \sqrt{\sum_{i&#x3D;1}^{n}\left(B_{i}\right)^{2}}}$</p>
+<p>代码如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs lua">x1 = torch.tensor(<span class="hljs-string">[[0.3, 0.5, 0.7], [0.3, 0.5, 0.7]]</span>)<br>x2 = torch.tensor(<span class="hljs-string">[[0.1, 0.3, 0.5], [0.1, 0.3, 0.5]]</span>)<br><br>target = torch.tensor(<span class="hljs-string">[[1, -1]]</span>, dtype=torch.float)<br><br>loss_f = nn.CosineEmbeddingLoss(margin=<span class="hljs-number">0.</span>, reduction=<span class="hljs-string">&#x27;none&#x27;</span>)<br><br>loss = loss_f(x1, x2, target)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Cosine Embedding Loss&quot;</span>, loss)<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs lua">Cosine Embedding Loss tensor(<span class="hljs-string">[[0.0167, 0.9833]]</span>)<br></code></pre></td></tr></table></figure>
+
+<p>手动计算第一个样本的 loss 的代码为：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">margin</span> = <span class="hljs-number">0</span>.<br><br><span class="hljs-attribute">def</span> cosine(a, b):<br><span class="hljs-attribute">numerator</span> = torch.dot(a, b)<br><span class="hljs-attribute">denominator</span> = torch.norm(a, <span class="hljs-number">2</span>) * torch.norm(b, <span class="hljs-number">2</span>)<br><span class="hljs-attribute">return</span> float(numerator/denominator)<br><br><span class="hljs-attribute">l_1</span> = <span class="hljs-number">1</span> - (cosine(x1[<span class="hljs-number">0</span>], x2[<span class="hljs-number">0</span>]))<br><br><span class="hljs-attribute">l_2</span> = max(<span class="hljs-number">0</span>, cosine(x1[<span class="hljs-number">0</span>], x2[<span class="hljs-number">0</span>]))<br><br><span class="hljs-attribute">print</span>(l_1, l_2)<br></code></pre></td></tr></table></figure>
+
+<p>结果为：0.016662120819091797 0.9833378791809082</p>
+<h3 id="nn-CTCLoss"><a href="#nn-CTCLoss" class="headerlink" title="nn.CTCLoss"></a>nn.CTCLoss</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.CTCLoss(<span class="hljs-attribute">blank</span>=0, <span class="hljs-attribute">reduction</span>=<span class="hljs-string">&#x27;mean&#x27;</span>, <span class="hljs-attribute">zero_infinity</span>=<span class="hljs-literal">False</span>)<br></code></pre></td></tr></table></figure>
+
+<p>功能：计算 CTC 损失，解决时序类数据的分类，全称为 Connectionist Temporal Classification</p>
+<p>主要参数：</p>
+<ul>
+<li>blank：blank label</li>
+<li>zero_infinity：无穷大的值或梯度置 0</li>
+<li>reduction：计算模式，可以为 none(逐个元素计算)，sum(所有元素求和，返回标量)，mean(加权平均，返回标量)</li>
+</ul>
+<p>对时序方面研究比较少，不展开讲了。</p>
+<h2 id="优化器"><a href="#优化器" class="headerlink" title="优化器"></a>优化器</h2><p>PyTorch 中的优化器是用于管理并更新模型中可学习参数的值，使得模型输出更加接近真实标签。</p>
+<h3 id="optimizer-的属性"><a href="#optimizer-的属性" class="headerlink" title="optimizer 的属性"></a>optimizer 的属性</h3><p>PyTorch 中提供了 Optimizer 类，定义如下：</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs pf">class Optimizer(object):<br>    def __init__(<span class="hljs-literal">self</span>, params, defaults):        <br>        <span class="hljs-literal">self</span>.defaults = defaults<br>        <span class="hljs-literal">self</span>.<span class="hljs-keyword">state</span> = defaultdict(dict)<br>        <span class="hljs-literal">self</span>.param_groups = []<br></code></pre></td></tr></table></figure>
+
+<p>主要有 3 个属性</p>
+<ul>
+<li>defaults：优化器的超参数，如 weight_decay，momentum</li>
+<li>state：参数的缓存，如 momentum 中需要用到前几次的梯度，就缓存在这个变量中</li>
+<li>param_groups：管理的参数组，是一个 list，其中每个元素是字典，包括 momentum、lr、weight_decay、params 等。</li>
+<li>_step_count：记录更新 次数，在学习率调整中使用</li>
+</ul>
+<h3 id="optimizer-的方法"><a href="#optimizer-的方法" class="headerlink" title="optimizer 的方法"></a>optimizer 的方法</h3><ul>
+<li><p>zero_grad()：清空所管理参数的梯度。由于 PyTorch 的特性是张量的梯度不自动清零，因此每次反向传播之后都需要清空梯度。代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">zero_grad</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">r&quot;&quot;&quot;Clears the gradients of all optimized :class:`torch.Tensor` s.&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">for</span> group <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.param_groups:<br>        <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> group[<span class="hljs-string">&#x27;params&#x27;</span>]:<br>            <span class="hljs-keyword">if</span> p.grad <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>                p.grad.detach_()<br>                p.grad.zero_()<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>step()：执行一步梯度更新</p>
+</li>
+<li><p>add_param_group()：添加参数组，主要代码如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-function">def <span class="hljs-title">add_param_group</span>(<span class="hljs-params">self, param_group</span>):</span><br><span class="hljs-function">    <span class="hljs-keyword">params</span></span> = param_group[<span class="hljs-string">&#x27;params&#x27;</span>]<br>    <span class="hljs-function"><span class="hljs-keyword">if</span> <span class="hljs-title">isinstance</span>(<span class="hljs-params"><span class="hljs-keyword">params</span>, torch.Tensor</span>):</span><br><span class="hljs-function">        param_group[&#x27;<span class="hljs-keyword">params</span>&#x27;]</span> = [<span class="hljs-keyword">params</span>]<br>    ...<br>    self.param_groups.append(param_group)<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>state_dict()：获取优化器当前状态信息字典</p>
+</li>
+<li><p>load_state_dict()：加载状态信息字典，包括 state 、momentum_buffer 和 param_groups。主要用于模型的断点续训练。我们可以在每隔 50 个 epoch 就保存模型的 state_dict 到硬盘，在意外终止训练时，可以继续加载上次保存的状态，继续训练。代码如下：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-function">def <span class="hljs-title">state_dict</span>(<span class="hljs-params">self</span>):</span><br><span class="hljs-function">    r&quot;&quot;&quot;Returns the state of the optimizer <span class="hljs-keyword">as</span> a :<span class="hljs-keyword">class</span>:`dict`.</span><br><span class="hljs-function">    ...</span><br><span class="hljs-function">    <span class="hljs-keyword">return</span></span> &#123;<br>    <span class="hljs-string">&#x27;state&#x27;</span>: packed_state,<br>    <span class="hljs-string">&#x27;param_groups&#x27;</span>: param_groups,<br>    &#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<p>下面是代码示例：</p>
+<h4 id="step"><a href="#step" class="headerlink" title="step()"></a>step()</h4><p>张量 weight 的形状为$2 \times 2$，并设置梯度为 1，把 weight 传进优化器，学习率设置为 1，执行<code>optimizer.step()</code>更新梯度，也就是所有的张量都减去 1。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs routeros">weight = torch.randn((2, 2), <span class="hljs-attribute">requires_grad</span>=<span class="hljs-literal">True</span>)<br>weight.grad = torch.ones((2, 2))<br><br>optimizer = optim.SGD([weight], <span class="hljs-attribute">lr</span>=1)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;weight before step:&#123;&#125;&quot;</span>.format(weight.data))<br>optimizer.<span class="hljs-keyword">step</span>()        # 修改<span class="hljs-attribute">lr</span>=1, 0.1观察结果<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;weight after step:&#123;&#125;&quot;</span>.format(weight.data))<br></code></pre></td></tr></table></figure>
+
+<p>输出为：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs lua">weight before step:tensor(<span class="hljs-string">[[0.6614, 0.2669],</span><br><span class="hljs-string">        [0.0617, 0.6213]]</span>)<br>weight after step:tensor(<span class="hljs-string">[[-0.3386, -0.7331],</span><br><span class="hljs-string">        [-0.9383, -0.3787]]</span>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="zero-grad"><a href="#zero-grad" class="headerlink" title="zero_grad()"></a>zero_grad()</h4><p>代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;weight before step:&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(weight.data))<br>optimizer.step()        <span class="hljs-comment"># 修改lr=1 0.1观察结果</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;weight after step:&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(weight.data))<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;weight in optimizer:&#123;&#125;\nweight in weight:&#123;&#125;\n&quot;</span>.<span class="hljs-built_in">format</span>(<span class="hljs-built_in">id</span>(optimizer.param_groups[<span class="hljs-number">0</span>][<span class="hljs-string">&#x27;params&#x27;</span>][<span class="hljs-number">0</span>]), <span class="hljs-built_in">id</span>(weight)))<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;weight.grad is &#123;&#125;\n&quot;</span>.<span class="hljs-built_in">format</span>(weight.grad))<br>optimizer.zero_grad()<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;after optimizer.zero_grad(), weight.grad is\n&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(weight.grad))<br></code></pre></td></tr></table></figure>
+
+<p>输出为：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs lua">weight before step:tensor(<span class="hljs-string">[[0.6614, 0.2669],</span><br><span class="hljs-string">        [0.0617, 0.6213]]</span>)<br>weight after step:tensor(<span class="hljs-string">[[-0.3386, -0.7331],</span><br><span class="hljs-string">        [-0.9383, -0.3787]]</span>)<br>weight <span class="hljs-keyword">in</span> optimizer:<span class="hljs-number">1932450477472</span><br>weight <span class="hljs-keyword">in</span> weight:<span class="hljs-number">1932450477472</span><br>weight.grad is tensor(<span class="hljs-string">[[1., 1.],</span><br><span class="hljs-string">        [1., 1.]]</span>)<br>after optimizer.zero_grad(), weight.grad is<br>tensor(<span class="hljs-string">[[0., 0.],</span><br><span class="hljs-string">        [0., 0.]]</span>)<br></code></pre></td></tr></table></figure>
+
+<p>可以看到优化器的 param_groups 中存储的参数和 weight 的内存地址是一样的，所以优化器中保存的是参数的地址，而不是把参数复制到优化器中。</p>
+<h4 id="add-param-group"><a href="#add-param-group" class="headerlink" title="add_param_group()"></a>add_param_group()</h4><p>向优化器中添加一组参数，代码如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;optimizer.param_groups is\n&#123;&#125;&quot;</span>.format(optimizer.param_groups)</span></span>)<br>w2 = torch<span class="hljs-selector-class">.randn</span>((<span class="hljs-number">3</span>, <span class="hljs-number">3</span>), requires_grad=True)<br>optimizer<span class="hljs-selector-class">.add_param_group</span>(&#123;<span class="hljs-string">&quot;params&quot;</span>: w2, <span class="hljs-string">&#x27;lr&#x27;</span>: <span class="hljs-number">0.0001</span>&#125;)<br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;optimizer.param_groups is\n&#123;&#125;&quot;</span>.format(optimizer.param_groups)</span></span>)<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs lua">optimizer.param_groups is<br>[&#123;<span class="hljs-string">&#x27;params&#x27;</span>: [tensor(<span class="hljs-string">[[0.6614, 0.2669],</span><br><span class="hljs-string">        [0.0617, 0.6213]]</span>, requires_grad=True)], <span class="hljs-string">&#x27;lr&#x27;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&#x27;momentum&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;dampening&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;weight_decay&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;nesterov&#x27;</span>: False&#125;]<br>optimizer.param_groups is<br>[&#123;<span class="hljs-string">&#x27;params&#x27;</span>: [tensor(<span class="hljs-string">[[0.6614, 0.2669],</span><br><span class="hljs-string">        [0.0617, 0.6213]]</span>, requires_grad=True)], <span class="hljs-string">&#x27;lr&#x27;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&#x27;momentum&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;dampening&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;weight_decay&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;nesterov&#x27;</span>: False&#125;, &#123;<span class="hljs-string">&#x27;params&#x27;</span>: [tensor(<span class="hljs-string">[[-0.4519, -0.1661, -1.5228],</span><br><span class="hljs-string">        [ 0.3817, -1.0276, -0.5631],</span><br><span class="hljs-string">        [-0.8923, -0.0583, -0.1955]]</span>, requires_grad=True)], <span class="hljs-string">&#x27;lr&#x27;</span>: <span class="hljs-number">0.0001</span>, <span class="hljs-string">&#x27;momentum&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;dampening&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;weight_decay&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;nesterov&#x27;</span>: False&#125;]<br></code></pre></td></tr></table></figure>
+
+<h4 id="state-dict"><a href="#state-dict" class="headerlink" title="state_dict()"></a>state_dict()</h4><p>首先进行 10 次反向传播更新，然后对比 state_dict 的变化。可以使用<code>torch.save()</code>把 state_dict 保存到 pkl 文件中。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs stylus">optimizer = optim<span class="hljs-selector-class">.SGD</span>(<span class="hljs-selector-attr">[weight]</span>, lr=<span class="hljs-number">0.1</span>, momentum=<span class="hljs-number">0.9</span>)<br>opt_state_dict = optimizer<span class="hljs-selector-class">.state_dict</span>()<br><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;state_dict before step:\n&quot;</span>, opt_state_dict)</span></span><br><br><span class="hljs-keyword">for</span> <span class="hljs-selector-tag">i</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">10</span>):<br>optimizer<span class="hljs-selector-class">.step</span>()<br><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;state_dict after step:\n&quot;</span>, optimizer.state_dict()</span></span>)<br><br>torch<span class="hljs-selector-class">.save</span>(optimizer<span class="hljs-selector-class">.state_dict</span>(), os<span class="hljs-selector-class">.path</span><span class="hljs-selector-class">.join</span>(BASE_DIR, <span class="hljs-string">&quot;optimizer_state_dict.pkl&quot;</span>))<br></code></pre></td></tr></table></figure>
+
+<p>输出为：</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs prolog">state_dict before step:<br> &#123;<span class="hljs-string">&#x27;state&#x27;</span>: &#123;&#125;, <span class="hljs-string">&#x27;param_groups&#x27;</span>: [&#123;<span class="hljs-string">&#x27;lr&#x27;</span>: <span class="hljs-number">0.1</span>, <span class="hljs-string">&#x27;momentum&#x27;</span>: <span class="hljs-number">0.9</span>, <span class="hljs-string">&#x27;dampening&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;weight_decay&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;nesterov&#x27;</span>: <span class="hljs-symbol">False</span>, <span class="hljs-string">&#x27;params&#x27;</span>: [<span class="hljs-number">1976501036448</span>]&#125;]&#125;<br>state_dict after step:<br> &#123;<span class="hljs-string">&#x27;state&#x27;</span>: &#123;<span class="hljs-number">1976501036448</span>: &#123;<span class="hljs-string">&#x27;momentum_buffer&#x27;</span>: tensor([[<span class="hljs-number">6.5132</span>, <span class="hljs-number">6.5132</span>],<br>        [<span class="hljs-number">6.5132</span>, <span class="hljs-number">6.5132</span>]])&#125;&#125;, <span class="hljs-string">&#x27;param_groups&#x27;</span>: [&#123;<span class="hljs-string">&#x27;lr&#x27;</span>: <span class="hljs-number">0.1</span>, <span class="hljs-string">&#x27;momentum&#x27;</span>: <span class="hljs-number">0.9</span>, <span class="hljs-string">&#x27;dampening&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;weight_decay&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;nesterov&#x27;</span>: <span class="hljs-symbol">False</span>, <span class="hljs-string">&#x27;params&#x27;</span>: [<span class="hljs-number">1976501036448</span>]&#125;]&#125;<br></code></pre></td></tr></table></figure>
+
+<p>经过反向传播后，state_dict 中的字典保存了<code>1976501036448</code>作为 key，这个 key 就是参数的内存地址。</p>
+<h4 id="load-state-dict"><a href="#load-state-dict" class="headerlink" title="load_state_dict()"></a>load_state_dict()</h4><p>上面保存了 state_dict 之后，可以先使用<code>torch.load()</code>把加载到内存中，然后再使用<code>load_state_dict()</code>加载到模型中，继续训练。代码如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs stylus">optimizer = optim<span class="hljs-selector-class">.SGD</span>(<span class="hljs-selector-attr">[weight]</span>, lr=<span class="hljs-number">0.1</span>, momentum=<span class="hljs-number">0.9</span>)<br>state_dict = torch<span class="hljs-selector-class">.load</span>(os<span class="hljs-selector-class">.path</span><span class="hljs-selector-class">.join</span>(BASE_DIR, <span class="hljs-string">&quot;optimizer_state_dict.pkl&quot;</span>))<br><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;state_dict before load state:\n&quot;</span>, optimizer.state_dict()</span></span>)<br>optimizer<span class="hljs-selector-class">.load_state_dict</span>(state_dict)<br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(<span class="hljs-string">&quot;state_dict after load state:\n&quot;</span>, optimizer.state_dict()</span></span>)<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs lua">state_dict before <span class="hljs-built_in">load</span> state:<br> &#123;<span class="hljs-string">&#x27;state&#x27;</span>: &#123;&#125;, <span class="hljs-string">&#x27;param_groups&#x27;</span>: [&#123;<span class="hljs-string">&#x27;lr&#x27;</span>: <span class="hljs-number">0.1</span>, <span class="hljs-string">&#x27;momentum&#x27;</span>: <span class="hljs-number">0.9</span>, <span class="hljs-string">&#x27;dampening&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;weight_decay&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;nesterov&#x27;</span>: False, <span class="hljs-string">&#x27;params&#x27;</span>: [<span class="hljs-number">2075286132128</span>]&#125;]&#125;<br>state_dict after <span class="hljs-built_in">load</span> state:<br> &#123;<span class="hljs-string">&#x27;state&#x27;</span>: &#123;<span class="hljs-number">2075286132128</span>: &#123;<span class="hljs-string">&#x27;momentum_buffer&#x27;</span>: tensor(<span class="hljs-string">[[6.5132, 6.5132],</span><br><span class="hljs-string">        [6.5132, 6.5132]]</span>)&#125;&#125;, <span class="hljs-string">&#x27;param_groups&#x27;</span>: [&#123;<span class="hljs-string">&#x27;lr&#x27;</span>: <span class="hljs-number">0.1</span>, <span class="hljs-string">&#x27;momentum&#x27;</span>: <span class="hljs-number">0.9</span>, <span class="hljs-string">&#x27;dampening&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;weight_decay&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;nesterov&#x27;</span>: False, <span class="hljs-string">&#x27;params&#x27;</span>: [<span class="hljs-number">2075286132128</span>]&#125;]&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="学习率"><a href="#学习率" class="headerlink" title="学习率"></a>学习率</h3><p>学习率是影响损失函数收敛的重要因素，控制了梯度下降更新的步伐。下面构造一个损失函数$y&#x3D;(2x)^{2}$，$x$的初始值为 2，学习率设置为 1。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">iter_rec</span>, loss_rec, x_rec = list(), list(), list()<br><br><span class="hljs-attribute">lr</span> = <span class="hljs-number">0</span>.<span class="hljs-number">01</span>    # /<span class="hljs-number">1</span>. /.<span class="hljs-number">5</span> /.<span class="hljs-number">2</span> /.<span class="hljs-number">1</span> /.<span class="hljs-number">125</span><br><span class="hljs-attribute">max_iteration</span> = <span class="hljs-number">20</span>   # /<span class="hljs-number">1</span>. <span class="hljs-number">4</span>     /.<span class="hljs-number">5</span> <span class="hljs-number">4</span>   /.<span class="hljs-number">2</span> <span class="hljs-number">20</span> <span class="hljs-number">200</span><br><br><span class="hljs-attribute">for</span> i in range(max_iteration):<br><br><span class="hljs-attribute">y</span> = func(x)<br><span class="hljs-attribute">y</span>.backward()<br><br><span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;Iter:&#123;&#125;, X:&#123;:8&#125;, X.grad:&#123;:8&#125;, loss:&#123;:10&#125;&quot;</span>.format(<br><span class="hljs-attribute">i</span>, x.detach().numpy()[<span class="hljs-number">0</span>], x.grad.detach().numpy()[<span class="hljs-number">0</span>], y.item()))<br><br><span class="hljs-attribute">x_rec</span>.append(x.item())<br><br><span class="hljs-attribute">x</span>.data.sub_(lr * x.grad)    # x -= x.grad  数学表达式意义:  x = x - x.grad    # <span class="hljs-number">0</span>.<span class="hljs-number">5</span> <span class="hljs-number">0</span>.<span class="hljs-number">2</span> <span class="hljs-number">0</span>.<span class="hljs-number">1</span> <span class="hljs-number">0</span>.<span class="hljs-number">125</span><br><span class="hljs-attribute">x</span>.grad.zero_()<br><br><span class="hljs-attribute">iter_rec</span>.append(i)<br><span class="hljs-attribute">loss_rec</span>.append(y)<br><br><span class="hljs-attribute">plt</span>.subplot(<span class="hljs-number">121</span>).plot(iter_rec, loss_rec, &#x27;-ro&#x27;)<br><span class="hljs-attribute">plt</span>.xlabel(<span class="hljs-string">&quot;Iteration&quot;</span>)<br><span class="hljs-attribute">plt</span>.ylabel(<span class="hljs-string">&quot;Loss value&quot;</span>)<br><br><span class="hljs-attribute">x_t</span> = torch.linspace(-<span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">100</span>)<br><span class="hljs-attribute">y</span> = func(x_t)<br><span class="hljs-attribute">plt</span>.subplot(<span class="hljs-number">122</span>).plot(x_t.numpy(), y.numpy(), label=<span class="hljs-string">&quot;y = 4*x^2&quot;</span>)<br><span class="hljs-attribute">plt</span>.grid()<br><span class="hljs-attribute">y_rec</span> =<span class="hljs-meta"> [func(torch.tensor(i)).item() for i in x_rec]</span><br><span class="hljs-attribute">plt</span>.subplot(<span class="hljs-number">122</span>).plot(x_rec, y_rec, &#x27;-ro&#x27;)<br><span class="hljs-attribute">plt</span>.legend()<br><span class="hljs-attribute">plt</span>.show()<br></code></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="/img/pytorchtrain4/11.png" srcset="/img/loading.gif" lazyload><br> 损失函数没有减少，而是增大，这时因为学习率太大，无法收敛，把学习率设置为 0.01 后，结果如下；</p>
+<p><img src="/img/pytorchtrain4/12.png" srcset="/img/loading.gif" lazyload><br> 从上面可以看出，适当的学习率可以加快模型的收敛。</p>
+<p>下面的代码是试验 10 个不同的学习率 ，[0.01, 0.5] 之间线性选择 10 个学习率，并比较损失函数的收敛情况</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python">iteration = <span class="hljs-number">100</span><br>num_lr = <span class="hljs-number">10</span><br>lr_min, lr_max = <span class="hljs-number">0.01</span>, <span class="hljs-number">0.2</span>  <span class="hljs-comment"># .5 .3 .2</span><br><br>lr_list = np.linspace(lr_min, lr_max, num=num_lr).tolist()<br>loss_rec = [[] <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(lr_list))]<br>iter_rec = <span class="hljs-built_in">list</span>()<br><br><span class="hljs-keyword">for</span> i, lr <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(lr_list):<br>    x = torch.tensor([<span class="hljs-number">2.</span>], requires_grad=<span class="hljs-literal">True</span>)<br>    <span class="hljs-keyword">for</span> <span class="hljs-built_in">iter</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(iteration):<br><br>        y = func(x)<br>        y.backward()<br>        x.data.sub_(lr * x.grad)  <span class="hljs-comment"># x.data -= x.grad</span><br>        x.grad.zero_()<br><br>        loss_rec[i].append(y.item())<br><br><span class="hljs-keyword">for</span> i, loss_r <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(loss_rec):<br>    plt.plot(<span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(loss_r)), loss_r, label=<span class="hljs-string">&quot;LR: &#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(lr_list[i]))<br>plt.legend()<br>plt.xlabel(<span class="hljs-string">&#x27;Iterations&#x27;</span>)<br>plt.ylabel(<span class="hljs-string">&#x27;Loss value&#x27;</span>)<br>plt.show()<br></code></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="/img/pytorchtrain4/13.png" srcset="/img/loading.gif" lazyload><br> 上面的结果表示在学习率较大时，损失函数越来越大，模型不能收敛。把学习率区间改为 [0.01， 0.2] 之后，结果如下：</p>
+<p><img src="/img/pytorchtrain4/14.png" srcset="/img/loading.gif" lazyload><br> 这个损失函数在学习率为 0.125 时最快收敛，学习率为 0.01 收敛最慢。但是不同模型的最佳学习率不一样，无法事先知道，一般把学习率设置为比较小的数就可以了。</p>
+<h3 id="momentum-动量"><a href="#momentum-动量" class="headerlink" title="momentum 动量"></a>momentum 动量</h3><p>momentum 动量的更新方法，不仅考虑当前的梯度，还会结合前面的梯度。</p>
+<p>momentum 来源于指数加权平均：$\mathrm{v}{t}&#x3D;\boldsymbol{\beta} * \boldsymbol{v}{t-1}+(\mathbf{1}-\boldsymbol{\beta}) * \boldsymbol{\theta}{t}$，其中$v_{t-1}$是上一个时刻的指数加权平均，$\theta_{t}$表示当前时刻的值，$\beta$是系数，一般小于 1。指数加权平均常用于时间序列求平均值。假设现在求得是 100 个时刻的指数加权平均，那么<br><img src="/img/pytorchtrain4/15.png" srcset="/img/loading.gif" lazyload> </p>
+<p>从上式可以看到，由于$\beta$小于1，越前面时刻的$\theta$，$\beta$的次方就越大，系数就越小。</p>
+<p>$\beta$ 可以理解为记忆周期，$\beta$越小，记忆周期越短，$\beta$越大，记忆周期越长。通常$\beta$设置为 0.9，那么 $\frac{1}{1-\beta}&#x3D;\frac{1}{1-0.9}&#x3D;10$，表示更关注最近 10 天的数据。</p>
+<p>下面代码展示了$\beta&#x3D;0.9$的情况</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs stylus">weights = <span class="hljs-built_in">exp_w_func</span>(beta, time_list)<br><br>plt<span class="hljs-selector-class">.plot</span>(time_list, weights, <span class="hljs-string">&#x27;-ro&#x27;</span>, label=<span class="hljs-string">&quot;Beta: &#123;&#125;\ny = B^t * (1-B)&quot;</span><span class="hljs-selector-class">.format</span>(beta))<br>plt<span class="hljs-selector-class">.xlabel</span>(<span class="hljs-string">&quot;time&quot;</span>)<br>plt<span class="hljs-selector-class">.ylabel</span>(<span class="hljs-string">&quot;weight&quot;</span>)<br>plt<span class="hljs-selector-class">.legend</span>()<br>plt<span class="hljs-selector-class">.title</span>(<span class="hljs-string">&quot;exponentially weighted average&quot;</span>)<br>plt<span class="hljs-selector-class">.show</span>()<br><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(np.sum(weights)</span></span>)<br></code></pre></td></tr></table></figure>
+
+<p>结果为：</p>
+<p><img src="/img/pytorchtrain4/16.png" srcset="/img/loading.gif" lazyload><br> 下面代码展示了不同的$\beta$取值情况</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs stylus">beta_list = <span class="hljs-selector-attr">[0.98, 0.95, 0.9, 0.8]</span><br>w_list = <span class="hljs-selector-attr">[exp_w_func(beta, time_list) for beta in beta_list]</span><br><span class="hljs-keyword">for</span> <span class="hljs-selector-tag">i</span>, w <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(w_list):<br>    plt<span class="hljs-selector-class">.plot</span>(time_list, w, label=<span class="hljs-string">&quot;Beta: &#123;&#125;&quot;</span><span class="hljs-selector-class">.format</span>(beta_list<span class="hljs-selector-attr">[i]</span>))<br>    plt<span class="hljs-selector-class">.xlabel</span>(<span class="hljs-string">&quot;time&quot;</span>)<br>    plt<span class="hljs-selector-class">.ylabel</span>(<span class="hljs-string">&quot;weight&quot;</span>)<br>plt<span class="hljs-selector-class">.legend</span>()<br>plt<span class="hljs-selector-class">.show</span>()<br></code></pre></td></tr></table></figure>
+
+<p>结果为：</p>
+<p><img src="/img/pytorchtrain4/17.png" srcset="/img/loading.gif" lazyload><br> $\beta$的值越大，记忆周期越长，就会更多考虑前面时刻的数值，因此越平缓。</p>
+<p>在 PyTroch 中，momentum 的更新公式是：</p>
+<p>$v_{i}&#x3D;m * v_{i-1}+g\left(w_{i}\right)$ $w_{i+1}&#x3D;w_{i}-l r * v_{i}$</p>
+<p>其中$w_{i+1}$表示第$i+1$次更新的参数，lr 表示学习率，$v_{i}$表示更新量，$m$表示 momentum 系数，$g(w_{i})$表示$w_{i}$的梯度。展开表示如下：</p>
+<p><img src="/img/pytorchtrain4/18.png" srcset="/img/loading.gif" lazyload>  </p>
+<p>下面的代码是构造一个损失函数$y&#x3D;(2x)^{2}$，$x$的初始值为 2，记录每一次梯度下降并画图，学习率使用 0.01 和 0.03，不适用 momentum。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs scss">def <span class="hljs-built_in">func</span>(x):<br>    return torch.<span class="hljs-built_in">pow</span>(<span class="hljs-number">2</span>*x, <span class="hljs-number">2</span>)    # y = (<span class="hljs-number">2</span>x)^<span class="hljs-number">2</span> = <span class="hljs-number">4</span>*x^<span class="hljs-number">2</span>        dy/dx = <span class="hljs-number">8</span>x<br><br>iteration = <span class="hljs-number">100</span><br>m = <span class="hljs-number">0</span>     # .<span class="hljs-number">9</span> .<span class="hljs-number">63</span><br><br>lr_list = [<span class="hljs-number">0.01</span>, <span class="hljs-number">0.03</span>]<br><br>momentum_list = <span class="hljs-built_in">list</span>()<br>loss_rec = [[] for l in <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(lr_list))]<br>iter_rec = <span class="hljs-built_in">list</span>()<br><br>for i, lr in <span class="hljs-built_in">enumerate</span>(lr_list):<br>    x = torch.<span class="hljs-built_in">tensor</span>([<span class="hljs-number">2</span>.], requires_grad=True)<br><br>    momentum = <span class="hljs-number">0</span>. if lr == <span class="hljs-number">0.03</span> else m<br>    momentum_list.<span class="hljs-built_in">append</span>(momentum)<br><br>    optimizer = optim.<span class="hljs-built_in">SGD</span>([x], lr=lr, momentum=momentum)<br><br>    for iter in <span class="hljs-built_in">range</span>(iteration):<br><br>        y = <span class="hljs-built_in">func</span>(x)<br>        y.<span class="hljs-built_in">backward</span>()<br><br>        optimizer.<span class="hljs-built_in">step</span>()<br>        optimizer.<span class="hljs-built_in">zero_grad</span>()<br><br>        loss_rec[i].<span class="hljs-built_in">append</span>(y.<span class="hljs-built_in">item</span>())<br><br>for i, loss_r in <span class="hljs-built_in">enumerate</span>(loss_rec):<br>    plt.<span class="hljs-built_in">plot</span>(<span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(loss_r)), loss_r, label=<span class="hljs-string">&quot;LR: &#123;&#125; M:&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(lr_list[i], momentum_list[i]))<br>plt.<span class="hljs-built_in">legend</span>()<br>plt.<span class="hljs-built_in">xlabel</span>(<span class="hljs-string">&#x27;Iterations&#x27;</span>)<br>plt.<span class="hljs-built_in">ylabel</span>(<span class="hljs-string">&#x27;Loss value&#x27;</span>)<br>plt.<span class="hljs-built_in">show</span>()<br></code></pre></td></tr></table></figure>
+
+<p>结果为：</p>
+<p><img src="/img/pytorchtrain4/19.jpg" srcset="/img/loading.gif" lazyload><br> 可以看到学习率为 0.3 时收敛更快。然后我们把学习率为 0.1 时，设置 momentum 为 0.9，结果<br>虽然设置了 momentum，但是震荡收敛，这是由于 momentum 的值太大，每一次都考虑上一次的比例太多，可以把 momentum 设置为 0.63 后，结果如下：</p>
+<p><img src="/img/pytorchtrain4/20.png" srcset="/img/loading.gif" lazyload><br>可以看到设置适当的 momentum 后，学习率 0.1 的情况下收敛更快了。</p>
+<p>下面介绍 PyTroch 所提供的 10 种优化器。</p>
+<h3 id="PyTroch-提供的-10-种优化器"><a href="#PyTroch-提供的-10-种优化器" class="headerlink" title="PyTroch 提供的 10 种优化器"></a>PyTroch 提供的 10 种优化器</h3><h4 id="optim-SGD"><a href="#optim-SGD" class="headerlink" title="optim.SGD"></a>optim.SGD</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">optim.SGD(params, <span class="hljs-attribute">lr</span>=&lt;required parameter&gt;, <span class="hljs-attribute">momentum</span>=0, <span class="hljs-attribute">dampening</span>=0, <span class="hljs-attribute">weight_decay</span>=0, <span class="hljs-attribute">nesterov</span>=<span class="hljs-literal">False</span><br></code></pre></td></tr></table></figure>
+
+<p>随机梯度下降法</p>
+<p>主要参数：</p>
+<ul>
+<li>params：管理的参数组</li>
+<li>lr：初始学习率</li>
+<li>momentum：动量系数$\beta$</li>
+<li>weight_decay：L2 正则化系数</li>
+<li>nesterov：是否采用 NAG</li>
+</ul>
+<h4 id="optim-Adagrad"><a href="#optim-Adagrad" class="headerlink" title="optim.Adagrad"></a>optim.Adagrad</h4><p>自适应学习率梯度下降法</p>
+<h4 id="optim-RMSprop"><a href="#optim-RMSprop" class="headerlink" title="optim.RMSprop"></a>optim.RMSprop</h4><p>Adagrad 的改进</p>
+<h4 id="optim-Adadelta"><a href="#optim-Adadelta" class="headerlink" title="optim.Adadelta"></a>optim.Adadelta</h4><h4 id="optim-Adam"><a href="#optim-Adam" class="headerlink" title="optim.Adam"></a>optim.Adam</h4><p>RMSProp 集合 Momentum，这个是目前最常用的优化器，因为它可以使用较大的初始学习率。</p>
+<h4 id="optim-Adamax"><a href="#optim-Adamax" class="headerlink" title="optim.Adamax"></a>optim.Adamax</h4><p>Adam 增加学习率上限</p>
+<h4 id="optim-SparseAdam"><a href="#optim-SparseAdam" class="headerlink" title="optim.SparseAdam"></a>optim.SparseAdam</h4><p>稀疏版的 Adam</p>
+<h4 id="optim-ASGD"><a href="#optim-ASGD" class="headerlink" title="optim.ASGD"></a>optim.ASGD</h4><p>随机平均梯度下降</p>
+<h4 id="optim-Rprop"><a href="#optim-Rprop" class="headerlink" title="optim.Rprop"></a>optim.Rprop</h4><p>弹性反向传播，这种优化器通常是在所有样本都一起训练，也就是 batchsize 为全部样本时使用。</p>
+<h4 id="optim-LBFGS"><a href="#optim-LBFGS" class="headerlink" title="optim.LBFGS"></a>optim.LBFGS</h4><p>BFGS 在内存上的改进</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="print-no-link">#深度学习</a>
+      
+        <a href="/tags/pytorch/" class="print-no-link">#pytorch</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深度学习-11-pytorch-4-损失函数与优化器</div>
+      <div>https://truth-zheng.github.io/2021/08/11/pytorchtrain4/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zheng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年8月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/08/12/pytorchtrain5/" title="深度学习-12-pytorch-5-可视化与 Hook">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深度学习-12-pytorch-5-可视化与 Hook</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/11/pytorchtrain3/" title="深度学习-10-pytorch-3-模型构建">
+                        <span class="hidden-mobile">深度学习-10-pytorch-3-模型构建</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/mermaid@8.10.1/dist/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com" target="_blank" rel="nofollow noopener"><span>Github</span></a> <i class="iconfont icon-love"></i> <a href="https://scholar.google.com/" target="_blank" rel="nofollow noopener"><span>GoogleScholar</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

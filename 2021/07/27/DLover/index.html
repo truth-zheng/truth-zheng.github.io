@@ -1,0 +1,821 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar/tou.jpeg">
+  <link rel="icon" href="/img/avatar/tou.jpeg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zheng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="降低loss的思考方向和Model Bias的一些知识(主要是overfitting)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-2-降低Loss上篇-Model Bias">
+<meta property="og:url" content="https://truth-zheng.github.io/2021/07/27/DLover/index.html">
+<meta property="og:site_name" content="Sage的生活学习笔记">
+<meta property="og:description" content="降低loss的思考方向和Model Bias的一些知识(主要是overfitting)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+<meta property="article:published_time" content="2021-07-27T10:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-31T11:53:22.000Z">
+<meta property="article:author" content="zheng">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="Overfitting">
+<meta property="article:tag" content="Model Bias">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>深度学习-2-降低Loss上篇-Model Bias - Sage的生活学习笔记</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"truth-zheng.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"gtag":null,"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sage的学习生活笔记</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/2.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深度学习-2-降低Loss上篇-Model Bias"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-07-27 18:00" pubdate>
+          2021年7月27日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          2.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">深度学习-2-降低Loss上篇-Model Bias</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年7月31日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>创作声明：主要为李宏毅老师的听课笔记，附视频链接：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Wv411h7kN?p=10">https://www.bilibili.com/video/BV1Wv411h7kN?p=10</a></p>
+</blockquote>
+<h2 id="从一张图开始"><a href="#从一张图开始" class="headerlink" title="从一张图开始"></a>从一张图开始</h2><p><img src="/img/dlover/1.png" srcset="/img/loading.gif" lazyload></p>
+<p>这张图十分简单易懂，指出了一个通用的降低 loss 的方法，接下来是一些补充的阐述。</p>
+<h2 id="Model-Bias与Optimization"><a href="#Model-Bias与Optimization" class="headerlink" title="Model Bias与Optimization"></a>Model Bias与Optimization</h2><p><strong>Model Bias</strong><br>我们已经知道，假设我们的 model 过于简单，那即使我们找到了使这个模型效果最好的一组参数，它的 loss 依然很高，甚至不如别的模型相对效果很差的一组参数，	这个时候需要重新设计一个 model，给 model 更大的弹性，可以用 Deep Learning增加更多的弹性，你可以增加更多 features，总之使你的 model 更加复杂，更有弹性去描述复杂情况。  </p>
+<p>但并不是 training 时，loss大就代表一定是 <strong>Model Bias</strong>，你可能会遇到另外一个问题，这个问题是 <strong>Optimization</strong> 做得不好。<br><strong>Optimization</strong><br>我们经常用的gradient desecent，之前的<a href="%5B/img/dlover/1.png%5D(https://love2017.asia/2021/07/26/DLFundamental/#3-Optimization)">笔记</a>已经提到了会有 local minima 的问题。</p>
+<p>那么 training data 的 loss 不够低的时候，到底是 model bias，还是 optimization 的问题呢？一个建议是看到一个你从来没有做过的问题，可以先跑一些比较小的，比较浅的network，甚至用一些不是 deep learning 的方法，比如说 linear model，它们比较容易做Optimize的，可以让我们先有个概念说，这些简单的 model，到底可以得到什么样的 loss，如果你发现你深的model，跟浅的model比起来，深的model明明弹性比较大，但loss却没有办法比浅的model压得更低，那就代表说你的optimization有问题，需要有一些其它的方法，来把optimization这件事情做得更好。<br>假设你现在经过一番努力，你已经可以让你的 training data 的loss变小了，接下来你就可以来看 testing data loss，如果 testing data loss 也足够小就结束了。<br>如果觉得还不够小，testing data上面的loss比 training data 上的loss小很多,那可能就是真的遇到 <strong>overfitting</strong> 的问题。</p>
+<h2 id="Overfitting"><a href="#Overfitting" class="headerlink" title="Overfitting"></a>Overfitting</h2><h3 id="为什么会出现Overfitting"><a href="#为什么会出现Overfitting" class="headerlink" title="为什么会出现Overfitting"></a>为什么会出现Overfitting</h3><p><img src="/img/dlover/2.png" srcset="/img/loading.gif" lazyload></p>
+<p>一个极端的例子：假设根据我们的训练集，machine learning 的方法找出了一个一无是处的function，这个一无是处的function如下工作，如果今天x当做输入的时候，我们就去比对这个x，有没有出现在训练集里面，如果x有出现在训练集里面，就把它对应的ŷ当做输出，如果x没有出现在训练集里面，就输出一个随机的值。<br>在 training data 上面，这个一无是处的function，它的loss是0，可在 testing data 上面，它的loss会变得很大，因为它其实什么都没有预测，这是一个比较极端的例子，在一般的状况下，也有可能发生类似的事情。<br>这张图很好的解释了为什么会有 overfitting，</p>
+<p><img src="/img/dlover/3.png" srcset="/img/loading.gif" lazyload></p>
+<p>假设我们输入的feature叫做x，我们输出的level叫做y，那x跟y都是一维的，x跟y之间的关系，是这个二次的曲线，这个曲线我们刻意用虚线来表示，因为我们通常没有办法直接观察到这条曲线，们真正可以观察到的是我们的训练集，训练集你可以想像成，就是从这条曲线上面，随机**sample（采样）**出来的几个点。  </p>
+<p>今天的模型它的的弹性很大的话，你只给它这三个点，它会知道说，在这三个点上面我们要让loss低，所以的model的曲线会通过这三个点，但是其它没有训练集做为限制的地方，它就会有<strong>freestyle</strong>，因为它的弹性很大，所以你的model可以变成各式各样的function，产生各式各样奇怪的结果。</p>
+<p>testing data是橙色的这些点，训练data是蓝色的这些点，用蓝色的这些点，找出一个function以后，你测试在橘色的这些点上，不一定会好，如果你的model它的自由度很大的话，它可以产生非常奇怪的曲线，导致训练集上的结果好，但是测试集上的loss很大，至于更详细的背后的数学原理，我们之后的笔记再予以探讨。</p>
+<h3 id="如何处理Overfitting"><a href="#如何处理Overfitting" class="headerlink" title="如何处理Overfitting"></a>如何处理Overfitting</h3><ol>
+<li>第一个方向，也许也是最有效的方向，增加你的训练集</li>
+</ol>
+<p><img src="/img/dlover/4.png" srcset="/img/loading.gif" lazyload></p>
+<p>蓝色的点变多了，那虽然 model 的弹性可能很大，但是因为你这边的点非常非常的多，它就可以限制住，所以我们可以 <strong>Data Augmentation（数据集扩增）</strong> 等方法扩大训练集。</p>
+<ol start="2">
+<li>限制模型的弹性</li>
+</ol>
+<p><img src="/img/dlover/5.png" srcset="/img/loading.gif" lazyload></p>
+<p>假设我们直接限制说，现在我们的 model，我们猜测出x跟y背后的关系，其实就是一条二次曲线，只是我们不明确的知道这个二次曲线里面的每一个参数长什么样，猜测的结果取决于你对这个问题的理解，如果模型就是二次曲线，那么选择function的时候就会有很大的限制，因为二次曲线来来去去就是那几个形状而已。<br><strong>制造限制的方法举例来说</strong>： </p>
+<ul>
+<li>给它比较少的参数，如果是deep learning的话，就给它比较少的神经元的数目，本来每层一千个神经元，改成一百个神经元之类的，或者让model共享参数，你可以让一些参数有一样的数值，一个例子是我们之前笔记的network的架构，叫做<strong>fully-connected network（全连接神经网络）</strong>，fully-connected network 是一个比较有弹性的架构，而今天图像处理常用的**CNN（全连接神经网络）**是一个比较有限制的架构，CNN是一种比较没有弹性的model，它厉害的地方就是，它是针对图像的特性，来限制模型的弹性，关于CNN，之后的笔记会详谈。</li>
+<li>用比较少的features。</li>
+<li><strong>Early stopping（早停）</strong></li>
+<li><strong>Regularization（正则化）</strong></li>
+<li><strong>Dropout</strong><br>后三者，之后的笔记会单独阐述。</li>
+</ul>
+<p>但模型也不能给太多限制，限制太大就有了 model bias 过大的问题。  </p>
+<p>观察下图：</p>
+<p><img src="/img/dlover/6.png" srcset="/img/loading.gif" lazyload></p>
+<p>随着model越来越复杂，Training的loss可以越来越低，但是testing的时候呢，当model越来越复杂的时候，刚开始testing的loss会跟着下降，但是当复杂的程度，超过某一个程度以后，Testing的loss就会突然暴增了。</p>
+<p>这是因为说当model越来越复杂的时候，复杂到某一个程度，overfitting的状况就会出现，那我们当然期待说，我们可以选一个中庸的模型，不是太复杂的也不是太简单的，给我们最低的testing loss，那如何选出这样的model？</p>
+<p>以下的讨论：<strong>限于不采用精心设计的数据集（那个直接用testing set衡量即可）</strong></p>
+<p>下面的讨论适用于<strong>只有一个数据集（类似比赛）</strong></p>
+<p>可能很直觉的做法就是说：</p>
+<p>假设我们有三个模型，它们的复杂的程度不一样，我不知道要选哪一个模型才会刚刚好，那直接用 testing set 去看哪个效果最好。<br>我们引入一个概念 <strong>Cross Validation（交叉验证）</strong>。</p>
+<h2 id="Cross-Validation"><a href="#Cross-Validation" class="headerlink" title="Cross Validation"></a>Cross Validation</h2><p>交叉验证（Cross validation)，交叉验证用于防止模型过于复杂而引起的过拟合.有时亦称循环估计， 是一种统计学上将数据样本切割成较小子集的实用方法。于是可以先在一个子集上做分析， 而其它子集则用来做后续对此分析的确认及验证。 一开始的子集被称为训练集。而其它的子集则被称为验证集或测试集。交叉验证是一种评估统计分析、机器学习算法对独立于训练数据的数据集的泛化能力（generalize）。（注，主要用来评估 model bias，使人们可以选择适当复杂度的模型）</p>
+<h3 id="留出法（holdout-cross-validation）"><a href="#留出法（holdout-cross-validation）" class="headerlink" title="留出法（holdout cross validation）"></a>留出法（holdout cross validation）</h3><p>最简单的交叉验证：</p>
+<p>在机器学习任务中，拿到数据后，我们首先会将原始数据集分为三部分：训练集、验证集和测试集。</p>
+<p>训练集用于训练模型，验证集用于模型的参数选择配置，测试集对于模型来说是未知数据，用于评估模型的泛化能力。</p>
+<p>这个方法操作简单，只需随机把原始数据分为三组即可。</p>
+<p>不过如果只做一次分割，它对训练集、验证集和测试集的样本数比例，还有分割后数据的分布是否和原始数据集的分布相同等因素比较敏感，</p>
+<p>不同的划分会得到不同的最优模型，</p>
+<p>而且分成三个集合后，用于训练的数据更少了。</p>
+<h3 id="k-折交叉验证（k-fold-cross-validation）"><a href="#k-折交叉验证（k-fold-cross-validation）" class="headerlink" title="k 折交叉验证（k-fold cross validation）"></a>k 折交叉验证（k-fold cross validation）</h3><p><strong>k 折交叉验证</strong>通过对 k 个不同分组训练的结果进行平均来减少方差，因此模型的性能对数据的划分就不那么敏感。</p>
+<p>第一步，不重复抽样将原始数据随机分为 k 份。</p>
+<p>第二步，每一次挑选其中 1 份作为测试集，剩余 k-1 份作为训练集用于模型训练。</p>
+<p>第三步，重复第二步 k 次，这样每个子集都有一次机会作为测试集，其余机会作为训练集。在每个训练集上训练后得到一个模型，用这个模型在相应的测试集上测试，计算并保存模型的评估指标。</p>
+<p>第四步，计算 k 组测试结果的平均值作为模型精度的估计，并作为当前 k 折交叉验证下模型的性能指标。k 一般取 10，数据量小的时候，k 可以设大一点，这样训练集占整体比例就比较大，不过同时训练的模型个数也增多。数据量大的时候，k 可以设小一点。</p>
+<h3 id="留一法（Leave-one-out-cross-validation）-LOOCV"><a href="#留一法（Leave-one-out-cross-validation）-LOOCV" class="headerlink" title="留一法（Leave one out cross validation） LOOCV"></a>留一法（Leave one out cross validation） LOOCV</h3><p>当 k＝m 即样本总数时，叫做 <strong>留一法（Leave one out cross validation）</strong>，每次的测试集都只有一个样本，要进行 m 次训练和预测。</p>
+<p>这个方法用于训练的数据只比整体数据集少了一个样本，因此最接近原始样本的分布。但是训练复杂度增加了，因为模型的数量与原始数据样本数量相同。一般在数据缺乏时使用。样本数很多的话，这种方法开销很大。</p>
+<p>此外：多次 k 折交叉验证再求均值，例如：10 次 10 折交叉验证，以求更精确一点。划分时有多种方法，例如对非平衡数据可以用分层采样，就是在每一份子集中都保持和原始数据集相同的类别比例。模型训练过程的所有步骤，包括模型选择，特征选择等都是在单个折叠 fold 中独立执行的。</p>
+<h2 id="本文尚待回答的问题（后续文章更新）"><a href="#本文尚待回答的问题（后续文章更新）" class="headerlink" title="本文尚待回答的问题（后续文章更新）"></a><strong>本文尚待回答的问题（后续文章更新）</strong></h2><ul>
+<li>Overfitting的数学原理</li>
+<li>CNN的相关知识</li>
+<li>Early stopping，Regularization，Dropout的相关知识</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="print-no-link">#深度学习</a>
+      
+        <a href="/tags/Overfitting/" class="print-no-link">#Overfitting</a>
+      
+        <a href="/tags/Model-Bias/" class="print-no-link">#Model Bias</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深度学习-2-降低Loss上篇-Model Bias</div>
+      <div>https://truth-zheng.github.io/2021/07/27/DLover/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zheng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年7月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/07/27/opti/" title="深度学习-3-降低Loss下篇-Optimization">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深度学习-3-降低Loss下篇-Optimization</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/07/25/dlenv/" title="深度学习-0-环境配置">
+                        <span class="hidden-mobile">深度学习-0-环境配置</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/mermaid@8.10.1/dist/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com" target="_blank" rel="nofollow noopener"><span>Github</span></a> <i class="iconfont icon-love"></i> <a href="https://scholar.google.com/" target="_blank" rel="nofollow noopener"><span>GoogleScholar</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

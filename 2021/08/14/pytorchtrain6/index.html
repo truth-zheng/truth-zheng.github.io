@@ -1,0 +1,963 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar/tou.jpeg">
+  <link rel="icon" href="/img/avatar/tou.jpeg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zheng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="利用pytorch训练你的深度学习模型-6-正则化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-13-pytorch-6-正则化">
+<meta property="og:url" content="https://truth-zheng.github.io/2021/08/14/pytorchtrain6/index.html">
+<meta property="og:site_name" content="Sage的生活学习笔记">
+<meta property="og:description" content="利用pytorch训练你的深度学习模型-6-正则化">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+<meta property="article:published_time" content="2021-08-14T06:00:00.000Z">
+<meta property="article:modified_time" content="2021-08-15T08:23:29.000Z">
+<meta property="article:author" content="zheng">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="pytorch">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>深度学习-13-pytorch-6-正则化 - Sage的生活学习笔记</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"truth-zheng.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"gtag":null,"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sage的学习生活笔记</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/2.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深度学习-13-pytorch-6-正则化"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-14 14:00" pubdate>
+          2021年8月14日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          5.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          49 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">深度学习-13-pytorch-6-正则化</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年8月15日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>创作声明：主要内容参考于张贤同学<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/265394674">https://zhuanlan.zhihu.com/p/265394674</a></p>
+</blockquote>
+<h2 id="Regularization"><a href="#Regularization" class="headerlink" title="Regularization"></a>Regularization</h2><p>Regularization 中文是正则化，可以理解为一种减少方差的策略。</p>
+<p>在机器学习中，误差可以分解为：偏差，方差与噪声之和。即误差&#x3D;偏差+方差+噪声</p>
+<p>偏差度量了学习算法的期望预测与真实结果的偏离程度，即刻画了学习算法本身的拟合能力。</p>
+<p>方差度量了同样大小的训练集的变动所导致的学习性能的变化，即刻画了数据扰动所造成的影响。</p>
+<p>噪声则表达了在当前任务上学习任何算法所能达到的期望泛化误差的下界。</p>
+<p><img src="/img/pytorchtrain6/1.png" srcset="/img/loading.gif" lazyload><br> 正则化方式有 L1 和 L2 正则项两种。其中 L2 正则项又被称为权值衰减(weight decay)。</p>
+<p>当没有正则项时：$\boldsymbol{O} \boldsymbol{b} \boldsymbol{j}&#x3D;\boldsymbol{L} \boldsymbol{o} \boldsymbol{s} \boldsymbol{s}$，$w_{i+1}&#x3D;w_{i}-\frac{\partial o b j}{\partial w_{i}}&#x3D;w_{i}-\frac{\partial L o s s}{\partial w_{i}}$。</p>
+<p>当使用 L2 正则项时，$\boldsymbol{O} \boldsymbol{b} \boldsymbol{j}&#x3D;\boldsymbol{L} \boldsymbol{o} \boldsymbol{s} \boldsymbol{s}+\frac{\lambda}{2}  \sum{i}^{N} \boldsymbol{w}{i}^{2}$，$\begin{aligned} w{i+1}&#x3D;w{i}-\frac{\partial o b j}{\partial w{i}} &amp;&#x3D;w{i}-\left(\frac{\partial L o s s}{\partial w_{i}}+\lambda  w{i}\right) &#x3D;w{i}(1-\lambda)-\frac{\partial L o s s}{\partial w_{i}} \end{aligned}$，其中$0 &lt; \lambda &lt; 1$，所以具有权值衰减的作用。</p>
+<h3 id="weight-decay"><a href="#weight-decay" class="headerlink" title="weight decay"></a>weight decay</h3><p>在 PyTorch 中，L2 正则项是在优化器中实现的，在构造优化器时可以传入 weight decay 参数，对应的是公式中的$\lambda $。</p>
+<p>下面代码对比了没有 weight decay 的优化器和 weight decay 为 0.01 的优化器的训练情况，在线性回归的数据集上进行实验，模型使用 3 层的全连接网络，并使用 TensorBoard 可视化每层权值的变化情况。代码如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><code class="hljs routeros">import torch<br>import torch.nn as nn<br>import matplotlib.pyplot as plt<br><span class="hljs-keyword">from</span> common_tools import set_seed<br><span class="hljs-keyword">from</span> tensorboardX import SummaryWriter<br><br>set_seed(1)  # 设置随机种子<br>n_hidden = 200<br>max_iter = 2000<br>disp_interval = 200<br>lr_init = 0.01<br><br><br><span class="hljs-comment"># ============================ step 1/5 数据 ============================</span><br>def gen_data(<span class="hljs-attribute">num_data</span>=10, x_range=(-1, 1)):<br><br>    w = 1.5<br>    train_x = torch.linspace(*x_range, num_data).unsqueeze_(1)<br>    train_y = w*train_x + torch.normal(0, 0.5, <span class="hljs-attribute">size</span>=train_x.size())<br>    test_x = torch.linspace(*x_range, num_data).unsqueeze_(1)<br>    test_y = w*test_x + torch.normal(0, 0.3, <span class="hljs-attribute">size</span>=test_x.size())<br><br>    return train_x, train_y, test_x, test_y<br><br><br>train_x, train_y, test_x, test_y = gen_data(x_range=(-1, 1))<br><br><br><span class="hljs-comment"># ============================ step 2/5 模型 ============================</span><br>class MLP(nn.Module):<br>    def __init__(self, neural_num):<br>        super(MLP, self).__init__()<br>        self.linears = nn.Sequential(<br>            nn.Linear(1, neural_num),<br>            nn.ReLU(<span class="hljs-attribute">inplace</span>=<span class="hljs-literal">True</span>),<br>            nn.Linear(neural_num, neural_num),<br>            nn.ReLU(<span class="hljs-attribute">inplace</span>=<span class="hljs-literal">True</span>),<br>            nn.Linear(neural_num, neural_num),<br>            nn.ReLU(<span class="hljs-attribute">inplace</span>=<span class="hljs-literal">True</span>),<br>            nn.Linear(neural_num, 1),<br>        )<br><br>    def forward(self, x):<br>        return self.linears(x)<br><br><br>net_normal = MLP(<span class="hljs-attribute">neural_num</span>=n_hidden)<br>net_weight_decay = MLP(<span class="hljs-attribute">neural_num</span>=n_hidden)<br><br><span class="hljs-comment"># ============================ step 3/5 优化器 ============================</span><br>optim_normal = torch.optim.SGD(net_normal.parameters(), <span class="hljs-attribute">lr</span>=lr_init, <span class="hljs-attribute">momentum</span>=0.9)<br>optim_wdecay = torch.optim.SGD(net_weight_decay.parameters(), <span class="hljs-attribute">lr</span>=lr_init, <span class="hljs-attribute">momentum</span>=0.9, <span class="hljs-attribute">weight_decay</span>=1e-2)<br><br><span class="hljs-comment"># ============================ step 4/5 损失函数 ============================</span><br>loss_func = torch.nn.MSELoss()<br><br><span class="hljs-comment"># ============================ step 5/5 迭代训练 ============================</span><br><br>writer = SummaryWriter(<span class="hljs-attribute">comment</span>=<span class="hljs-string">&#x27;_test_tensorboard&#x27;</span>, <span class="hljs-attribute">filename_suffix</span>=<span class="hljs-string">&quot;12345678&quot;</span>)<br><span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> range(max_iter):<br><br>    # forward<br>    pred_normal, pred_wdecay = net_normal(train_x), net_weight_decay(train_x)<br>    loss_normal, loss_wdecay = loss_func(pred_normal, train_y), loss_func(pred_wdecay, train_y)<br><br>    optim_normal.zero_grad()<br>    optim_wdecay.zero_grad()<br><br>    loss_normal.backward()<br>    loss_wdecay.backward()<br><br>    optim_normal.<span class="hljs-keyword">step</span>()<br>    optim_wdecay.<span class="hljs-keyword">step</span>()<br><br>    <span class="hljs-keyword">if</span> (epoch+1) % disp_interval == 0:<br><br>        # 可视化<br>        <span class="hljs-keyword">for</span> name, layer <span class="hljs-keyword">in</span> net_normal.named_parameters():<br>            writer.add_histogram(name + <span class="hljs-string">&#x27;_grad_normal&#x27;</span>, layer.grad, epoch)<br>            writer.add_histogram(name + <span class="hljs-string">&#x27;_data_normal&#x27;</span>, layer, epoch)<br><br>        <span class="hljs-keyword">for</span> name, layer <span class="hljs-keyword">in</span> net_weight_decay.named_parameters():<br>            writer.add_histogram(name + <span class="hljs-string">&#x27;_grad_weight_decay&#x27;</span>, layer.grad, epoch)<br>            writer.add_histogram(name + <span class="hljs-string">&#x27;_data_weight_decay&#x27;</span>, layer, epoch)<br><br>        test_pred_normal, test_pred_wdecay = net_normal(test_x), net_weight_decay(test_x)<br><br>        # 绘图<br>        plt.scatter(train_x.data.numpy(), train_y.data.numpy(), <span class="hljs-attribute">c</span>=<span class="hljs-string">&#x27;blue&#x27;</span>, <span class="hljs-attribute">s</span>=50, <span class="hljs-attribute">alpha</span>=0.3, <span class="hljs-attribute">label</span>=<span class="hljs-string">&#x27;train&#x27;</span>)<br>        plt.scatter(test_x.data.numpy(), test_y.data.numpy(), <span class="hljs-attribute">c</span>=<span class="hljs-string">&#x27;red&#x27;</span>, <span class="hljs-attribute">s</span>=50, <span class="hljs-attribute">alpha</span>=0.3, <span class="hljs-attribute">label</span>=<span class="hljs-string">&#x27;test&#x27;</span>)<br>        plt.plot(test_x.data.numpy(), test_pred_normal.data.numpy(), <span class="hljs-string">&#x27;r-&#x27;</span>, <span class="hljs-attribute">lw</span>=3, <span class="hljs-attribute">label</span>=<span class="hljs-string">&#x27;no weight decay&#x27;</span>)<br>        plt.plot(test_x.data.numpy(), test_pred_wdecay.data.numpy(), <span class="hljs-string">&#x27;b--&#x27;</span>, <span class="hljs-attribute">lw</span>=3, <span class="hljs-attribute">label</span>=<span class="hljs-string">&#x27;weight decay&#x27;</span>)<br>        plt.text(-0.25, -1.5, <span class="hljs-string">&#x27;no weight decay loss=&#123;:.6f&#125;&#x27;</span>.format(loss_normal.item()), fontdict=&#123;<span class="hljs-string">&#x27;size&#x27;</span>: 15, <span class="hljs-string">&#x27;color&#x27;</span>: <span class="hljs-string">&#x27;red&#x27;</span>&#125;)<br>        plt.text(-0.25, -2, <span class="hljs-string">&#x27;weight decay loss=&#123;:.6f&#125;&#x27;</span>.format(loss_wdecay.item()), fontdict=&#123;<span class="hljs-string">&#x27;size&#x27;</span>: 15, <span class="hljs-string">&#x27;color&#x27;</span>: <span class="hljs-string">&#x27;red&#x27;</span>&#125;)<br><br>        plt.ylim((-2.5, 2.5))<br>        plt.legend(<span class="hljs-attribute">loc</span>=<span class="hljs-string">&#x27;upper left&#x27;</span>)<br>        plt.title(<span class="hljs-string">&quot;Epoch: &#123;&#125;&quot;</span>.format(epoch+1))<br>        plt.show()<br>        plt.close()<br></code></pre></td></tr></table></figure>
+
+<p>训练 2000 个 epoch 后，模型如下：</p>
+<p><img src="/img/pytorchtrain6/2.png" srcset="/img/loading.gif" lazyload><br> 可以看到使用了 weight decay 的模型虽然在训练集的 loss 更高，但是更加平滑，泛化能力更强。</p>
+<p>下面是使用 Tensorboard 可视化的分析。首先查看不带 weight decay 的权值变化过程，第一层权值变化如下：</p>
+<p><img src="/img/pytorchtrain6/3.png" srcset="/img/loading.gif" lazyload><br> 可以看到从开始到结束，权值的分布都没有什么变化。</p>
+<p>然后查看带 weight decay 的权值变化过程，第一层权值变化如下：</p>
+<p><img src="/img/pytorchtrain6/4.png" srcset="/img/loading.gif" lazyload><br> 可以看到，加上了 weight decay 后，随便训练次数的增加，权值的分布逐渐靠近 0 均值附近，这就是 L2 正则化的作用，约束权值尽量靠近 0。</p>
+<p>第二层不带 weight decay 的权值变化如下：</p>
+<p><img src="/img/pytorchtrain6/5.png" srcset="/img/loading.gif" lazyload><br> 第二层带 weight decay 的权值变化如下：</p>
+<p><img src="/img/pytorchtrain6/6.png" srcset="/img/loading.gif" lazyload>  </p>
+<p>由于 weight decay 是在优化器的一个参数，因此在执行<code>optim_wdecay.step()</code>时，会计算 weight decay 后的梯度，具体代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">step</span>(<span class="hljs-params">self, closure=<span class="hljs-literal">None</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;Performs a single optimization step.</span><br><span class="hljs-string"></span><br><span class="hljs-string">    Arguments:</span><br><span class="hljs-string">        closure (callable, optional): A closure that reevaluates the model</span><br><span class="hljs-string">            and returns the loss.</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    loss = <span class="hljs-literal">None</span><br>    <span class="hljs-keyword">if</span> closure <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>        loss = closure()<br><br>    <span class="hljs-keyword">for</span> group <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.param_groups:<br>        weight_decay = group[<span class="hljs-string">&#x27;weight_decay&#x27;</span>]<br>        momentum = group[<span class="hljs-string">&#x27;momentum&#x27;</span>]<br>        dampening = group[<span class="hljs-string">&#x27;dampening&#x27;</span>]<br>        nesterov = group[<span class="hljs-string">&#x27;nesterov&#x27;</span>]<br><br>        <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> group[<span class="hljs-string">&#x27;params&#x27;</span>]:<br>            <span class="hljs-keyword">if</span> p.grad <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>                <span class="hljs-keyword">continue</span><br>            d_p = p.grad.data<br>            <span class="hljs-keyword">if</span> weight_decay != <span class="hljs-number">0</span>:<br>                d_p.add_(weight_decay, p.data)<br>                ...<br>                ...<br>                ...<br>            p.data.add_(-group[<span class="hljs-string">&#x27;lr&#x27;</span>], d_p)<br></code></pre></td></tr></table></figure>
+
+<p>可以看到：d_p 是计算得到的梯度，如果 weight decay 不为 0，那么更新 $d_p&#x3D;dp+weight_decay \times p.data$，对应公式：$\left(\frac{\partial L o s s}{\partial w_{i}}+\lambda * w_{i}\right)$。最后一行是根据梯度更新权值。</p>
+<h3 id="Dropout"><a href="#Dropout" class="headerlink" title="Dropout"></a>Dropout</h3><p>Dropout 是另一种抑制过拟合的方法。在使用 dropout 时，数据尺度会发生变化，如果设置 dropout_prob &#x3D;0.3，那么在训练时，数据尺度会变为原来的 70%；而在测试时，执行了 model.eval() 后，dropout 是关闭的，因此所有权重需要乘以 (1-dropout_prob)，把数据尺度也缩放到 70%。</p>
+<p>PyTorch 中 Dropout 层如下，通常放在每个网路层的最前面：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torch.nn.Dropout(<span class="hljs-attribute">p</span>=0.5, <span class="hljs-attribute">inplace</span>=<span class="hljs-literal">False</span>)<br></code></pre></td></tr></table></figure>
+
+<p>参数：</p>
+<ul>
+<li>p：主力需要注意的是，p 是被舍弃的概率，也叫失活概率</li>
+</ul>
+<p>下面实验使用的依然是线性回归的例子，两个网络均是 3 层的全连接层，每层前面都设置 dropout，一个网络的 dropout 设置为 0，另一个网络的 dropout 设置为 0.5，并使用 TensorBoard 可视化每层权值的变化情况。代码如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><code class="hljs routeros">import torch<br>import torch.nn as nn<br>import matplotlib.pyplot as plt<br><span class="hljs-keyword">from</span> common_tools import set_seed<br><span class="hljs-keyword">from</span> tensorboardX import SummaryWriter<br><br>set_seed(1)  # 设置随机种子<br>n_hidden = 200<br>max_iter = 2000<br>disp_interval = 400<br>lr_init = 0.01<br><br><br><span class="hljs-comment"># ============================ step 1/5 数据 ============================</span><br>def gen_data(<span class="hljs-attribute">num_data</span>=10, x_range=(-1, 1)):<br><br>    w = 1.5<br>    train_x = torch.linspace(*x_range, num_data).unsqueeze_(1)<br>    train_y = w*train_x + torch.normal(0, 0.5, <span class="hljs-attribute">size</span>=train_x.size())<br>    test_x = torch.linspace(*x_range, num_data).unsqueeze_(1)<br>    test_y = w*test_x + torch.normal(0, 0.3, <span class="hljs-attribute">size</span>=test_x.size())<br><br>    return train_x, train_y, test_x, test_y<br><br><br>train_x, train_y, test_x, test_y = gen_data(x_range=(-1, 1))<br><br><br><span class="hljs-comment"># ============================ step 2/5 模型 ============================</span><br>class MLP(nn.Module):<br>    def __init__(self, neural_num, <span class="hljs-attribute">d_prob</span>=0.5):<br>        super(MLP, self).__init__()<br>        self.linears = nn.Sequential(<br><br>            nn.Linear(1, neural_num),<br>            nn.ReLU(<span class="hljs-attribute">inplace</span>=<span class="hljs-literal">True</span>),<br><br>            nn.Dropout(d_prob),<br>            nn.Linear(neural_num, neural_num),<br>            nn.ReLU(<span class="hljs-attribute">inplace</span>=<span class="hljs-literal">True</span>),<br><br>            nn.Dropout(d_prob),<br>            nn.Linear(neural_num, neural_num),<br>            nn.ReLU(<span class="hljs-attribute">inplace</span>=<span class="hljs-literal">True</span>),<br><br>            nn.Dropout(d_prob),<br>            nn.Linear(neural_num, 1),<br>        )<br><br>    def forward(self, x):<br>        return self.linears(x)<br><br><br>net_prob_0 = MLP(<span class="hljs-attribute">neural_num</span>=n_hidden, <span class="hljs-attribute">d_prob</span>=0.)<br>net_prob_05 = MLP(<span class="hljs-attribute">neural_num</span>=n_hidden, <span class="hljs-attribute">d_prob</span>=0.5)<br><br><span class="hljs-comment"># ============================ step 3/5 优化器 ============================</span><br>optim_normal = torch.optim.SGD(net_prob_0.parameters(), <span class="hljs-attribute">lr</span>=lr_init, <span class="hljs-attribute">momentum</span>=0.9)<br>optim_reglar = torch.optim.SGD(net_prob_05.parameters(), <span class="hljs-attribute">lr</span>=lr_init, <span class="hljs-attribute">momentum</span>=0.9)<br><br><span class="hljs-comment"># ============================ step 4/5 损失函数 ============================</span><br>loss_func = torch.nn.MSELoss()<br><br><span class="hljs-comment"># ============================ step 5/5 迭代训练 ============================</span><br><br>writer = SummaryWriter(<span class="hljs-attribute">comment</span>=<span class="hljs-string">&#x27;_test_tensorboard&#x27;</span>, <span class="hljs-attribute">filename_suffix</span>=<span class="hljs-string">&quot;12345678&quot;</span>)<br><span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> range(max_iter):<br><br>    pred_normal, pred_wdecay = net_prob_0(train_x), net_prob_05(train_x)<br>    loss_normal, loss_wdecay = loss_func(pred_normal, train_y), loss_func(pred_wdecay, train_y)<br><br>    optim_normal.zero_grad()<br>    optim_reglar.zero_grad()<br><br>    loss_normal.backward()<br>    loss_wdecay.backward()<br><br>    optim_normal.<span class="hljs-keyword">step</span>()<br>    optim_reglar.<span class="hljs-keyword">step</span>()<br><br>    <span class="hljs-keyword">if</span> (epoch+1) % disp_interval == 0:<br><br>        net_prob_0.eval()<br>        net_prob_05.eval()<br><br>        # 可视化<br>        <span class="hljs-keyword">for</span> name, layer <span class="hljs-keyword">in</span> net_prob_0.named_parameters():<br>            writer.add_histogram(name + <span class="hljs-string">&#x27;_grad_normal&#x27;</span>, layer.grad, epoch)<br>            writer.add_histogram(name + <span class="hljs-string">&#x27;_data_normal&#x27;</span>, layer, epoch)<br><br>        <span class="hljs-keyword">for</span> name, layer <span class="hljs-keyword">in</span> net_prob_05.named_parameters():<br>            writer.add_histogram(name + <span class="hljs-string">&#x27;_grad_regularization&#x27;</span>, layer.grad, epoch)<br>            writer.add_histogram(name + <span class="hljs-string">&#x27;_data_regularization&#x27;</span>, layer, epoch)<br><br>        test_pred_prob_0, test_pred_prob_05 = net_prob_0(test_x), net_prob_05(test_x)<br><br>        # 绘图<br>        plt.scatter(train_x.data.numpy(), train_y.data.numpy(), <span class="hljs-attribute">c</span>=<span class="hljs-string">&#x27;blue&#x27;</span>, <span class="hljs-attribute">s</span>=50, <span class="hljs-attribute">alpha</span>=0.3, <span class="hljs-attribute">label</span>=<span class="hljs-string">&#x27;train&#x27;</span>)<br>        plt.scatter(test_x.data.numpy(), test_y.data.numpy(), <span class="hljs-attribute">c</span>=<span class="hljs-string">&#x27;red&#x27;</span>, <span class="hljs-attribute">s</span>=50, <span class="hljs-attribute">alpha</span>=0.3, <span class="hljs-attribute">label</span>=<span class="hljs-string">&#x27;test&#x27;</span>)<br>        plt.plot(test_x.data.numpy(), test_pred_prob_0.data.numpy(), <span class="hljs-string">&#x27;r-&#x27;</span>, <span class="hljs-attribute">lw</span>=3, <span class="hljs-attribute">label</span>=<span class="hljs-string">&#x27;d_prob_0&#x27;</span>)<br>        plt.plot(test_x.data.numpy(), test_pred_prob_05.data.numpy(), <span class="hljs-string">&#x27;b--&#x27;</span>, <span class="hljs-attribute">lw</span>=3, <span class="hljs-attribute">label</span>=<span class="hljs-string">&#x27;d_prob_05&#x27;</span>)<br>        plt.text(-0.25, -1.5, <span class="hljs-string">&#x27;d_prob_0 loss=&#123;:.8f&#125;&#x27;</span>.format(loss_normal.item()), fontdict=&#123;<span class="hljs-string">&#x27;size&#x27;</span>: 15, <span class="hljs-string">&#x27;color&#x27;</span>: <span class="hljs-string">&#x27;red&#x27;</span>&#125;)<br>        plt.text(-0.25, -2, <span class="hljs-string">&#x27;d_prob_05 loss=&#123;:.6f&#125;&#x27;</span>.format(loss_wdecay.item()), fontdict=&#123;<span class="hljs-string">&#x27;size&#x27;</span>: 15, <span class="hljs-string">&#x27;color&#x27;</span>: <span class="hljs-string">&#x27;red&#x27;</span>&#125;)<br><br>        plt.ylim((-2.5, 2.5))<br>        plt.legend(<span class="hljs-attribute">loc</span>=<span class="hljs-string">&#x27;upper left&#x27;</span>)<br>        plt.title(<span class="hljs-string">&quot;Epoch: &#123;&#125;&quot;</span>.format(epoch+1))<br>        plt.show()<br>        plt.close()<br><br>        net_prob_0.train()<br>        net_prob_05.train()<br></code></pre></td></tr></table></figure>
+
+<p>训练 2000 次后，模型的曲线如下：</p>
+<p><img src="/img/pytorchtrain6/7.png" srcset="/img/loading.gif" lazyload><br> 我们使用 TensorBoard 查看第三层网络的权值变化情况。</p>
+<p>dropout &#x3D;0 的权值变化如下：</p>
+<p><img src="/img/pytorchtrain6/8.png" srcset="/img/loading.gif" lazyload><br> dropout &#x3D;0.5 的权值变化如下：</p>
+<p><img src="/img/pytorchtrain6/9.png" srcset="/img/loading.gif" lazyload><br> 可以看到，加了 dropout 之后，权值更加集中在 0 附近，使得神经元之间的依赖性不至于过大。</p>
+<h3 id="model-eval-和-model-trian"><a href="#model-eval-和-model-trian" class="headerlink" title="model.eval() 和 model.trian()"></a>model.eval() 和 model.trian()</h3><p>有些网络层在训练状态和测试状态是不一样的，如 dropout 层，在训练时 dropout 层是有效的，但是数据尺度会缩放，为了保持数据尺度不变，所有的权重需要除以 1-p。而在测试时 dropout 层是关闭的。因此在测试时需要先调用<code>model.eval()</code>设置各个网络层的的<code>training</code>属性为 False，在训练时需要先调用<code>model.train()</code>设置各个网络层的的<code>training</code>属性为 True。</p>
+<p>下面是对比 dropout 层的在 eval 和 train 模式下的输出值。</p>
+<p>首先构造一层全连接网络，输入是 10000 个神经元，输出是 1 个神经元，权值全设为 1，dropout 设置为 0.5。输入是全为 1 的向量。分别测试网络在 train 模式和 eval 模式下的输出，代码如下：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs scss">import torch<br>import torch<span class="hljs-selector-class">.nn</span> as nn<br><br>class <span class="hljs-built_in">Net</span>(nn.Module):<br>    def <span class="hljs-built_in">__init__</span>(self, neural_num, d_prob=<span class="hljs-number">0.5</span>):<br>        <span class="hljs-built_in">super</span>(Net, self).<span class="hljs-built_in">__init__</span>()<br><br>        self.linears = nn.<span class="hljs-built_in">Sequential</span>(<br><br>            nn.<span class="hljs-built_in">Dropout</span>(d_prob),<br>            nn.<span class="hljs-built_in">Linear</span>(neural_num, <span class="hljs-number">1</span>, bias=False),<br>            nn.<span class="hljs-built_in">ReLU</span>(inplace=True)<br>        )<br><br>    def <span class="hljs-built_in">forward</span>(self, x):<br>        return self.<span class="hljs-built_in">linears</span>(x)<br><br>input_num = <span class="hljs-number">10000</span><br>x = torch.<span class="hljs-built_in">ones</span>((input_num, ), dtype=torch.float32)<br><br>net = <span class="hljs-built_in">Net</span>(input_num, d_prob=<span class="hljs-number">0.5</span>)<br>net.linears[<span class="hljs-number">1</span>].weight.<span class="hljs-built_in">detach</span>().<span class="hljs-built_in">fill_</span>(<span class="hljs-number">1</span>.)<br><br>net.<span class="hljs-built_in">train</span>()<br>y = <span class="hljs-built_in">net</span>(x)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;output in training mode&quot;</span>, y)<br><br>net.<span class="hljs-built_in">eval</span>()<br>y = <span class="hljs-built_in">net</span>(x)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;output in eval mode&quot;</span>, y)<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs vim">output in training <span class="hljs-keyword">mode</span> tensor([<span class="hljs-number">9868</span>.], grad_fn=<span class="hljs-symbol">&lt;ReluBackward1&gt;</span>)<br>output in <span class="hljs-built_in">eval</span> <span class="hljs-keyword">mode</span> tensor([<span class="hljs-number">10000</span>.], grad_fn=<span class="hljs-symbol">&lt;ReluBackward1&gt;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>在训练时，由于 dropout 为 0.5，因此理论上输出值是 5000，而由于在训练时，dropout 层会把权值除以 1-p&#x3D;0.5，也就是乘以 2，因此在 train 模式的输出是10000 附近的数(上下随机浮动是由于概率的不确定性引起的) 。而在 eval 模式下，关闭了 dropout，因此输出值是 10000。这种方式在训练时对权值进行缩放，在测试时就不用对权值进行缩放，加快了测试的速度。</p>
+<h2 id="Batch-Normalization"><a href="#Batch-Normalization" class="headerlink" title="Batch Normalization"></a>Batch Normalization</h2><p>称为批标准化。批是指一批数据，通常为 mini-batch；标准化是处理后的数据服从$N(0,1)$的正态分布。</p>
+<p>批标准化的优点有如下：</p>
+<ul>
+<li>可以使用更大的学习率，加速模型收敛</li>
+<li>可以不用精心设计权值初始化</li>
+<li>可以不用 dropout 或者较小的 dropout</li>
+<li>可以不用 L2 或者较小的 weight decay</li>
+<li>可以不用 LRN (local response normalization)</li>
+</ul>
+<p>假设输入的 mini-batch 数据是<img src="/img/pytorchtrain6/10.png" srcset="/img/loading.gif" lazyload>，Batch Normalization 的可学习参数是$\gamma, \beta$，步骤如下：</p>
+<ul>
+<li>求 mini-batch 的均值：$\mu_{\mathcal{B}} \leftarrow \frac{1}{m} \sum_{i&#x3D;1}^{m} x_{i}$</li>
+<li>求 mini-batch 的方差：$\sigma_{\mathcal{B}}^{2} \leftarrow \frac{1}{m} \sum_{i&#x3D;1}\left(x_{i}-\mu_{\mathcal{B}}\right)^{2}$</li>
+<li>标准化：$\widehat{x}{i} \leftarrow \frac{x{i}-\mu{\mathcal{B}}}{\sqrt{\sigma{B}^{2}+\epsilon}}$，其中$\epsilon$ 是放置分母为 0 的一个数</li>
+<li>affine transform(缩放和平移)：$y{i} \leftarrow \gamma \widehat{x}{i}+\beta \equiv \mathrm{B} \mathrm{N}{\gamma, \beta}\left(x{i}\right)$，这个操作可以增强模型的 capacity，也就是让模型自己判断是否要对数据进行标准化，进行多大程度的标准化。如果$\gamma&#x3D; \sqrt{\sigma_{B}^{2}}$，$\beta&#x3D;\mu_{\mathcal{B}}$，那么就实现了恒等映射。</li>
+</ul>
+<p>Batch Normalization 的提出主要是为了解决 Internal Covariate Shift (ICS)。在训练过程中，数据需要经过多层的网络，如果数据在前向传播的过程中，尺度发生了变化，可能会导致梯度爆炸或者梯度消失，从而导致模型难以收敛。</p>
+<p>Batch Normalization 层一般在激活函数前一层。</p>
+<p>下面的代码打印一个网络的每个网络层的输出，在没有进行初始化时，数据尺度越来越小。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn<br><span class="hljs-keyword">from</span> common_tools <span class="hljs-keyword">import</span> set_seed<br><br>set_seed(<span class="hljs-number">1</span>)  <span class="hljs-comment"># 设置随机种子</span><br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MLP</span>(nn.Module):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, neural_num, layers=<span class="hljs-number">100</span></span>):<br>        <span class="hljs-built_in">super</span>(MLP, <span class="hljs-variable language_">self</span>).__init__()<br>        <span class="hljs-variable language_">self</span>.linears = nn.ModuleList([nn.Linear(neural_num, neural_num, bias=<span class="hljs-literal">False</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(layers)])<br>        <span class="hljs-variable language_">self</span>.bns = nn.ModuleList([nn.BatchNorm1d(neural_num) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(layers)])<br>        <span class="hljs-variable language_">self</span>.neural_num = neural_num<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, x</span>):<br><br>        <span class="hljs-keyword">for</span> (i, linear), bn <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(<span class="hljs-built_in">enumerate</span>(<span class="hljs-variable language_">self</span>.linears), <span class="hljs-variable language_">self</span>.bns):<br>            x = linear(x)<br>            <span class="hljs-comment"># x = bn(x)</span><br>            x = torch.relu(x)<br><br>            <span class="hljs-keyword">if</span> torch.isnan(x.std()):<br>                <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;output is nan in &#123;&#125; layers&quot;</span>.<span class="hljs-built_in">format</span>(i))<br>                <span class="hljs-keyword">break</span><br><br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;layers:&#123;&#125;, std:&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(i, x.std().item()))<br><br>        <span class="hljs-keyword">return</span> x<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">initialize</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">for</span> m <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.modules():<br>            <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(m, nn.Linear):<br><br>                <span class="hljs-comment"># method 1</span><br>                <span class="hljs-comment"># nn.init.normal_(m.weight.data, std=1)    # normal: mean=0, std=1</span><br><br>                <span class="hljs-comment"># method 2 kaiming</span><br>                nn.init.kaiming_normal_(m.weight.data)<br><br><br>neural_nums = <span class="hljs-number">256</span><br>layer_nums = <span class="hljs-number">100</span><br>batch_size = <span class="hljs-number">16</span><br><br>net = MLP(neural_nums, layer_nums)<br><span class="hljs-comment"># net.initialize()</span><br><br>inputs = torch.randn((batch_size, neural_nums))  <span class="hljs-comment"># normal: mean=0, std=1</span><br><br>output = net(inputs)<br><span class="hljs-built_in">print</span>(output)<br></code></pre></td></tr></table></figure>
+
+<p>当使用<code>nn.init.kaiming_normal_()</code>初始化后，数据的标准差尺度稳定在 [0.6, 0.9]。</p>
+<p>当我们不对网络层进行权值初始化，而是在每个激活函数层之前使用 bn 层，查看数据的标准差尺度稳定在 [0.58, 0.59]。因此 Batch Normalization 可以不用精心设计权值初始化。</p>
+<p>下面以人民币二分类实验中的 LeNet 为例，添加 bn 层，对比不带 bn 层的网络和带 bn 层的网络的训练过程。</p>
+<p>不带 bn 层的网络，并且使用 kaiming 初始化权值，训练过程如下：</p>
+<p><img src="/img/pytorchtrain6/11.png" srcset="/img/loading.gif" lazyload><br> 可以看到训练过程中，训练集的 loss 在中间激增到 1.4，不够稳定。</p>
+<p>带有 bn 层的 LeNet 定义如下：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">LeNet_bn</span>(<span class="hljs-title">nn</span>.<span class="hljs-type">Module</span>):</span><br><span class="hljs-class">    def __init__(<span class="hljs-title">self</span>, <span class="hljs-title">classes</span>):</span><br><span class="hljs-class">        super(<span class="hljs-type">LeNet_bn</span>, <span class="hljs-title">self</span>).__init__()</span><br><span class="hljs-class">        self.conv1 = nn.<span class="hljs-type">Conv2d</span>(3, 6, 5)</span><br><span class="hljs-class">        self.bn1 = nn.<span class="hljs-type">BatchNorm2d</span>(<span class="hljs-title">num_features</span>=6)</span><br><span class="hljs-class"></span><br><span class="hljs-class">        self.conv2 = nn.<span class="hljs-type">Conv2d</span>(6, 16, 5)</span><br><span class="hljs-class">        self.bn2 = nn.<span class="hljs-type">BatchNorm2d</span>(<span class="hljs-title">num_features</span>=16)</span><br><span class="hljs-class"></span><br><span class="hljs-class">        self.fc1 = nn.<span class="hljs-type">Linear</span>(16 * 5 * 5, 120)</span><br><span class="hljs-class">        self.bn3 = nn.<span class="hljs-type">BatchNorm1d</span>(<span class="hljs-title">num_features</span>=120)</span><br><span class="hljs-class"></span><br><span class="hljs-class">        self.fc2 = nn.<span class="hljs-type">Linear</span>(120, 84)</span><br><span class="hljs-class">        self.fc3 = nn.<span class="hljs-type">Linear</span>(84, <span class="hljs-title">classes</span>)</span><br><span class="hljs-class"></span><br><span class="hljs-class">    def forward(<span class="hljs-title">self</span>, <span class="hljs-title">x</span>):</span><br><span class="hljs-class">        out = self.conv1(<span class="hljs-title">x</span>)</span><br><span class="hljs-class">        out = self.bn1(<span class="hljs-title">out</span>)</span><br><span class="hljs-class">        out = <span class="hljs-type">F</span>.relu(<span class="hljs-title">out</span>)</span><br><span class="hljs-class"></span><br><span class="hljs-class">        out = <span class="hljs-type">F</span>.max_pool2d(<span class="hljs-title">out</span>, 2)</span><br><span class="hljs-class"></span><br><span class="hljs-class">        out = self.conv2(<span class="hljs-title">out</span>)</span><br><span class="hljs-class">        out = self.bn2(<span class="hljs-title">out</span>)</span><br><span class="hljs-class">        out = <span class="hljs-type">F</span>.relu(<span class="hljs-title">out</span>)</span><br><span class="hljs-class"></span><br><span class="hljs-class">        out = <span class="hljs-type">F</span>.max_pool2d(<span class="hljs-title">out</span>, 2)</span><br><span class="hljs-class"></span><br><span class="hljs-class">        out = out.view(<span class="hljs-title">out</span>.<span class="hljs-title">size</span>(0), -1)</span><br><span class="hljs-class"></span><br><span class="hljs-class">        out = self.fc1(<span class="hljs-title">out</span>)</span><br><span class="hljs-class">        out = self.bn3(<span class="hljs-title">out</span>)</span><br><span class="hljs-class">        out = <span class="hljs-type">F</span>.relu(<span class="hljs-title">out</span>)</span><br><span class="hljs-class"></span><br><span class="hljs-class">        out = <span class="hljs-type">F</span>.relu(<span class="hljs-title">self</span>.<span class="hljs-title">fc2</span>(<span class="hljs-title">out</span>))</span><br><span class="hljs-class">        out = self.fc3(<span class="hljs-title">out</span>)</span><br><span class="hljs-class">        return out</span><br></code></pre></td></tr></table></figure>
+
+<p>带 bn 层的网络，并且不使用 kaiming 初始化权值，训练过程如下：</p>
+<p><img src="/img/pytorchtrain6/12.png" srcset="/img/loading.gif" lazyload><br> 虽然训练过程中，训练集的 loss 也有激增，但只是增加到 0.4，非常稳定。</p>
+<h3 id="Batch-Normalization-in-PyTorch"><a href="#Batch-Normalization-in-PyTorch" class="headerlink" title="Batch Normalization in PyTorch"></a>Batch Normalization in PyTorch</h3><p>在 PyTorch 中，有 3 个 Batch Normalization 类</p>
+<ul>
+<li>nn.BatchNorm1d()，输入数据的形状是 $B \times C \times 1D_feature$</li>
+<li>nn.BatchNorm2d()，输入数据的形状是 $B \times C \times 2D_feature$</li>
+<li>nn.BatchNorm3d()，输入数据的形状是 $B \times C \times 3D_feature$</li>
+</ul>
+<p>以<code>nn.BatchNorm1d()</code>为例，如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torch.nn.BatchNorm1d(num_features, <span class="hljs-attribute">eps</span>=1e-05, <span class="hljs-attribute">momentum</span>=0.1, <span class="hljs-attribute">affine</span>=<span class="hljs-literal">True</span>, <span class="hljs-attribute">track_running_stats</span>=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
+
+<p>参数：</p>
+<ul>
+<li>num_features：一个样本的特征数量，这个参数最重要</li>
+<li>eps：在进行标准化操作时的分布修正项</li>
+<li>momentum：指数加权平均估计当前的均值和方差</li>
+<li>affine：是否需要 affine transform，默认为 True</li>
+<li>track_running_stats：True 为训练状态，此时均值和方差会根据每个 mini-batch 改变。False 为测试状态，此时均值和方差会固定</li>
+</ul>
+<p>主要属性：</p>
+<ul>
+<li>runninng_mean：均值</li>
+<li>running_var：方差</li>
+<li>weight：affine transform 中的 $\gamma$</li>
+<li>bias：affine transform 中的 $\beta$</li>
+</ul>
+<p>在训练时，均值和方差采用指数加权平均计算，也就是不仅考虑当前 mini-batch 的值均值和方差还考虑前面的 mini-batch 的均值和方差。</p>
+<p>在训练时，均值方差固定为当前统计值。</p>
+<p>所有的 bn 层都是根据<strong>特征维度</strong>计算上面 4 个属性，详情看下面例子。</p>
+<h3 id="nn-BatchNorm1d"><a href="#nn-BatchNorm1d" class="headerlink" title="nn.BatchNorm1d()"></a>nn.BatchNorm1d()</h3><p>输入数据的形状是 $B \times C \times 1D_feature$。在下面的例子中，数据的维度是：(3, 5, 1)，表示一个 mini-batch 有 3 个样本，每个样本有 5 个特征，每个特征的维度是 1。那么就会计算 5 个均值和方差，分别对应每个特征维度。momentum 设置为 0.3，第一次的均值和方差默认为 0 和 1。输入两次 mini-batch 的数据。</p>
+<p>数据如下图：</p>
+<p><img src="/img/pytorchtrain6/13.png" srcset="/img/loading.gif" lazyload><br> 代码如下所示：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">batch_size</span> = <span class="hljs-number">3</span><br><span class="hljs-attribute">num_features</span> = <span class="hljs-number">5</span><br><span class="hljs-attribute">momentum</span> = <span class="hljs-number">0</span>.<span class="hljs-number">3</span><br><br><span class="hljs-attribute">features_shape</span> = (<span class="hljs-number">1</span>)<br><br><span class="hljs-attribute">feature_map</span> = torch.ones(features_shape)                                                    # <span class="hljs-number">1</span>D<br><span class="hljs-attribute">feature_maps</span> = torch.stack([feature_map*(i+<span class="hljs-number">1</span>) for i in range(num_features)], dim=<span class="hljs-number">0</span>)         # <span class="hljs-number">2</span>D<br><span class="hljs-attribute">feature_maps_bs</span> = torch.stack([feature_maps for i in range(batch_size)], dim=<span class="hljs-number">0</span>)             # <span class="hljs-number">3</span>D<br><span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;input data:\n&#123;&#125; shape is &#123;&#125;&quot;</span>.format(feature_maps_bs, feature_maps_bs.shape))<br><br><span class="hljs-attribute">bn</span> = nn.BatchNorm1d(num_features=num_features, momentum=momentum)<br><br><span class="hljs-attribute">running_mean</span>, running_var = <span class="hljs-number">0</span>, <span class="hljs-number">1</span><br><span class="hljs-attribute">mean_t</span>, var_t = <span class="hljs-number">2</span>, <span class="hljs-number">0</span><br><span class="hljs-attribute">for</span> i in range(<span class="hljs-number">2</span>):<br>    <span class="hljs-attribute">outputs</span> = bn(feature_maps_bs)<br><br>    <span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;\niteration:&#123;&#125;, running mean: &#123;&#125; &quot;</span>.format(i, bn.running_mean))<br>    <span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;iteration:&#123;&#125;, running var:&#123;&#125; &quot;</span>.format(i, bn.running_var))<br><br><br><br>    <span class="hljs-attribute">running_mean</span> = (<span class="hljs-number">1</span> - momentum) * running_mean + momentum * mean_t<br>    <span class="hljs-attribute">running_var</span> = (<span class="hljs-number">1</span> - momentum) * running_var + momentum * var_t<br><br>    <span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;iteration:&#123;&#125;, 第二个特征的running mean: &#123;&#125; &quot;</span>.format(i, running_mean))<br>    <span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;iteration:&#123;&#125;, 第二个特征的running var:&#123;&#125;&quot;</span>.format(i, running_var))<br></code></pre></td></tr></table></figure>
+
+<p>输出为：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-selector-tag">input</span> data:<br><span class="hljs-built_in">tensor</span>(<span class="hljs-selector-attr">[[[1.]</span>,<br>         <span class="hljs-selector-attr">[2.]</span>,<br>         <span class="hljs-selector-attr">[3.]</span>,<br>         <span class="hljs-selector-attr">[4.]</span>,<br>         <span class="hljs-selector-attr">[5.]</span>],<br>        <span class="hljs-selector-attr">[[1.]</span>,<br>         <span class="hljs-selector-attr">[2.]</span>,<br>         <span class="hljs-selector-attr">[3.]</span>,<br>         <span class="hljs-selector-attr">[4.]</span>,<br>         <span class="hljs-selector-attr">[5.]</span>],<br>        <span class="hljs-selector-attr">[[1.]</span>,<br>         <span class="hljs-selector-attr">[2.]</span>,<br>         <span class="hljs-selector-attr">[3.]</span>,<br>         <span class="hljs-selector-attr">[4.]</span>,<br>         <span class="hljs-selector-attr">[5.]</span>]]) shape is torch<span class="hljs-selector-class">.Size</span>(<span class="hljs-selector-attr">[3, 5, 1]</span>)<br>iteration:<span class="hljs-number">0</span>, running mean: <span class="hljs-built_in">tensor</span>(<span class="hljs-selector-attr">[0.3000, 0.6000, 0.9000, 1.2000, 1.5000]</span>) <br>iteration:<span class="hljs-number">0</span>, running <span class="hljs-selector-tag">var</span>:<span class="hljs-built_in">tensor</span>(<span class="hljs-selector-attr">[0.7000, 0.7000, 0.7000, 0.7000, 0.7000]</span>) <br>iteration:<span class="hljs-number">0</span>, 第二个特征的running mean: <span class="hljs-number">0.6</span> <br>iteration:<span class="hljs-number">0</span>, 第二个特征的running <span class="hljs-selector-tag">var</span>:<span class="hljs-number">0.7</span><br>iteration:<span class="hljs-number">1</span>, running mean: <span class="hljs-built_in">tensor</span>(<span class="hljs-selector-attr">[0.5100, 1.0200, 1.5300, 2.0400, 2.5500]</span>) <br>iteration:<span class="hljs-number">1</span>, running <span class="hljs-selector-tag">var</span>:<span class="hljs-built_in">tensor</span>(<span class="hljs-selector-attr">[0.4900, 0.4900, 0.4900, 0.4900, 0.4900]</span>) <br>iteration:<span class="hljs-number">1</span>, 第二个特征的running mean: <span class="hljs-number">1.02</span> <br>iteration:<span class="hljs-number">1</span>, 第二个特征的running <span class="hljs-selector-tag">var</span>:<span class="hljs-number">0.48999999999999994</span><br></code></pre></td></tr></table></figure>
+
+<p>虽然两个 mini-batch 的数据是一样的，但是 bn 层的均值和方差却不一样。以第二个特征的均值计算为例，值都是 2。</p>
+<ul>
+<li>第一次 bn 层的均值计算：$running_mean&#x3D;(1-momentum) \times pre_running_mean + momentum \times mean_t &#x3D;(1-0.3) \times 0 + 0.3 \times 2 &#x3D;0.6$</li>
+<li>第二次 bn 层的均值计算：$running_mean&#x3D;(1-momentum) \times pre_running_mean + momentum \times mean_t &#x3D;(1-0.3) \times 0.6 + 0.3 \times 2 &#x3D;1.02$</li>
+</ul>
+<p>网络还没进行前向传播之前，断点查看 bn 层的属性如下：</p>
+<p><img src="/img/pytorchtrain6/14.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="nn-BatchNorm2d"><a href="#nn-BatchNorm2d" class="headerlink" title="nn.BatchNorm2d()"></a>nn.BatchNorm2d()</h3><p>输入数据的形状是 $B \times C \times 2D_feature$。在下面的例子中，数据的维度是：(3, 3, 2, 2)，表示一个 mini-batch 有 3 个样本，每个样本有 3 个特征，每个特征的维度是 $1 \times 2$。那么就会计算 3 个均值和方差，分别对应每个特征维度。momentum 设置为 0.3，第一次的均值和方差默认为 0 和 1。输入两次 mini-batch 的数据。</p>
+<p>数据如下图：</p>
+<p><img src="/img/pytorchtrain6/15.png" srcset="/img/loading.gif" lazyload><br> 代码如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs routeros">batch_size = 3<br>num_features = 3<br>momentum = 0.3<br><br>features_shape = (2, 2)<br><br>feature_map = torch.ones(features_shape)                                                    # 2D<br>feature_maps = torch.stack([feature_map*(i+1) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(num_features)], <span class="hljs-attribute">dim</span>=0)         # 3D<br>feature_maps_bs = torch.stack([feature_maps <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(batch_size)], <span class="hljs-attribute">dim</span>=0)             # 4D<br><br><span class="hljs-comment"># print(&quot;input data:\n&#123;&#125; shape is &#123;&#125;&quot;.format(feature_maps_bs, feature_maps_bs.shape))</span><br><br>bn = nn.BatchNorm2d(<span class="hljs-attribute">num_features</span>=num_features, <span class="hljs-attribute">momentum</span>=momentum)<br><br>running_mean, running_var = 0, 1<br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(2):<br>    outputs = bn(feature_maps_bs)<br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\niter:&#123;&#125;, running_mean: &#123;&#125;&quot;</span>.format(i, bn.running_mean))<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;iter:&#123;&#125;, running_var: &#123;&#125;&quot;</span>.format(i, bn.running_var))<br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;iter:&#123;&#125;, weight: &#123;&#125;&quot;</span>.format(i, bn.weight.data.numpy()))<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;iter:&#123;&#125;, bias: &#123;&#125;&quot;</span>.format(i, bn.bias.data.numpy()))<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">iter</span>:<span class="hljs-number">0</span>, running_mean: tensor([<span class="hljs-number">0</span>.<span class="hljs-number">3000</span>, <span class="hljs-number">0</span>.<span class="hljs-number">6000</span>, <span class="hljs-number">0</span>.<span class="hljs-number">9000</span>])<br><span class="hljs-attribute">iter</span>:<span class="hljs-number">0</span>, running_var: tensor([<span class="hljs-number">0</span>.<span class="hljs-number">7000</span>, <span class="hljs-number">0</span>.<span class="hljs-number">7000</span>, <span class="hljs-number">0</span>.<span class="hljs-number">7000</span>])<br><span class="hljs-attribute">iter</span>:<span class="hljs-number">0</span>, weight:<span class="hljs-meta"> [1. 1. 1.]</span><br><span class="hljs-attribute">iter</span>:<span class="hljs-number">0</span>, bias:<span class="hljs-meta"> [0. 0. 0.]</span><br><span class="hljs-attribute">iter</span>:<span class="hljs-number">1</span>, running_mean: tensor([<span class="hljs-number">0</span>.<span class="hljs-number">5100</span>, <span class="hljs-number">1</span>.<span class="hljs-number">0200</span>, <span class="hljs-number">1</span>.<span class="hljs-number">5300</span>])<br><span class="hljs-attribute">iter</span>:<span class="hljs-number">1</span>, running_var: tensor([<span class="hljs-number">0</span>.<span class="hljs-number">4900</span>, <span class="hljs-number">0</span>.<span class="hljs-number">4900</span>, <span class="hljs-number">0</span>.<span class="hljs-number">4900</span>])<br><span class="hljs-attribute">iter</span>:<span class="hljs-number">1</span>, weight:<span class="hljs-meta"> [1. 1. 1.]</span><br><span class="hljs-attribute">iter</span>:<span class="hljs-number">1</span>, bias:<span class="hljs-meta"> [0. 0. 0.]</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="nn-BatchNorm3d"><a href="#nn-BatchNorm3d" class="headerlink" title="nn.BatchNorm3d()"></a>nn.BatchNorm3d()</h3><p>输入数据的形状是 $B \times C \times 3D_feature$。在下面的例子中，数据的维度是：(3, 2, 2, 2, 3)，表示一个 mini-batch 有 3 个样本，每个样本有 2 个特征，每个特征的维度是 $2 \times 2 \times 3$。那么就会计算 2 个均值和方差，分别对应每个特征维度。momentum 设置为 0.3，第一次的均值和方差默认为 0 和 1。输入两次 mini-batch 的数据。</p>
+<p>数据如下图：</p>
+<p><img src="/img/pytorchtrain6/16.png" srcset="/img/loading.gif" lazyload><br> 代码如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">batch_size</span> = <span class="hljs-number">3</span><br><span class="hljs-attribute">num_features</span> = <span class="hljs-number">3</span><br><span class="hljs-attribute">momentum</span> = <span class="hljs-number">0</span>.<span class="hljs-number">3</span><br><br><span class="hljs-attribute">features_shape</span> = (<span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)<br><br><span class="hljs-attribute">feature</span> = torch.ones(features_shape)                                                # <span class="hljs-number">3</span>D<br><span class="hljs-attribute">feature_map</span> = torch.stack([feature * (i + <span class="hljs-number">1</span>) for i in range(num_features)], dim=<span class="hljs-number">0</span>)  # <span class="hljs-number">4</span>D<br><span class="hljs-attribute">feature_maps</span> = torch.stack([feature_map for i in range(batch_size)], dim=<span class="hljs-number">0</span>)         # <span class="hljs-number">5</span>D<br><br><span class="hljs-comment"># print(&quot;input data:\n&#123;&#125; shape is &#123;&#125;&quot;.format(feature_maps, feature_maps.shape))</span><br><br><span class="hljs-attribute">bn</span> = nn.BatchNorm3d(num_features=num_features, momentum=momentum)<br><br><span class="hljs-attribute">running_mean</span>, running_var = <span class="hljs-number">0</span>, <span class="hljs-number">1</span><br><br><span class="hljs-attribute">for</span> i in range(<span class="hljs-number">2</span>):<br>    <span class="hljs-attribute">outputs</span> = bn(feature_maps)<br><br>    <span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;\niter:&#123;&#125;, running_mean.shape: &#123;&#125;&quot;</span>.format(i, bn.running_mean.shape))<br>    <span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;iter:&#123;&#125;, running_var.shape: &#123;&#125;&quot;</span>.format(i, bn.running_var.shape))<br><br>    <span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;iter:&#123;&#125;, weight.shape: &#123;&#125;&quot;</span>.format(i, bn.weight.shape))<br>    <span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;iter:&#123;&#125;, bias.shape: &#123;&#125;&quot;</span>.format(i, bn.bias.shape))<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs stylus">iter:<span class="hljs-number">0</span>, running_mean<span class="hljs-selector-class">.shape</span>: torch<span class="hljs-selector-class">.Size</span>(<span class="hljs-selector-attr">[3]</span>)<br>iter:<span class="hljs-number">0</span>, running_var<span class="hljs-selector-class">.shape</span>: torch<span class="hljs-selector-class">.Size</span>(<span class="hljs-selector-attr">[3]</span>)<br>iter:<span class="hljs-number">0</span>, weight<span class="hljs-selector-class">.shape</span>: torch<span class="hljs-selector-class">.Size</span>(<span class="hljs-selector-attr">[3]</span>)<br>iter:<span class="hljs-number">0</span>, bias<span class="hljs-selector-class">.shape</span>: torch<span class="hljs-selector-class">.Size</span>(<span class="hljs-selector-attr">[3]</span>)<br>iter:<span class="hljs-number">1</span>, running_mean<span class="hljs-selector-class">.shape</span>: torch<span class="hljs-selector-class">.Size</span>(<span class="hljs-selector-attr">[3]</span>)<br>iter:<span class="hljs-number">1</span>, running_var<span class="hljs-selector-class">.shape</span>: torch<span class="hljs-selector-class">.Size</span>(<span class="hljs-selector-attr">[3]</span>)<br>iter:<span class="hljs-number">1</span>, weight<span class="hljs-selector-class">.shape</span>: torch<span class="hljs-selector-class">.Size</span>(<span class="hljs-selector-attr">[3]</span>)<br>iter:<span class="hljs-number">1</span>, bias<span class="hljs-selector-class">.shape</span>: torch<span class="hljs-selector-class">.Size</span>(<span class="hljs-selector-attr">[3]</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="Layer-Normalization"><a href="#Layer-Normalization" class="headerlink" title="Layer Normalization"></a>Layer Normalization</h2><p>提出的原因：Batch Normalization 不适用于变长的网络，如 RNN</p>
+<p>思路：每个网络层计算均值和方差</p>
+<p>注意事项：</p>
+<ul>
+<li>不再有 running_mean 和 running_var</li>
+<li>$\gamma$ 和 $\beta$ 为逐样本的</li>
+</ul>
+<p><img src="/img/pytorchtrain6/17.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torch.nn.LayerNorm(normalized_shape, <span class="hljs-attribute">eps</span>=1e-05, <span class="hljs-attribute">elementwise_affine</span>=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
+
+<p>参数：</p>
+<ul>
+<li>normalized_shape：该层特征的形状，可以取$C \times H \times W$、$H \times W$、$W$</li>
+<li>eps：标准化时的分母修正项</li>
+<li>elementwise_affine：是否需要逐个样本 affine transform</li>
+</ul>
+<p>下面代码中，输入数据的形状是 $B \times C \times feature$，(8, 2, 3, 4)，表示一个 mini-batch 有 8 个样本，每个样本有 2 个特征，每个特征的维度是 $3 \times 4$。那么就会计算 8 个均值和方差，分别对应每个样本。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">batch_size</span> = <span class="hljs-number">8</span><br><span class="hljs-attribute">num_features</span> = <span class="hljs-number">2</span><br><br><span class="hljs-attribute">features_shape</span> = (<span class="hljs-number">3</span>, <span class="hljs-number">4</span>)<br><br><span class="hljs-attribute">feature_map</span> = torch.ones(features_shape)  # <span class="hljs-number">2</span>D<br><span class="hljs-attribute">feature_maps</span> = torch.stack([feature_map * (i + <span class="hljs-number">1</span>) for i in range(num_features)], dim=<span class="hljs-number">0</span>)  # <span class="hljs-number">3</span>D<br><span class="hljs-attribute">feature_maps_bs</span> = torch.stack([feature_maps for i in range(batch_size)], dim=<span class="hljs-number">0</span>)  # <span class="hljs-number">4</span>D<br><br><span class="hljs-comment"># feature_maps_bs shape is [8, 6, 3, 4],  B * C * H * W</span><br><span class="hljs-comment"># ln = nn.LayerNorm(feature_maps_bs.size()[1:], elementwise_affine=True)</span><br><span class="hljs-comment"># ln = nn.LayerNorm(feature_maps_bs.size()[1:], elementwise_affine=False)</span><br><span class="hljs-comment"># ln = nn.LayerNorm([6, 3, 4])</span><br><span class="hljs-attribute">ln</span> = nn.LayerNorm([<span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>])<br><br><span class="hljs-attribute">output</span> = ln(feature_maps_bs)<br><br><span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;Layer Normalization&quot;</span>)<br><span class="hljs-attribute">print</span>(ln.weight.shape)<br><span class="hljs-attribute">print</span>(feature_maps_bs[<span class="hljs-number">0</span>, ...])<br><span class="hljs-attribute">print</span>(output[<span class="hljs-number">0</span>, ...])<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs lua">Layer Normalization<br>torch.Size([<span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>])<br>tensor(<span class="hljs-string">[[[1., 1., 1., 1.],</span><br><span class="hljs-string">         [1., 1., 1., 1.],</span><br><span class="hljs-string">         [1., 1., 1., 1.]]</span>,<br>        <span class="hljs-string">[[2., 2., 2., 2.],</span><br><span class="hljs-string">         [2., 2., 2., 2.],</span><br><span class="hljs-string">         [2., 2., 2., 2.]]</span>])<br>tensor(<span class="hljs-string">[[[-1.0000, -1.0000, -1.0000, -1.0000],</span><br><span class="hljs-string">         [-1.0000, -1.0000, -1.0000, -1.0000],</span><br><span class="hljs-string">         [-1.0000, -1.0000, -1.0000, -1.0000]]</span>,<br>        <span class="hljs-string">[[ 1.0000,  1.0000,  1.0000,  1.0000],</span><br><span class="hljs-string">         [ 1.0000,  1.0000,  1.0000,  1.0000],</span><br><span class="hljs-string">         [ 1.0000,  1.0000,  1.0000,  1.0000]]</span>], grad_fn=&lt;SelectBackward&gt;)<br></code></pre></td></tr></table></figure>
+
+<p>Layer Normalization 可以设置 normalized_shape 为 (3, 4) 或者 (4)。</p>
+<h2 id="Instance-Normalization"><a href="#Instance-Normalization" class="headerlink" title="Instance Normalization"></a>Instance Normalization</h2><p>提出的原因：Batch Normalization 不适用于图像生成。因为在一个 mini-batch 中的图像有不同的风格，不能把这个 batch 里的数据都看作是同一类取标准化。</p>
+<p>思路：逐个 instance 的 channel 计算均值和方差。也就是每个 feature map 计算一个均值和方差。</p>
+<p>包括 InstanceNorm1d、InstanceNorm2d、InstanceNorm3d。</p>
+<p>以<code>InstanceNorm1d</code>为例，定义如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torch.nn.InstanceNorm1d(num_features, <span class="hljs-attribute">eps</span>=1e-05, <span class="hljs-attribute">momentum</span>=0.1, <span class="hljs-attribute">affine</span>=<span class="hljs-literal">False</span>, <span class="hljs-attribute">track_running_stats</span>=<span class="hljs-literal">False</span>)<br></code></pre></td></tr></table></figure>
+
+<p>参数：</p>
+<ul>
+<li>num_features：一个样本的特征数，这个参数最重要</li>
+<li>eps：分母修正项</li>
+<li>momentum：指数加权平均估计当前的的均值和方差</li>
+<li>affine：是否需要 affine transform</li>
+<li>track_running_stats：True 为训练状态，此时均值和方差会根据每个 mini-batch 改变。False 为测试状态，此时均值和方差会固定</li>
+</ul>
+<p>下面代码中，输入数据的形状是 $B \times C \times 2D_feature$，(3, 3, 2, 2)，表示一个 mini-batch 有 3 个样本，每个样本有 3 个特征，每个特征的维度是 $2 \times 2 $。那么就会计算 $3 \times 3 $ 个均值和方差，分别对应每个样本的每个特征。如下图所示：</p>
+<p><img src="/img/pytorchtrain6/18.png" srcset="/img/loading.gif" lazyload><br> 下面是代码：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs routeros">batch_size = 3<br>num_features = 3<br>momentum = 0.3<br><br>features_shape = (2, 2)<br><br>feature_map = torch.ones(features_shape)    # 2D<br>feature_maps = torch.stack([feature_map * (i + 1) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(num_features)], <span class="hljs-attribute">dim</span>=0)  # 3D<br>feature_maps_bs = torch.stack([feature_maps <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(batch_size)], <span class="hljs-attribute">dim</span>=0)  # 4D<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Instance Normalization&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;input data:\n&#123;&#125; shape is &#123;&#125;&quot;</span>.format(feature_maps_bs, feature_maps_bs.shape))<br><br>instance_n = nn.InstanceNorm2d(<span class="hljs-attribute">num_features</span>=num_features, <span class="hljs-attribute">momentum</span>=momentum)<br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(1):<br>    outputs = instance_n(feature_maps_bs)<br><br>    <span class="hljs-built_in">print</span>(outputs)<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs inform7">Instance Normalization<br>input data:<br>tensor(<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[1., 1.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[1., 1.]</span>]</span>,</span></span><br><span class="hljs-comment"><span class="hljs-comment">         <span class="hljs-comment">[<span class="hljs-comment">[2., 2.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[2., 2.]</span>]</span>,</span></span><br><span class="hljs-comment"><span class="hljs-comment">         <span class="hljs-comment">[<span class="hljs-comment">[3., 3.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[3., 3.]</span>]</span>]</span>,</span><br><span class="hljs-comment">        <span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[1., 1.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[1., 1.]</span>]</span>,</span></span><br><span class="hljs-comment"><span class="hljs-comment">         <span class="hljs-comment">[<span class="hljs-comment">[2., 2.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[2., 2.]</span>]</span>,</span></span><br><span class="hljs-comment"><span class="hljs-comment">         <span class="hljs-comment">[<span class="hljs-comment">[3., 3.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[3., 3.]</span>]</span>]</span>,</span><br><span class="hljs-comment">        <span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[1., 1.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[1., 1.]</span>]</span>,</span></span><br><span class="hljs-comment"><span class="hljs-comment">         <span class="hljs-comment">[<span class="hljs-comment">[2., 2.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[2., 2.]</span>]</span>,</span></span><br><span class="hljs-comment"><span class="hljs-comment">         <span class="hljs-comment">[<span class="hljs-comment">[3., 3.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[3., 3.]</span>]</span>]</span>]</span>) shape <span class="hljs-keyword">is</span> torch.Size(<span class="hljs-comment">[3, 3, 2, 2]</span>)<br>tensor(<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[0., 0.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0., 0.]</span>]</span>,</span></span><br><span class="hljs-comment"><span class="hljs-comment">         <span class="hljs-comment">[<span class="hljs-comment">[0., 0.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0., 0.]</span>]</span>,</span></span><br><span class="hljs-comment"><span class="hljs-comment">         <span class="hljs-comment">[<span class="hljs-comment">[0., 0.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0., 0.]</span>]</span>]</span>,</span><br><span class="hljs-comment">        <span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[0., 0.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0., 0.]</span>]</span>,</span></span><br><span class="hljs-comment"><span class="hljs-comment">         <span class="hljs-comment">[<span class="hljs-comment">[0., 0.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0., 0.]</span>]</span>,</span></span><br><span class="hljs-comment"><span class="hljs-comment">         <span class="hljs-comment">[<span class="hljs-comment">[0., 0.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0., 0.]</span>]</span>]</span>,</span><br><span class="hljs-comment">        <span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[0., 0.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0., 0.]</span>]</span>,</span></span><br><span class="hljs-comment"><span class="hljs-comment">         <span class="hljs-comment">[<span class="hljs-comment">[0., 0.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0., 0.]</span>]</span>,</span></span><br><span class="hljs-comment"><span class="hljs-comment">         <span class="hljs-comment">[<span class="hljs-comment">[0., 0.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[0., 0.]</span>]</span>]</span>]</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="Group-Normalization"><a href="#Group-Normalization" class="headerlink" title="Group Normalization"></a>Group Normalization</h2><p>提出的原因：在小 batch 的样本中，Batch Normalization 估计的值不准。一般用在很大的模型中，这时 batch size 就很小。</p>
+<p>思路：数据不够，通道来凑。 每个样本的特征分为几组，每组特征分别计算均值和方差。可以看作是 Layer Normalization 的基础上添加了特征分组。</p>
+<p>注意事项：</p>
+<ul>
+<li>不再有 running_mean 和 running_var</li>
+<li>$\gamma$ 和 $\beta$ 为逐通道的</li>
+</ul>
+<p>定义如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torch.nn.GroupNorm(num_groups, num_channels, <span class="hljs-attribute">eps</span>=1e-05, <span class="hljs-attribute">affine</span>=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
+
+<p>参数：</p>
+<ul>
+<li>num_groups：特征的分组数量</li>
+<li>num_channels：特征数，通道数。注意 num_channels 要可以整除 num_groups</li>
+<li>eps：分母修正项</li>
+<li>affine：是否需要 affine transform</li>
+</ul>
+<p>下面代码中，输入数据的形状是 $B \times C \times 2D_feature$，(2, 4, 3, 3)，表示一个 mini-batch 有 2 个样本，每个样本有 4 个特征，每个特征的维度是 $3 \times 3 $。num_groups 设置为 2，那么就会计算 $2 \times (4 \div 2) $ 个均值和方差，分别对应每个样本的每个特征。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">batch_size</span> = <span class="hljs-number">2</span><br> <span class="hljs-attribute">num_features</span> = <span class="hljs-number">4</span><br> <span class="hljs-attribute">num_groups</span> = <span class="hljs-number">2</span>   <br> <span class="hljs-attribute">features_shape</span> = (<span class="hljs-number">2</span>, <span class="hljs-number">2</span>)<br><br> <span class="hljs-attribute">feature_map</span> = torch.ones(features_shape)    # <span class="hljs-number">2</span>D<br> <span class="hljs-attribute">feature_maps</span> = torch.stack([feature_map * (i + <span class="hljs-number">1</span>) for i in range(num_features)], dim=<span class="hljs-number">0</span>)  # <span class="hljs-number">3</span>D<br> <span class="hljs-attribute">feature_maps_bs</span> = torch.stack([feature_maps * (i + <span class="hljs-number">1</span>) for i in range(batch_size)], dim=<span class="hljs-number">0</span>)  # <span class="hljs-number">4</span>D<br><br> <span class="hljs-attribute">gn</span> = nn.GroupNorm(num_groups, num_features)<br> <span class="hljs-attribute">outputs</span> = gn(feature_maps_bs)<br><br> <span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;Group Normalization&quot;</span>)<br> <span class="hljs-attribute">print</span>(gn.weight.shape)<br> <span class="hljs-attribute">print</span>(outputs[<span class="hljs-number">0</span>])<br></code></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs lua">Group Normalization<br>torch.Size([<span class="hljs-number">4</span>])<br>tensor(<span class="hljs-string">[[[-1.0000, -1.0000],</span><br><span class="hljs-string">         [-1.0000, -1.0000]]</span>,<br>        <span class="hljs-string">[[ 1.0000,  1.0000],</span><br><span class="hljs-string">         [ 1.0000,  1.0000]]</span>,<br>        <span class="hljs-string">[[-1.0000, -1.0000],</span><br><span class="hljs-string">         [-1.0000, -1.0000]]</span>,<br>        <span class="hljs-string">[[ 1.0000,  1.0000],</span><br><span class="hljs-string">         [ 1.0000,  1.0000]]</span>], grad_fn=&lt;SelectBackward&gt;)<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="print-no-link">#深度学习</a>
+      
+        <a href="/tags/pytorch/" class="print-no-link">#pytorch</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深度学习-13-pytorch-6-正则化</div>
+      <div>https://truth-zheng.github.io/2021/08/14/pytorchtrain6/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zheng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年8月14日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/08/14/pytorchtrain7/" title="深度学习-14-pytorch-7-模型补充操作">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深度学习-14-pytorch-7-模型补充操作</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/12/pytorchtrain5/" title="深度学习-12-pytorch-5-可视化与 Hook">
+                        <span class="hidden-mobile">深度学习-12-pytorch-5-可视化与 Hook</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/mermaid@8.10.1/dist/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com" target="_blank" rel="nofollow noopener"><span>Github</span></a> <i class="iconfont icon-love"></i> <a href="https://scholar.google.com/" target="_blank" rel="nofollow noopener"><span>GoogleScholar</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,814 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar/tou.jpeg">
+  <link rel="icon" href="/img/avatar/tou.jpeg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zheng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Classification的简单阐述">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-5-Classification">
+<meta property="og:url" content="https://truth-zheng.github.io/2021/07/28/classfication/index.html">
+<meta property="og:site_name" content="Sage的生活学习笔记">
+<meta property="og:description" content="Classification的简单阐述">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+<meta property="article:published_time" content="2021-07-28T05:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-31T11:56:17.000Z">
+<meta property="article:author" content="zheng">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="Classification">
+<meta property="article:tag" content="Softmax">
+<meta property="article:tag" content="Cross-entropy">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>深度学习-5-Classification - Sage的生活学习笔记</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"truth-zheng.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"gtag":null,"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sage的学习生活笔记</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/2.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深度学习-5-Classification"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-07-28 13:00" pubdate>
+          2021年7月28日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">深度学习-5-Classification</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年7月31日 晚上
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="Classification-as-Regression？"><a href="#Classification-as-Regression？" class="headerlink" title="Classification as Regression？"></a>Classification as Regression？</h2><blockquote>
+<p>创作声明：主要为李宏毅老师的听课笔记。<br>正确的答案有加Hat，Model的输出没有加Hat</p>
+</blockquote>
+<p>我们之前的笔记提到Regression就是输入一个向量，然后输出一个数值，那我们先思考一个问题，能不能用回归问题的解法去求解分类问题呢？</p>
+<p><img src="/img/dlclassfication/1.png" srcset="/img/loading.gif" lazyload></p>
+<p>输入一个东西以后，我们的输出仍然是一个数值，它叫做y，然后y我们要让它跟正确答案，那个Class越接近越好，y是一个数字，我们怎么让它跟Class越接近越好呢，我们必须把Class也变成数字<br>举例来说Class1就是编号1，Class2就是编号2，Class3就是编号3，接下来呢我们要做的事情，就是希望y可以跟Class的编号，越接近越好。<br>但是这会是一个好方法吗，如果你仔细想想的话，这个方法也许在某些状况下，是会有瑕疵的。<br>因为当你用数字表示类别的时候，也就意味着数字上的联系也会代入到类别上的关系，</p>
+<p>比如1和2的距离比1和3的距离近，但是类别上类别1和2就更相似吗？</p>
+<p>显然不是。</p>
+<h2 id="Class-as-one-hot-vector？"><a href="#Class-as-one-hot-vector？" class="headerlink" title="Class as one-hot vector？"></a>Class as one-hot vector？</h2><p>比较常见的做法是把Class用<strong>One-hot vector</strong>来表示，</p>
+<p><img src="/img/dlclassfication/2.png" srcset="/img/loading.gif" lazyload></p>
+<p>用One-hot vector来表示，就没有说Class1跟Class2比较接近，Class1跟Class3比较远这样的问题，如果用这个One-hot vector算距离的话，Class之间两两它们的距离都是一样。</p>
+<p>如果我们今天的目标ŷ是一个向量，比如ŷ是有三个element的向量，那network也应该要Output三个维度。</p>
+<p>我们过去做的都是Regression的问题，所以只Output一个数字，其实从一个数值改到三个数值，它是没有什么不同的，你可以Output一个数值，你就可以Output三个数值，所以把本来Output一个数值的方法，重复三次</p>
+<p><img src="/img/dlclassfication/3.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="Classification-with-softmax"><a href="#Classification-with-softmax" class="headerlink" title="Classification with softmax"></a>Classification with softmax</h2><p>在做Classification的时候，我们往往会把y再通过一个叫做Soft-max的function得到$y^\prime$，然后我们才去计算$y^\prime$跟ŷ之间的距离。</p>
+<p>为什么要加上Soft-max呢，一个比较简单的解释，一个骗小孩的解释就是，这个ŷ 它里面的值，都是0跟1，它是One-hot vector，所以里面的值只有0跟1，但是y里面有任何值。</p>
+<p>既然我们的目标只有0跟1，但是y有任何值，我们就先把它Normalize到0到1之间，这样才好跟label的计算相似度，这是一个比较简单的讲法。</p>
+<p>如果你真的想要知道，为什么要用Soft-max的话，你可以参考其他资料，如果你不想知道的话，你就记得这个Soft-max要做的事情，就是把本来y里面可以放任何值，改成挪到0到1之间。</p>
+<p><strong>Softmax</strong><br>运行模式：</p>
+<p><img src="/img/dlclassfication/4.png" srcset="/img/loading.gif" lazyload></p>
+<p>我们会先把所有的y取一个exponential，就算是负数，取exponential以后也变成正的，然后你再对它做Normalize，除掉所有y的exponential值的和，然后你就得到$y^\prime$。</p>
+<p>或者是用图示化的方法是这个样子：</p>
+<p><img src="/img/dlclassfication/5.png" srcset="/img/loading.gif" lazyload></p>
+<p>y₁取exp y₂取exp y₃取exp，把它全部加起来，得到一个Summation，接下来再把exp y₁’除掉Summation，exp y₂’除掉Summation，exp y₃’除掉Summation，就得到y₁’ y₂’ y₃’<br>有了这个式子以后，你就会发现</p>
+<ul>
+<li>y₁’ y₂’ y₃’，它们都是介于0到1之间</li>
+<li>y₁’ y₂’ y₃’，它们的和是1</li>
+</ul>
+<p>举一个例子，本来y₁等于3，y₂等于1，y₃等于负3，exp3就是20，exp1就是2.7，exp -3就是0.05，做完Normalization以后，这边就变成0.88，0.12和0。<br>所以这个Soft-max它要做的事情，除了Normalized，让y₁’ y₂’ y₃’，变成0到1之间，还有和为1以外，它还有一个附带的效果是，它会让大的值跟小的值的<strong>相对差距</strong>更大，Soft-max的输入，往往就叫它logit。</p>
+<h2 id="Loss-of-Classification"><a href="#Loss-of-Classification" class="headerlink" title="Loss of Classification"></a>Loss of Classification</h2><p><img src="/img/dlclassfication/6.png" srcset="/img/loading.gif" lazyload><br>我们把x丢到一个Network里面产生y以后，我们会通过soft-max得到y’，再去计算y’跟ŷ之间的距离，这个写作е。</p>
+<p>计算y’跟ŷ之间的距离不只一种做法，举例来说，如果我可以让这个距离是Mean Square Error，但是更常用的做法，叫做<strong>Cross-entropy（交叉熵）</strong></p>
+<p><img src="/img/dlclassfication/7.png" srcset="/img/loading.gif" lazyload></p>
+<p>Cross-entropy是覆盖每一个值，把ŷ的第i位拿出来，乘上y’的第i位取Natural log,然后再全部加起来。</p>
+<p>当ŷ跟y’一模一样的时候，MSE会是最小的，Cross-entropy也会是最小的。</p>
+<p>Make Minimize Cross-entropy其实就是maximize likelihood。</p>
+<p>实际上在pytorch里面，Cross-entropy跟Soft-max，他们是被绑在一起的，他们是一个Set，你只要Copy Cross-entropy，里面就自动内建了Soft-max。</p>
+<p>我们从optimization的角度，来说明相较于Mean Square Error，Cross-entropy为什么被更常用在分类上（存在数学证明，有兴趣可以自行查阅）</p>
+<p>对于一个3个Class的分类<br>Network先输出y₁y₂y₃，在通过soft-max以后，产生y₁’ y₂’跟y₃’<br>那接下来假设我们的正确答案是(1,0,0)，我们要去计算(1,0,0)这个向量，跟y₁’ y₂’跟y₃’他们之间的距离，这个距离我们用е来表示，е可以是Mean square error，也可以是Cross-entropy.<br>我们现在假设y₁是从-10到10，y₂是从-10到10，y₃我们就固定设成-1000。</p>
+<p>因为y₃设很小，所以过soft-max以后y₃’就非常趋近于0，它跟正确答案非常接近，且它对我们的结果影响很少。<br>总之我们y₃设一个定值，我们只看y₁y₂有变化的时候，对我们的loss有什么样的影响。</p>
+<p>进一步我们的目的是看损失函数设定为Mean Square Error，跟Cross-entropy的时候，算出来的Error surface会有什么不一样的地方，如下图：</p>
+<p><img src="/img/dlclassfication/8.png" srcset="/img/loading.gif" lazyload></p>
+<p>红色代表Loss大，蓝色代表Loss小，如果今天y₁很大y₂很小，就代表y₁’会很接近1，y₂’会很接近0，所以不管是对Mean Square Error，或是Cross-entropy而言，y₁大y₂小的时候Loss都是小的。</p>
+<p>如果y₁小y₂大的话，这边y₁’就是0 y₂’就是1，所以这个时候Loss会比较大。</p>
+<p>所以这两个图都是左上角Loss大，右下角Loss小，所以我们就期待最后在Training的时候，我们的参数可以走到右下角的地方。</p>
+<p><img src="/img/dlclassfication/9.png" srcset="/img/loading.gif" lazyload></p>
+<p>假设我们开始的地方都是左上角，如果我们选择Cross-Entropy，左上角有斜率，所以有办法通过gradient，一路往右下的地方走，如果选Mean square error的话就卡住了，Mean square error在这种Loss很大的地方，它是非常平坦的，它的gradient是非常小趋近于0的，如果你初始的时候在这个地方，离你的目标非常远，那它gradient又很小，你就会没有办法用gradient descent顺利的走到右下角的地方去。</p>
+<p>所以如果在做classification，你选Mean square error的时候，你有非常大的可能性会train不起来，当然这个是在你没有好的optimizer的情况下，今天如果你用Adam，这个地方gradient很小，那gradient很小之后，它learning rate之后会自动帮你调大，也许你还是有机会走到右下角，不过这会让你的training，比较困难一点，让training的起步比较慢一点。</p>
+<p>所以这也是一个很好的例子，告诉我们说，就算是Loss function的定义，都可能影响Training是不是容易这件事情，之前说BN把error surface炸平，这边也是一个好的例子告诉我们你可以改Loss function，同样可以改变optimization的难度。</p>
+<h2 id="本文尚待回答的问题"><a href="#本文尚待回答的问题" class="headerlink" title="本文尚待回答的问题"></a>本文尚待回答的问题</h2><ul>
+<li>softmax原理</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="print-no-link">#深度学习</a>
+      
+        <a href="/tags/Classification/" class="print-no-link">#Classification</a>
+      
+        <a href="/tags/Softmax/" class="print-no-link">#Softmax</a>
+      
+        <a href="/tags/Cross-entropy/" class="print-no-link">#Cross-entropy</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深度学习-5-Classification</div>
+      <div>https://truth-zheng.github.io/2021/07/28/classfication/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zheng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年7月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/07/29/cnn/" title="深度学习-6-CNN">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深度学习-6-CNN</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/07/28/batchnormlization/" title="深度学习-4-Batch Normalization">
+                        <span class="hidden-mobile">深度学习-4-Batch Normalization</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/mermaid@8.10.1/dist/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com" target="_blank" rel="nofollow noopener"><span>Github</span></a> <i class="iconfont icon-love"></i> <a href="https://scholar.google.com/" target="_blank" rel="nofollow noopener"><span>GoogleScholar</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

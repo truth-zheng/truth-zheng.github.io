@@ -1,0 +1,954 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar/tou.jpeg">
+  <link rel="icon" href="/img/avatar/tou.jpeg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="zheng">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="利用pytorch训练你的深度学习模型-3-模型构建">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习-10-pytorch-3-模型构建">
+<meta property="og:url" content="https://truth-zheng.github.io/2021/08/11/pytorchtrain3/index.html">
+<meta property="og:site_name" content="Sage的生活学习笔记">
+<meta property="og:description" content="利用pytorch训练你的深度学习模型-3-模型构建">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+<meta property="article:published_time" content="2021-08-10T18:00:00.000Z">
+<meta property="article:modified_time" content="2021-08-11T05:05:18.000Z">
+<meta property="article:author" content="zheng">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="pytorch">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://truth-zheng.github.io/img/dlenv/0.jfif">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>深度学习-10-pytorch-3-模型构建 - Sage的生活学习笔记</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"truth-zheng.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"gtag":null,"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sage的学习生活笔记</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/2.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="深度学习-10-pytorch-3-模型构建"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-11 02:00" pubdate>
+          2021年8月11日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          5.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          48 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">深度学习-10-pytorch-3-模型构建</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    <!-- compatible with older versions-->
+                    本文最后更新于：2021年8月11日 下午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>创作声明：主要内容参考于张贤同学<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/265394674">https://zhuanlan.zhihu.com/p/265394674</a></p>
+</blockquote>
+<p>这篇文章来看下 PyTorch 中网络模型的实现步骤。网络模型的内容如下，包括模型创建和权值初始化，这些内容都在nn.Module中有实现。</p>
+<p><img src="/img/pytorchtrain3/1.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="模型创建"><a href="#模型创建" class="headerlink" title="模型创建"></a>模型创建</h2><p>创建模型有 2 个要素：构建子模块和拼接子模块。如 LeNet 里包含很多卷积层、池化层、全连接层，当我们构建好所有的子模块之后，按照一定的顺序拼接起来。<br><img src="/img/pytorchtrain3/2.png" srcset="/img/loading.gif" lazyload><br>这里以上一篇文章中 <code>lenet.py</code>的 LeNet 为例，继承<code>nn.Module</code>，必须实现<code>__init__()</code> 方法和<code>forward()</code>方法。其中<code>__init__() </code>方法里创建子模块，在<code>forward()</code>方法里拼接子模块。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs scss">class <span class="hljs-built_in">LeNet</span>(nn.Module):<br>    # 子模块创建<br>    def <span class="hljs-built_in">__init__</span>(self, classes):<br>        <span class="hljs-built_in">super</span>(LeNet, self).<span class="hljs-built_in">__init__</span>()<br>        self.conv1 = nn.<span class="hljs-built_in">Conv2d</span>(<span class="hljs-number">3</span>, <span class="hljs-number">6</span>, <span class="hljs-number">5</span>)<br>        self.conv2 = nn.<span class="hljs-built_in">Conv2d</span>(<span class="hljs-number">6</span>, <span class="hljs-number">16</span>, <span class="hljs-number">5</span>)<br>        self.fc1 = nn.<span class="hljs-built_in">Linear</span>(<span class="hljs-number">16</span>*<span class="hljs-number">5</span>*<span class="hljs-number">5</span>, <span class="hljs-number">120</span>)<br>        self.fc2 = nn.<span class="hljs-built_in">Linear</span>(<span class="hljs-number">120</span>, <span class="hljs-number">84</span>)<br>        self.fc3 = nn.<span class="hljs-built_in">Linear</span>(<span class="hljs-number">84</span>, classes)<br>    # 子模块拼接<br>    def <span class="hljs-built_in">forward</span>(self, x):<br>        out = F.<span class="hljs-built_in">relu</span>(self.<span class="hljs-built_in">conv1</span>(x))<br>        out = F.<span class="hljs-built_in">max_pool2d</span>(out, <span class="hljs-number">2</span>)<br>        out = F.<span class="hljs-built_in">relu</span>(self.<span class="hljs-built_in">conv2</span>(out))<br>        out = F.<span class="hljs-built_in">max_pool2d</span>(out, <span class="hljs-number">2</span>)<br>        out = out.<span class="hljs-built_in">view</span>(out.<span class="hljs-built_in">size</span>(<span class="hljs-number">0</span>), -<span class="hljs-number">1</span>)<br>        out = F.<span class="hljs-built_in">relu</span>(self.<span class="hljs-built_in">fc1</span>(out))<br>        out = F.<span class="hljs-built_in">relu</span>(self.<span class="hljs-built_in">fc2</span>(out))<br>        out = self.<span class="hljs-built_in">fc3</span>(out)<br>        return out<br></code></pre></td></tr></table></figure>
+<p>当我们调用<code>net = LeNet(classes=2)</code>创建模型时，会调用<code>__init__()</code>方法创建模型的子模块。</p>
+<p>当我们在训练时调用outputs &#x3D; net(inputs)时，会进入module.py的call()函数中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">__call__</span>(<span class="hljs-params">self, *<span class="hljs-built_in">input</span>, **kwargs</span>):<br>    <span class="hljs-keyword">for</span> hook <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>._forward_pre_hooks.values():<br>        result = hook(<span class="hljs-variable language_">self</span>, <span class="hljs-built_in">input</span>)<br>        <span class="hljs-keyword">if</span> result <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(result, <span class="hljs-built_in">tuple</span>):<br>                result = (result,)<br>            <span class="hljs-built_in">input</span> = result<br>    <span class="hljs-keyword">if</span> torch._C._get_tracing_state():<br>        result = <span class="hljs-variable language_">self</span>._slow_forward(*<span class="hljs-built_in">input</span>, **kwargs)<br>    <span class="hljs-keyword">else</span>:<br>        result = <span class="hljs-variable language_">self</span>.forward(*<span class="hljs-built_in">input</span>, **kwargs)<br>    ...<br>    ...<br>    ...<br></code></pre></td></tr></table></figure>
+<p>最终会调用result &#x3D; self.forward(*input, **kwargs)函数，该函数会进入模型的forward()函数中，进行前向传播。</p>
+<p>在 torch.nn中包含 4 个模块，如下图所示。<br><img src="/img/pytorchtrain3/3.png" srcset="/img/loading.gif" lazyload><br>其中所有网络模型都是继承于nn.Module的，下面重点分析nn.Module模块。</p>
+<h2 id="nn-Module"><a href="#nn-Module" class="headerlink" title="nn.Module"></a>nn.Module</h2><p>nn.Module 有 8 个属性，都是OrderDict(有序字典)。在 LeNet 的__init__()方法中会调用父类nn.Module的__init__()方法，创建这 8 个属性。</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs isbl"><span class="hljs-variable">def</span> <span class="hljs-function"><span class="hljs-title">__init__</span>(<span class="hljs-variable">self</span>):</span><br><span class="hljs-function">    <span class="hljs-string">&quot;&quot;</span><span class="hljs-string">&quot;</span></span><br><span class="hljs-string"><span class="hljs-function">    Initializes internal Module state, shared by both nn.Module and ScriptModule.</span></span><br><span class="hljs-string"><span class="hljs-function">    &quot;</span><span class="hljs-string">&quot;&quot;</span></span><br><span class="hljs-function">    <span class="hljs-variable">torch._C._log_api_usage_once</span>(<span class="hljs-string">&quot;python.nn_module&quot;</span>)</span><br><br>    <span class="hljs-variable">self.training</span> = <span class="hljs-variable"><span class="hljs-literal">True</span></span><br>    <span class="hljs-variable">self._parameters</span> = <span class="hljs-function"><span class="hljs-title">OrderedDict</span>()</span><br>    <span class="hljs-variable">self._buffers</span> = <span class="hljs-function"><span class="hljs-title">OrderedDict</span>()</span><br>    <span class="hljs-variable">self._backward_hooks</span> = <span class="hljs-function"><span class="hljs-title">OrderedDict</span>()</span><br>    <span class="hljs-variable">self._forward_hooks</span> = <span class="hljs-function"><span class="hljs-title">OrderedDict</span>()</span><br>    <span class="hljs-variable">self._forward_pre_hooks</span> = <span class="hljs-function"><span class="hljs-title">OrderedDict</span>()</span><br>    <span class="hljs-variable">self._state_dict_hooks</span> = <span class="hljs-function"><span class="hljs-title">OrderedDict</span>()</span><br>    <span class="hljs-variable">self._load_state_dict_pre_hooks</span> = <span class="hljs-function"><span class="hljs-title">OrderedDict</span>()</span><br>    <span class="hljs-variable">self._modules</span> = <span class="hljs-function"><span class="hljs-title">OrderedDict</span>()</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li>_parameters 属性：存储管理 nn.Parameter 类型的参数</li>
+<li>_modules 属性：存储管理 nn.Module 类型的参数</li>
+<li>_buffers 属性：存储管理缓冲属性，如 BN 层中的 running_mean</li>
+<li>5 个 *_hooks 属性：存储管理钩子函数</li>
+</ul>
+<p>其中比较重要的是parameters和modules属性。</p>
+<p>在 LeNet 的__init__()中创建了 5 个子模块，nn.Conv2d()和nn.Linear()都是 继承于nn.module，也就是说一个 module 都是包含多个子 module 的。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-keyword">class</span> <span class="hljs-title class_">LeNet</span>(nn.<span class="hljs-title class_">Module</span>):<br>    <span class="hljs-comment"># 子模块创建</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params"><span class="hljs-variable language_">self</span>, classes</span>):<br>        <span class="hljs-variable language_">super</span>(<span class="hljs-title class_">LeNet</span>, <span class="hljs-variable language_">self</span>).__init__()<br>        <span class="hljs-variable language_">self</span>.conv1 = nn.<span class="hljs-title class_">Conv2d</span>(<span class="hljs-number">3</span>, <span class="hljs-number">6</span>, <span class="hljs-number">5</span>)<br>        <span class="hljs-variable language_">self</span>.conv2 = nn.<span class="hljs-title class_">Conv2d</span>(<span class="hljs-number">6</span>, <span class="hljs-number">16</span>, <span class="hljs-number">5</span>)<br>        <span class="hljs-variable language_">self</span>.fc1 = nn.<span class="hljs-title class_">Linear</span>(<span class="hljs-number">16</span>*<span class="hljs-number">5</span>*<span class="hljs-number">5</span>, <span class="hljs-number">120</span>)<br>        <span class="hljs-variable language_">self</span>.fc2 = nn.<span class="hljs-title class_">Linear</span>(<span class="hljs-number">120</span>, <span class="hljs-number">84</span>)<br>        <span class="hljs-variable language_">self</span>.fc3 = nn.<span class="hljs-title class_">Linear</span>(<span class="hljs-number">84</span>, classes)<br>        ...<br>        ...<br>        ...<br></code></pre></td></tr></table></figure>
+<p>当调用net &#x3D; LeNet(classes&#x3D;2)创建模型后，net对象的 modules 属性就包含了这 5 个子网络模块。<br><img src="/img/pytorchtrain3/4.png" srcset="/img/loading.gif" lazyload><br> 下面看下每个子模块是如何添加到 LeNet 的_modules 属性中的。以self.conv1 &#x3D; nn.Conv2d(3, 6, 5)为例，当我们运行到这一行时，首先 Step Into 进入 Conv2d的构造，然后 Step Out。右键Evaluate Expression查看nn.Conv2d(3, 6, 5)的属性。<br><img src="/img/pytorchtrain3/5.png" srcset="/img/loading.gif" lazyload><br> 上面说了Conv2d也是一个 module，里面的_modules属性为空，_parameters属性里包含了该卷积层的可学习参数，这些参数的类型是 Parameter，继承自 Tensor。</p>
+<p>此时只是完成了nn.Conv2d(3, 6, 5) module 的创建。还没有赋值给self.conv1。在nn.Module里有一个机制，会拦截所有的类属性赋值操作(self.conv1是类属性)，进入到__setattr__()函数中。我们再次 Step Into 就可以进入__setattr__()。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">__setattr__</span>(<span class="hljs-params">self, name, value</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">remove_from</span>(<span class="hljs-params">*dicts</span>):<br>        <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> dicts:<br>            <span class="hljs-keyword">if</span> name <span class="hljs-keyword">in</span> d:<br>                <span class="hljs-keyword">del</span> d[name]<br><br>    params = <span class="hljs-variable language_">self</span>.__dict__.get(<span class="hljs-string">&#x27;_parameters&#x27;</span>)<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(value, Parameter):<br>        <span class="hljs-keyword">if</span> params <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>            <span class="hljs-keyword">raise</span> AttributeError(<br>                <span class="hljs-string">&quot;cannot assign parameters before Module.__init__() call&quot;</span>)<br>        remove_from(<span class="hljs-variable language_">self</span>.__dict__, <span class="hljs-variable language_">self</span>._buffers, <span class="hljs-variable language_">self</span>._modules)<br>        <span class="hljs-variable language_">self</span>.register_parameter(name, value)<br>    <span class="hljs-keyword">elif</span> params <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">and</span> name <span class="hljs-keyword">in</span> params:<br>        <span class="hljs-keyword">if</span> value <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>            <span class="hljs-keyword">raise</span> TypeError(<span class="hljs-string">&quot;cannot assign &#x27;&#123;&#125;&#x27; as parameter &#x27;&#123;&#125;&#x27; &quot;</span><br>                            <span class="hljs-string">&quot;(torch.nn.Parameter or None expected)&quot;</span><br>                            .<span class="hljs-built_in">format</span>(torch.typename(value), name))<br>        <span class="hljs-variable language_">self</span>.register_parameter(name, value)<br>    <span class="hljs-keyword">else</span>:<br>        modules = <span class="hljs-variable language_">self</span>.__dict__.get(<span class="hljs-string">&#x27;_modules&#x27;</span>)<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(value, Module):<br>            <span class="hljs-keyword">if</span> modules <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>                <span class="hljs-keyword">raise</span> AttributeError(<br>                    <span class="hljs-string">&quot;cannot assign module before Module.__init__() call&quot;</span>)<br>            remove_from(<span class="hljs-variable language_">self</span>.__dict__, <span class="hljs-variable language_">self</span>._parameters, <span class="hljs-variable language_">self</span>._buffers)<br>            modules[name] = value<br>        <span class="hljs-keyword">elif</span> modules <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">and</span> name <span class="hljs-keyword">in</span> modules:<br>            <span class="hljs-keyword">if</span> value <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>                <span class="hljs-keyword">raise</span> TypeError(<span class="hljs-string">&quot;cannot assign &#x27;&#123;&#125;&#x27; as child module &#x27;&#123;&#125;&#x27; &quot;</span><br>                                <span class="hljs-string">&quot;(torch.nn.Module or None expected)&quot;</span><br>                                .<span class="hljs-built_in">format</span>(torch.typename(value), name))<br>            modules[name] = value<br>        ...<br>        ...<br>        ...<br></code></pre></td></tr></table></figure>
+<p>在这里判断 value 的类型是Parameter还是Module，存储到对应的有序字典中。</p>
+<p>这里nn.Conv2d(3, 6, 5)的类型是Module，因此会执行modules[name] &#x3D; value，key 是类属性的名字conv1，value 就是nn.Conv2d(3, 6, 5)。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>一个 module 里可包含多个子 module。比如 LeNet 是一个 Module，里面包括多个卷积层、池化层、全连接层等子 module</li>
+<li>一个 module 相当于一个运算，必须实现 forward() 函数</li>
+<li>每个 module 都有 8 个字典管理自己的属性</li>
+</ul>
+<h2 id="模型容器"><a href="#模型容器" class="headerlink" title="模型容器"></a>模型容器</h2><p>除了上述的模块之外，还有一个重要的概念是模型容器 (Containers)，常用的容器有 3 个，这些容器都是继承自nn.Module。</p>
+<ul>
+<li>nn.Sequetial：按照顺序包装多个网络层</li>
+<li>nn.ModuleList：像 python 的 list 一样包装多个网络层，可以迭代</li>
+<li>nn.ModuleDict：像 python 的 dict一样包装多个网络层，通过 (key, value) 的方式为每个网络层指定名称。</li>
+</ul>
+<h3 id="nn-Sequetial"><a href="#nn-Sequetial" class="headerlink" title="nn.Sequetial"></a>nn.Sequetial</h3><p>在传统的机器学习中，有一个步骤是特征工程，我们需要从数据中人为地提取特征，然后把特征输入到分类器中预测。在深度学习的时代，特征工程的概念被弱化了，特征提取和分类器这两步被融合到了一个神经网络中。在卷积神经网络中，前面的卷积层以及池化层可以认为是特征提取部分，而后面的全连接层可以认为是分类器部分。比如 LeNet 就可以分为特征提取和分类器两部分，这 2 部分都可以分别使用 nn.Seuqtial 来包装。<br><img src="/img/pytorchtrain3/6.png" srcset="/img/loading.gif" lazyload></p>
+<p>代码如下：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">LeNetSequetial</span>(<span class="hljs-title">nn</span>.<span class="hljs-type">Module</span>):</span><br><span class="hljs-class">    def __init__(<span class="hljs-title">self</span>, <span class="hljs-title">classes</span>):</span><br><span class="hljs-class">        super(<span class="hljs-type">LeNet2</span>, <span class="hljs-title">self</span>).__init__()</span><br><span class="hljs-class">        self.features = nn.<span class="hljs-type">Sequential</span>(</span><br><span class="hljs-class">            <span class="hljs-title">nn</span>.<span class="hljs-type">Conv2d</span>(3, 6, 5),</span><br><span class="hljs-class">            nn.<span class="hljs-type">ReLU</span>(),</span><br><span class="hljs-class">            nn.<span class="hljs-type">AvgPool2d</span>(2, 2),</span><br><span class="hljs-class">            nn.<span class="hljs-type">Conv2d</span>(6, 16, 5),</span><br><span class="hljs-class">            nn.<span class="hljs-type">ReLU</span>(),</span><br><span class="hljs-class">            nn.<span class="hljs-type">AvgPool2d</span>(2, 2)</span><br><span class="hljs-class">        )</span><br><span class="hljs-class">        self.classifier = nn.<span class="hljs-type">Sequential</span>(</span><br><span class="hljs-class">            <span class="hljs-title">nn</span>.<span class="hljs-type">Linear</span>(16*5*5, 120),</span><br><span class="hljs-class">            nn.<span class="hljs-type">ReLU</span>(),</span><br><span class="hljs-class">            nn.<span class="hljs-type">Linear</span>(120, 84),</span><br><span class="hljs-class">            nn.<span class="hljs-type">ReLU</span>(),</span><br><span class="hljs-class">            nn.<span class="hljs-type">Linear</span>(84, <span class="hljs-title">classes</span>)</span><br><span class="hljs-class">        )</span><br><span class="hljs-class"></span><br><span class="hljs-class">    def forward(<span class="hljs-title">self</span>, <span class="hljs-title">x</span>):</span><br><span class="hljs-class">        x = self.features(<span class="hljs-title">x</span>)</span><br><span class="hljs-class">        x = x.view(<span class="hljs-title">x</span>.<span class="hljs-title">size</span>()[0], -1)</span><br><span class="hljs-class">        x = self.classifier(<span class="hljs-title">x</span>)</span><br><span class="hljs-class">        return x</span><br></code></pre></td></tr></table></figure>
+<p>在初始化时，nn.Sequetial会调用__init__()方法，将每一个子 module 添加到 自身的_modules属性中。这里可以看到，我们传入的参数可以是一个 list，或者一个 OrderDict。如果是一个 OrderDict，那么则使用 OrderDict 里的 key，否则使用数字作为 key (OrderDict 的情况会在下面提及)。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params"><span class="hljs-variable language_">self</span>, *args</span>):<br>    <span class="hljs-variable language_">super</span>(<span class="hljs-title class_">Sequential</span>, <span class="hljs-variable language_">self</span>).__init__()<br>    <span class="hljs-keyword">if</span> len(args) == <span class="hljs-number">1</span> <span class="hljs-keyword">and</span> isinstance(args[<span class="hljs-number">0</span>], <span class="hljs-title class_">OrderedDict</span>):<br>        <span class="hljs-keyword">for</span> key, <span class="hljs-keyword">module</span> <span class="hljs-keyword">in</span> args[<span class="hljs-number">0</span>].items():<br>            <span class="hljs-variable language_">self</span>.add_module(key, <span class="hljs-keyword">module</span>)<br>    <span class="hljs-symbol">else:</span><br>        <span class="hljs-keyword">for</span> idx, <span class="hljs-keyword">module</span> <span class="hljs-keyword">in</span> enumerate(args):<br>            <span class="hljs-variable language_">self</span>.add_module(str(idx), <span class="hljs-keyword">module</span>)<br></code></pre></td></tr></table></figure>
+<p>网络初始化完成后有两个子 module：features和classifier。</p>
+<p>在进行前向传播时，会进入 LeNet 的forward()函数，首先调用第一个Sequetial容器：self.features，由于self.features也是一个 module，因此会调用__call__()函数，里面调用 result &#x3D; self.forward(*input, **kwargs)，进入nn.Seuqetial的forward()函数，在这里依次调用所有的 module。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs lua">def forward(<span class="hljs-built_in">self</span>, <span class="hljs-built_in">input</span>):<br>    <span class="hljs-keyword">for</span> <span class="hljs-built_in">module</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">self</span>:<br>        <span class="hljs-built_in">input</span> = <span class="hljs-built_in">module</span>(<span class="hljs-built_in">input</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">input</span><br></code></pre></td></tr></table></figure>
+<p>在nn.Sequetial中，里面的每个子网络层 module 是使用序号来索引的，即使用数字来作为 key。一旦网络层增多，难以查找特定的网络层，这种情况可以使用 OrderDict (有序字典)。代码中使用</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs routeros">class LeNetSequentialOrderDict(nn.Module):<br>    def __init__(self, classes):<br>        super(LeNetSequentialOrderDict, self).__init__()<br><br>        self.features = nn.Sequential(OrderedDict(&#123;<br>            <span class="hljs-string">&#x27;conv1&#x27;</span>: nn.Conv2d(3, 6, 5),<br>            <span class="hljs-string">&#x27;relu1&#x27;</span>: nn.ReLU(<span class="hljs-attribute">inplace</span>=<span class="hljs-literal">True</span>),<br>            <span class="hljs-string">&#x27;pool1&#x27;</span>: nn.MaxPool2d(<span class="hljs-attribute">kernel_size</span>=2, <span class="hljs-attribute">stride</span>=2),<br><br>            <span class="hljs-string">&#x27;conv2&#x27;</span>: nn.Conv2d(6, 16, 5),<br>            <span class="hljs-string">&#x27;relu2&#x27;</span>: nn.ReLU(<span class="hljs-attribute">inplace</span>=<span class="hljs-literal">True</span>),<br>            <span class="hljs-string">&#x27;pool2&#x27;</span>: nn.MaxPool2d(<span class="hljs-attribute">kernel_size</span>=2, <span class="hljs-attribute">stride</span>=2),<br>        &#125;))<br><br>        self.classifier = nn.Sequential(OrderedDict(&#123;<br>            <span class="hljs-string">&#x27;fc1&#x27;</span>: nn.Linear(16<span class="hljs-number">*5</span><span class="hljs-number">*5</span>, 120),<br>            <span class="hljs-string">&#x27;relu3&#x27;</span>: nn.ReLU(),<br><br>            <span class="hljs-string">&#x27;fc2&#x27;</span>: nn.Linear(120, 84),<br>            <span class="hljs-string">&#x27;relu4&#x27;</span>: nn.ReLU(<span class="hljs-attribute">inplace</span>=<span class="hljs-literal">True</span>),<br><br>            <span class="hljs-string">&#x27;fc3&#x27;</span>: nn.Linear(84, classes),<br>        &#125;))<br>        <span class="hljs-built_in">..</span>.<br>        <span class="hljs-built_in">..</span>.<br>        <span class="hljs-built_in">..</span>.<br></code></pre></td></tr></table></figure>
+<p>总结<br>nn.Sequetial是nn.Module的容器，用于按顺序包装一组网络层，有以下两个特性。</p>
+<ul>
+<li>顺序性：各网络层之间严格按照顺序构建，我们在构建网络时，一定要注意前后网络层之间输入和输出数据之间的形状是否匹配</li>
+<li>自带forward()函数：在nn.Sequetial的forward()函数里通过 for 循环依次读取每个网络层，执行前向传播运算。这使得我们我们构建的模型更加简洁</li>
+</ul>
+<h3 id="nn-ModuleList"><a href="#nn-ModuleList" class="headerlink" title="nn.ModuleList"></a>nn.ModuleList</h3><p>nn.ModuleList是nn.Module的容器，用于包装一组网络层，以迭代的方式调用网络层，主要有以下 3 个方法：</p>
+<ul>
+<li>append()：在 ModuleList 后面添加网络层</li>
+<li>extend()：拼接两个 ModuleList</li>
+<li>insert()：在 ModuleList 的指定位置中插入网络层</li>
+</ul>
+<p>下面的代码通过列表生成式来循环迭代创建 20 个全连接层，非常方便，只是在 forward()函数中需要手动调用每个网络层。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs haskell"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-type">ModuleList</span>(<span class="hljs-title">nn</span>.<span class="hljs-type">Module</span>):</span><br><span class="hljs-class">    def __init__(<span class="hljs-title">self</span>):</span><br><span class="hljs-class">        super(<span class="hljs-type">ModuleList</span>, <span class="hljs-title">self</span>).__init__()</span><br><span class="hljs-class">        self.linears = nn.<span class="hljs-type">ModuleList</span>([<span class="hljs-title">nn</span>.<span class="hljs-type">Linear</span>(10, 10) for i in range(20)])</span><br><span class="hljs-class"></span><br><span class="hljs-class">    def forward(<span class="hljs-title">self</span>, <span class="hljs-title">x</span>):</span><br><span class="hljs-class">        for i, linear in enumerate(<span class="hljs-title">self</span>.<span class="hljs-title">linears</span>):</span><br><span class="hljs-class">            x = linear(<span class="hljs-title">x</span>)</span><br><span class="hljs-class">        return x</span><br><span class="hljs-class"></span><br><span class="hljs-class"></span><br><span class="hljs-class">net = <span class="hljs-type">ModuleList</span>()</span><br><span class="hljs-class"></span><br><span class="hljs-class">print(<span class="hljs-title">net</span>)</span><br><span class="hljs-class"></span><br><span class="hljs-class">fake_data = torch.ones((10, 10))</span><br><span class="hljs-class"></span><br><span class="hljs-class">output = net(<span class="hljs-title">fake_data</span>)</span><br><span class="hljs-class"></span><br><span class="hljs-class">print(<span class="hljs-title">output</span>)</span><br></code></pre></td></tr></table></figure>
+<h3 id="nn-ModuleDict"><a href="#nn-ModuleDict" class="headerlink" title="nn.ModuleDict"></a>nn.ModuleDict</h3><p>nn.ModuleDict是nn.Module的容器，用于包装一组网络层，以索引的方式调用网络层，主要有以下 5 个方法：</p>
+<ul>
+<li>clear()：清空  ModuleDict</li>
+<li>items()：返回可迭代的键值对 (key, value)</li>
+<li>keys()：返回字典的所有 key</li>
+<li>values()：返回字典的所有 value</li>
+<li>pop()：返回一对键值，并从字典中删除</li>
+</ul>
+<p>下面的模型创建了两个ModuleDict：self.choices和self.activations，在前向传播时通过传入对应的 key 来执行对应的网络层。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ModuleDict</span>(nn.<span class="hljs-title class_">Module</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params"><span class="hljs-variable language_">self</span></span>):<br>        <span class="hljs-variable language_">super</span>(<span class="hljs-title class_">ModuleDict</span>, <span class="hljs-variable language_">self</span>).__init__()<br>        <span class="hljs-variable language_">self</span>.choices = nn.<span class="hljs-title class_">ModuleDict</span>(&#123;<br>            <span class="hljs-string">&#x27;conv&#x27;</span>: nn.<span class="hljs-title class_">Conv2d</span>(<span class="hljs-number">10</span>, <span class="hljs-number">10</span>, <span class="hljs-number">3</span>),<br>            <span class="hljs-string">&#x27;pool&#x27;</span>: nn.<span class="hljs-title class_">MaxPool2d</span>(<span class="hljs-number">3</span>)<br>        &#125;)<br><br>        <span class="hljs-variable language_">self</span>.activations = nn.<span class="hljs-title class_">ModuleDict</span>(&#123;<br>            <span class="hljs-string">&#x27;relu&#x27;</span>: nn.<span class="hljs-title class_">Re</span>LU(),<br>            <span class="hljs-string">&#x27;prelu&#x27;</span>: nn.<span class="hljs-title class_">PRe</span>LU()<br>        &#125;)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params"><span class="hljs-variable language_">self</span>, x, choice, act</span>):<br>        x = <span class="hljs-variable language_">self</span>.choices[choice](x)<br>        x = <span class="hljs-variable language_">self</span>.activations[act](x)<br>        <span class="hljs-keyword">return</span> x<br><br><br>net = <span class="hljs-title class_">ModuleDict</span>()<br><br>fake_img = torch.randn((<span class="hljs-number">4</span>, <span class="hljs-number">10</span>, <span class="hljs-number">32</span>, <span class="hljs-number">32</span>))<br><br>output = net(fake_img, <span class="hljs-string">&#x27;conv&#x27;</span>, <span class="hljs-string">&#x27;relu&#x27;</span>)<br><span class="hljs-comment"># output = net(fake_img, &#x27;conv&#x27;, &#x27;prelu&#x27;)</span><br>print(output)<br></code></pre></td></tr></table></figure>
+<h3 id="容器总结"><a href="#容器总结" class="headerlink" title="容器总结"></a>容器总结</h3><ul>
+<li>nn.Sequetial：顺序性，各网络层之间严格按照顺序执行，常用于 block 构建，在前向传播时的代码调用变得简洁</li>
+<li>nn.ModuleList：迭代行，常用于大量重复网络构建，通过 for 循环实现重复构建</li>
+<li>nn.ModuleDict：索引性，常用于可选择的网络层</li>
+</ul>
+<h2 id="卷积层"><a href="#卷积层" class="headerlink" title="卷积层"></a>卷积层</h2><h3 id="1D-2D-3D-卷积"><a href="#1D-2D-3D-卷积" class="headerlink" title="1D&#x2F;2D&#x2F;3D 卷积"></a>1D&#x2F;2D&#x2F;3D 卷积</h3><p>卷积有一维卷积、二维卷积、三维卷积。一般情况下，卷积核在几个维度上滑动，就是几维卷积。比如在图片上的卷积就是二维卷积。</p>
+<h4 id="一维卷积"><a href="#一维卷积" class="headerlink" title="一维卷积"></a>一维卷积</h4><p><img src="/img/pytorchtrain3/1d.gif" srcset="/img/loading.gif" lazyload></p>
+<h4 id="二维卷积"><a href="#二维卷积" class="headerlink" title="二维卷积"></a>二维卷积</h4><p><img src="/img/pytorchtrain3/2d.gif" srcset="/img/loading.gif" lazyload></p>
+<h4 id="三维卷积"><a href="#三维卷积" class="headerlink" title="三维卷积"></a>三维卷积</h4><p><img src="/img/pytorchtrain3/3d.gif" srcset="/img/loading.gif" lazyload></p>
+<h3 id="二维卷积：nn-Conv2d"><a href="#二维卷积：nn-Conv2d" class="headerlink" title="二维卷积：nn.Conv2d()"></a>二维卷积：nn.Conv2d()</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.Conv2d(self, in_channels, out_channels, kernel_size, <span class="hljs-attribute">stride</span>=1,<br>                 <span class="hljs-attribute">padding</span>=0, <span class="hljs-attribute">dilation</span>=1, <span class="hljs-attribute">groups</span>=1,<br>                 <span class="hljs-attribute">bias</span>=<span class="hljs-literal">True</span>, <span class="hljs-attribute">padding_mode</span>=<span class="hljs-string">&#x27;zeros&#x27;</span>)<br></code></pre></td></tr></table></figure>
+<p>这个函数的功能是对多个二维信号进行二维卷积，主要参数如下：</p>
+<ul>
+<li>in_channels：输入通道数</li>
+<li>out_channels：输出通道数，等价于卷积核个数</li>
+<li>kernel_size：卷积核尺寸</li>
+<li>stride：步长</li>
+<li>padding：填充宽度，主要是为了调整输出的特征图大小，一般把 padding 设置合适的值后，保持输入和输出的图像尺寸不变。</li>
+<li>dilation：空洞卷积大小，默认为1，这时是标准卷积，常用于图像分割任务中，主要是为了提升感受野</li>
+<li>groups：分组卷积设置，主要是为了模型的轻量化，如在 ShuffleNet、MobileNet、SqueezeNet中用到</li>
+<li>bias：偏置</li>
+</ul>
+<h3 id="卷积尺寸计算"><a href="#卷积尺寸计算" class="headerlink" title="卷积尺寸计算"></a>卷积尺寸计算</h3><h4 id="简化版卷积尺寸计算"><a href="#简化版卷积尺寸计算" class="headerlink" title="简化版卷积尺寸计算"></a>简化版卷积尺寸计算</h4><p>这里不考虑空洞卷积，假设输入图片大小为 $I \times I$，卷积核大小为 $k \times k$，stride 为 $s$，padding 的像素数为 $p$，图片经过卷积之后的尺寸 $O$ 如下：<br>$O &#x3D; \displaystyle\frac{I -k + 2 \times p}{s} +1$<br>下面例子的输入图片大小为 $5 \times 5$，卷积大小为 $3 \times 3$，stride 为 1，padding 为 0，所以输出图片大小为 $\displaystyle\frac{5 -3 + 2 \times 0}{1} +1 &#x3D; 3$。</p>
+<h4 id="完整版卷积尺寸计算"><a href="#完整版卷积尺寸计算" class="headerlink" title="完整版卷积尺寸计算"></a>完整版卷积尺寸计算</h4><p>完整版卷积尺寸计算考虑了空洞卷积，假设输入图片大小为 $I \times I$，卷积核大小为 $k \times k$，stride 为 $s$，padding 的像素数为 $p$，dilation 为 $d$，图片经过卷积之后的尺寸 $O$ 如下：。<br>$O &#x3D; \displaystyle\frac{I - d \times (k-1) + 2 \times p -1}{s} +1$</p>
+<h3 id="卷积网络示例（非完整训练）"><a href="#卷积网络示例（非完整训练）" class="headerlink" title="卷积网络示例（非完整训练）"></a>卷积网络示例（非完整训练）</h3><p>这里使用 inputchannel 为 3，output_channel 为 1 ，卷积核大小为 $3 \times 3$ 的卷积核nn.Conv2d(3, 1, 3)，使用<code>nn.init.xavier_normal()</code>方法初始化网络的权值。代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn<br><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image<br><span class="hljs-keyword">from</span> torchvision <span class="hljs-keyword">import</span> transforms<br><span class="hljs-keyword">from</span> matplotlib <span class="hljs-keyword">import</span> pyplot <span class="hljs-keyword">as</span> plt<br><span class="hljs-keyword">from</span> common_tools <span class="hljs-keyword">import</span> transform_invert, set_seed<br><br>set_seed(<span class="hljs-number">3</span>)  <span class="hljs-comment"># 设置随机种子</span><br><br><span class="hljs-comment"># ================================= load img ==================================</span><br>path_img = os.path.join(os.path.dirname(os.path.abspath(__file__)), <span class="hljs-string">&quot;imgs&quot;</span>, <span class="hljs-string">&quot;lena.png&quot;</span>)<br><span class="hljs-built_in">print</span>(path_img)<br>img = Image.<span class="hljs-built_in">open</span>(path_img).convert(<span class="hljs-string">&#x27;RGB&#x27;</span>)  <span class="hljs-comment"># 0~255</span><br><br><span class="hljs-comment"># convert to tensor</span><br>img_transform = transforms.Compose([transforms.ToTensor()])<br>img_tensor = img_transform(img)<br><span class="hljs-comment"># 添加 batch 维度</span><br>img_tensor.unsqueeze_(dim=<span class="hljs-number">0</span>)    <span class="hljs-comment"># C*H*W to B*C*H*W</span><br><br><span class="hljs-comment"># ================================= create convolution layer ==================================</span><br><br><span class="hljs-comment"># ================ 2d</span><br>flag = <span class="hljs-number">1</span><br><span class="hljs-comment"># flag = 0</span><br><span class="hljs-keyword">if</span> flag:<br>    conv_layer = nn.Conv2d(<span class="hljs-number">3</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>)   <span class="hljs-comment"># input:(i, o, size) weights:(o, i , h, w)</span><br>    <span class="hljs-comment"># 初始化卷积层权值</span><br>    nn.init.xavier_normal_(conv_layer.weight.data)<br>    <span class="hljs-comment"># nn.init.xavier_uniform_(conv_layer.weight.data)</span><br>    <span class="hljs-comment"># calculation</span><br>    img_conv = conv_layer(img_tensor)<br><br><span class="hljs-comment"># ================ transposed</span><br><span class="hljs-comment"># flag = 1</span><br>flag = <span class="hljs-number">0</span><br><span class="hljs-keyword">if</span> flag:<br>    conv_layer = nn.ConvTranspose2d(<span class="hljs-number">3</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>)   <span class="hljs-comment"># input:(input_channel, output_channel, size)</span><br>    <span class="hljs-comment"># 初始化网络层的权值</span><br>    nn.init.xavier_normal_(conv_layer.weight.data)<br><br>    <span class="hljs-comment"># calculation</span><br>    img_conv = conv_layer(img_tensor)<br><br><span class="hljs-comment"># ================================= visualization ==================================</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;卷积前尺寸:&#123;&#125;\n卷积后尺寸:&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(img_tensor.shape, img_conv.shape))<br>img_conv = transform_invert(img_conv[<span class="hljs-number">0</span>, <span class="hljs-number">0</span>:<span class="hljs-number">1</span>, ...], img_transform)<br>img_raw = transform_invert(img_tensor.squeeze(), img_transform)<br>plt.subplot(<span class="hljs-number">122</span>).imshow(img_conv, cmap=<span class="hljs-string">&#x27;gray&#x27;</span>)<br>plt.subplot(<span class="hljs-number">121</span>).imshow(img_raw)<br>plt.show()<br></code></pre></td></tr></table></figure>
+<p>卷积前后的图片如下 (左边是原图片，右边是卷积后的图片)：<br><img src="/img/pytorchtrain3/7.png" srcset="/img/loading.gif" lazyload><br>当改为使用nn.init.xavier_uniform_()方法初始化网络的权值时，卷积前后图片如下：<br><img src="/img/pytorchtrain3/8.png" srcset="/img/loading.gif" lazyload><br>我们通过conv_layer.weight.shape查看卷积核的 shape 是(1, 3, 3, 3)，对应是(output_channel, input_channel, kernel_size, kernel_size)。所以第一个维度对应的是卷积核的个数，每个卷积核都是(3,3,3)。虽然每个卷积核都是 3 维的，执行的却是 2 维卷积。下面这个图展示了这个过程。<br><img src="/img/pytorchtrain3/9.png" srcset="/img/loading.gif" lazyload><br>也就是每个卷积核在 input_channel 维度再划分，这里 input_channel 为 3，那么这时每个卷积核的 shape 是(3, 3)。3 个卷积核在输入图像的每个 channel 上卷积后得到 3 个数，把这 3 个数相加，再加上 bias，得到最后的一个输出。<br><img src="/img/pytorchtrain3/10.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="转置卷积：nn-ConvTranspose"><a href="#转置卷积：nn-ConvTranspose" class="headerlink" title="转置卷积：nn.ConvTranspose()"></a>转置卷积：nn.ConvTranspose()</h3><p>转置卷积又称为反卷积 (Deconvolution) 和部分跨越卷积 (Fractionally strided Convolution)，用于对图像进行上采样。<br>正常卷积如下：<br><img src="/img/pytorchtrain3/4.gif" srcset="/img/loading.gif" lazyload><br>原始的图片尺寸为 $4 \times 4$，卷积核大小为 $3 \times 3$，$padding &#x3D;0$，$stride &#x3D; 1$。由于卷积操作可以通过矩阵运算来解决，因此原始图片可以看作 $16 \times 1$ 的矩阵 $I{16 \times 1}$，卷积核可以看作 $4 \times 16$ 的矩阵$K{4 \times 16}$，那么输出是 $K{4 \times 16} \times I{16 \times 1} &#x3D; O_{4 \times 1}$ 。<br>转置卷积如下：<br><img src="/img/pytorchtrain3/5.gif" srcset="/img/loading.gif" lazyload><br>原始的图片尺寸为 $2 \times 2$，卷积核大小为 $3 \times 3$，$padding &#x3D;0$，$stride &#x3D; 1$。由于卷积操作可以通过矩阵运算来解决，因此原始图片可以看作 $4 \times 1$ 的矩阵 $I{4 \times 1}$，卷积核可以看作 $4 \times 16$ 的矩阵$K{16 \times 4}$，那么输出是 $K{16 \times 4} \times I{4 \times 1} &#x3D; O_{16 \times 1}$ 。<br>正常卷积核转置卷积矩阵的形状刚好是转置关系，因此称为转置卷积，但里面的权值不是一样的，卷积操作也是不可逆的。</p>
+<p>PyTorch 中的转置卷积函数如下：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.ConvTranspose2d(self, in_channels, out_channels, kernel_size, <span class="hljs-attribute">stride</span>=1,<br>                 <span class="hljs-attribute">padding</span>=0, <span class="hljs-attribute">output_padding</span>=0, <span class="hljs-attribute">groups</span>=1, <span class="hljs-attribute">bias</span>=<span class="hljs-literal">True</span>,<br>                 <span class="hljs-attribute">dilation</span>=1, <span class="hljs-attribute">padding_mode</span>=<span class="hljs-string">&#x27;zeros&#x27;</span>)<br></code></pre></td></tr></table></figure>
+<p>和普通卷积的参数基本相同，不再赘述。</p>
+<h4 id="转置卷积尺寸计算"><a href="#转置卷积尺寸计算" class="headerlink" title="转置卷积尺寸计算"></a>转置卷积尺寸计算</h4><h5 id="简化版转置卷积尺寸计算"><a href="#简化版转置卷积尺寸计算" class="headerlink" title="简化版转置卷积尺寸计算"></a>简化版转置卷积尺寸计算</h5><p>这里不考虑空洞卷积，假设输入图片大小为 $ I \times I$，卷积核大小为 $k \times k$，stride 为 $s$，padding 的像素数为 $p$，图片经过卷积之后的尺寸 $ O $ 如下，刚好和普通卷积的计算是相反的：<br>$O &#x3D; (I-1) \times s + k$</p>
+<h5 id="完整版简化版转置卷积尺寸计算"><a href="#完整版简化版转置卷积尺寸计算" class="headerlink" title="完整版简化版转置卷积尺寸计算"></a>完整版简化版转置卷积尺寸计算</h5><p>$O &#x3D; (I-1) \times s - 2 \times p + d \times (k-1) + out_padding + 1$</p>
+<p>转置卷积代码示例如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn<br><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image<br><span class="hljs-keyword">from</span> torchvision <span class="hljs-keyword">import</span> transforms<br><span class="hljs-keyword">from</span> matplotlib <span class="hljs-keyword">import</span> pyplot <span class="hljs-keyword">as</span> plt<br><span class="hljs-keyword">from</span> common_tools <span class="hljs-keyword">import</span> transform_invert, set_seed<br><br>set_seed(<span class="hljs-number">3</span>)  <span class="hljs-comment"># 设置随机种子</span><br><br><span class="hljs-comment"># ================================= load img ==================================</span><br>path_img = os.path.join(os.path.dirname(os.path.abspath(__file__)), <span class="hljs-string">&quot;imgs&quot;</span>, <span class="hljs-string">&quot;lena.png&quot;</span>)<br><span class="hljs-built_in">print</span>(path_img)<br>img = Image.<span class="hljs-built_in">open</span>(path_img).convert(<span class="hljs-string">&#x27;RGB&#x27;</span>)  <span class="hljs-comment"># 0~255</span><br><br><span class="hljs-comment"># convert to tensor</span><br>img_transform = transforms.Compose([transforms.ToTensor()])<br>img_tensor = img_transform(img)<br><span class="hljs-comment"># 添加 batch 维度</span><br>img_tensor.unsqueeze_(dim=<span class="hljs-number">0</span>)    <span class="hljs-comment"># C*H*W to B*C*H*W</span><br><br><span class="hljs-comment"># ================================= create convolution layer ==================================</span><br><br><span class="hljs-comment"># ================ 2d</span><br><span class="hljs-comment"># flag = 1</span><br>flag = <span class="hljs-number">0</span><br><span class="hljs-keyword">if</span> flag:<br>    conv_layer = nn.Conv2d(<span class="hljs-number">3</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>)   <span class="hljs-comment"># input:(i, o, size) weights:(o, i , h, w)</span><br>    <span class="hljs-comment"># 初始化卷积层权值</span><br>    nn.init.xavier_normal_(conv_layer.weight.data)<br>    <span class="hljs-comment"># nn.init.xavier_uniform_(conv_layer.weight.data)</span><br><br>    <span class="hljs-comment"># calculation</span><br>    img_conv = conv_layer(img_tensor)<br><br><span class="hljs-comment"># ================ transposed</span><br>flag = <span class="hljs-number">1</span><br><span class="hljs-comment"># flag = 0</span><br><span class="hljs-keyword">if</span> flag:<br>    conv_layer = nn.ConvTranspose2d(<span class="hljs-number">3</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>, stride=<span class="hljs-number">2</span>)   <span class="hljs-comment"># input:(input_channel, output_channel, size)</span><br>    <span class="hljs-comment"># 初始化网络层的权值</span><br>    nn.init.xavier_normal_(conv_layer.weight.data)<br><br>    <span class="hljs-comment"># calculation</span><br>    img_conv = conv_layer(img_tensor)<br><br><span class="hljs-comment"># ================================= visualization ==================================</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;卷积前尺寸:&#123;&#125;\n卷积后尺寸:&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(img_tensor.shape, img_conv.shape))<br>img_conv = transform_invert(img_conv[<span class="hljs-number">0</span>, <span class="hljs-number">0</span>:<span class="hljs-number">1</span>, ...], img_transform)<br>img_raw = transform_invert(img_tensor.squeeze(), img_transform)<br>plt.subplot(<span class="hljs-number">122</span>).imshow(img_conv, cmap=<span class="hljs-string">&#x27;gray&#x27;</span>)<br>plt.subplot(<span class="hljs-number">121</span>).imshow(img_raw)<br>plt.show()<br></code></pre></td></tr></table></figure>
+<p>转置卷积前后图片显示如下，左边原图片的尺寸是 (512, 512)，右边转置卷积后的图片尺寸是 (1025, 1025)。<br><img src="/img/pytorchtrain3/11.png" srcset="/img/loading.gif" lazyload><br>转置卷积后的图片一般都会有棋盘效应，像一格一格的棋盘，这是转置卷积的通病。</p>
+<h2 id="池化层、线性层和激活函数层"><a href="#池化层、线性层和激活函数层" class="headerlink" title="池化层、线性层和激活函数层"></a>池化层、线性层和激活函数层</h2><h3 id="池化层"><a href="#池化层" class="headerlink" title="池化层"></a>池化层</h3><p>池化的作用则体现在降采样：保留显著特征、降低特征维度，增大kernel的感受野。 另外一点值得注意：pooling也可以提供一些旋转不变性。 池化层可对提取到的特征信息进行降维，一方面使特征图变小，简化网络计算复杂度并在一定程度上避免过拟合的出现；一方面进行特征压缩，提取主要特征。</p>
+<p>有最大池化和平均池化两张方式。</p>
+<h4 id="最大池化：nn-MaxPool2d"><a href="#最大池化：nn-MaxPool2d" class="headerlink" title="最大池化：nn.MaxPool2d()"></a>最大池化：nn.MaxPool2d()</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.MaxPool2d(kernel_size, <span class="hljs-attribute">stride</span>=None, <span class="hljs-attribute">padding</span>=0, <span class="hljs-attribute">dilation</span>=1, <span class="hljs-attribute">return_indices</span>=<span class="hljs-literal">False</span>, <span class="hljs-attribute">ceil_mode</span>=<span class="hljs-literal">False</span>)<br></code></pre></td></tr></table></figure>
+<p>这个函数的功能是进行 2 维的最大池化，主要参数如下：</p>
+<ul>
+<li>kernel_size：池化核尺寸</li>
+<li>stride：步长，通常与 kernel_size 一致</li>
+<li>padding：填充宽度，主要是为了调整输出的特征图大小，一般把 padding 设置合适的值后，保持输入和输出的图像尺寸不变。</li>
+<li>dilation：池化间隔大小，默认为1。常用于图像分割任务中，主要是为了提升感受野</li>
+<li>ceil_mode：默认为 False，尺寸向下取整。为 True 时，尺寸向上取整</li>
+<li>return_indices：为 True 时，返回最大池化所使用的像素的索引，这些记录的索引通常在反最大池化时使用，把小的特征图反池化到大的特征图时，每一个像素放在哪个位置。</li>
+</ul>
+<p>下图 (a) 表示反池化，(b) 表示上采样，(c) 表示反卷积。<br><img src="/img/pytorchtrain3/12.png" srcset="/img/loading.gif" lazyload><br>下面是最大池化的代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn<br><span class="hljs-keyword">from</span> torchvision <span class="hljs-keyword">import</span> transforms<br><span class="hljs-keyword">from</span> matplotlib <span class="hljs-keyword">import</span> pyplot <span class="hljs-keyword">as</span> plt<br><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image<br><span class="hljs-keyword">from</span> common_tools <span class="hljs-keyword">import</span> transform_invert, set_seed<br><br>set_seed(<span class="hljs-number">1</span>)  <span class="hljs-comment"># 设置随机种子</span><br><br><span class="hljs-comment"># ================================= load img ==================================</span><br>path_img = os.path.join(os.path.dirname(os.path.abspath(__file__)), <span class="hljs-string">&quot;imgs/lena.png&quot;</span>)<br>img = Image.<span class="hljs-built_in">open</span>(path_img).convert(<span class="hljs-string">&#x27;RGB&#x27;</span>)  <span class="hljs-comment"># 0~255</span><br><br><span class="hljs-comment"># convert to tensor</span><br>img_transform = transforms.Compose([transforms.ToTensor()])<br>img_tensor = img_transform(img)<br>img_tensor.unsqueeze_(dim=<span class="hljs-number">0</span>)    <span class="hljs-comment"># C*H*W to B*C*H*W</span><br><br><span class="hljs-comment"># ================================= create convolution layer ==================================</span><br><br><span class="hljs-comment"># ================ maxpool</span><br>flag = <span class="hljs-number">1</span><br><span class="hljs-comment"># flag = 0</span><br><span class="hljs-keyword">if</span> flag:<br>    maxpool_layer = nn.MaxPool2d((<span class="hljs-number">2</span>, <span class="hljs-number">2</span>), stride=(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>))   <span class="hljs-comment"># input:(i, o, size) weights:(o, i , h, w)</span><br>    img_pool = maxpool_layer(img_tensor)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;池化前尺寸:&#123;&#125;\n池化后尺寸:&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(img_tensor.shape, img_pool.shape))<br>img_pool = transform_invert(img_pool[<span class="hljs-number">0</span>, <span class="hljs-number">0</span>:<span class="hljs-number">3</span>, ...], img_transform)<br>img_raw = transform_invert(img_tensor.squeeze(), img_transform)<br>plt.subplot(<span class="hljs-number">122</span>).imshow(img_pool)<br>plt.subplot(<span class="hljs-number">121</span>).imshow(img_raw)<br>plt.show()<br></code></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus">池化前尺寸:torch<span class="hljs-selector-class">.Size</span>(<span class="hljs-selector-attr">[1, 3, 512, 512]</span>)<br>池化后尺寸:torch<span class="hljs-selector-class">.Size</span>(<span class="hljs-selector-attr">[1, 3, 256, 256]</span>)<br></code></pre></td></tr></table></figure>
+<p><img src="/img/pytorchtrain3/13.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="nn-AvgPool2d"><a href="#nn-AvgPool2d" class="headerlink" title="nn.AvgPool2d()"></a>nn.AvgPool2d()</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">torch.nn.AvgPool2d(kernel_size, <span class="hljs-attribute">stride</span>=None, <span class="hljs-attribute">padding</span>=0, <span class="hljs-attribute">ceil_mode</span>=<span class="hljs-literal">False</span>, <span class="hljs-attribute">count_include_pad</span>=<span class="hljs-literal">True</span>, <span class="hljs-attribute">divisor_override</span>=None)<br></code></pre></td></tr></table></figure>
+<p>这个函数的功能是进行 2 维的平均池化，主要参数如下：</p>
+<ul>
+<li>kernel_size：池化核尺寸</li>
+<li>stride：步长，通常与 kernel_size 一致</li>
+<li>padding：填充宽度，主要是为了调整输出的特征图大小，一般把 padding 设置合适的值后，保持输入和输出的图像尺寸不变。</li>
+<li>ilation：池化间隔大小，默认为1。常用于图像分割任务中，主要是为了提升感受野</li>
+<li>ceil_mode：默认为 False，尺寸向下取整。为 True 时，尺寸向上取整</li>
+<li>count_include_pad：在计算平均值时，是否把填充值考虑在内计算</li>
+<li>divisor_override：除法因子。在计算平均值时，分子是像素值的总和，分母默认是像素值的个数。如果设置了 divisor_override，把分母改为 divisor_override。</li>
+</ul>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">img_tensor</span> = torch.ones((<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">4</span>, <span class="hljs-number">4</span>))<br><span class="hljs-attribute">avgpool_layer</span> = nn.AvgPool2d((<span class="hljs-number">2</span>, <span class="hljs-number">2</span>), stride=(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>))<br><span class="hljs-attribute">img_pool</span> = avgpool_layer(img_tensor)<br><span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;raw_img:\n&#123;&#125;\npooling_img:\n&#123;&#125;&quot;</span>.format(img_tensor, img_pool))<br></code></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs inform7">raw_img:<br>tensor(<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[1., 1., 1., 1.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[1., 1., 1., 1.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[1., 1., 1., 1.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[1., 1., 1., 1.]</span>]</span>]</span>]</span>)<br>pooling_img:<br>tensor(<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[1., 1.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[1., 1.]</span>]</span>]</span>]</span>)<br></code></pre></td></tr></table></figure>
+<p>加上divisor_override&#x3D;3后，输出如下：</p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs inform7">raw_img:<br>tensor(<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[1., 1., 1., 1.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[1., 1., 1., 1.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[1., 1., 1., 1.]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[1., 1., 1., 1.]</span>]</span>]</span>]</span>)<br>pooling_img:<br>tensor(<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[<span class="hljs-comment">[1.3333, 1.3333]</span>,</span></span></span><br><span class="hljs-comment"><span class="hljs-comment"><span class="hljs-comment">          <span class="hljs-comment">[1.3333, 1.3333]</span>]</span>]</span>]</span>)<br></code></pre></td></tr></table></figure>
+<h4 id="nn-MaxUnpool2d"><a href="#nn-MaxUnpool2d" class="headerlink" title="nn.MaxUnpool2d()"></a>nn.MaxUnpool2d()</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">nn.MaxUnpool2d(kernel_size, <span class="hljs-attribute">stride</span>=None, <span class="hljs-attribute">padding</span>=0)<br></code></pre></td></tr></table></figure>
+<p>功能是对二维信号（图像）进行最大值反池化，主要参数如下：</p>
+<ul>
+<li>kernel_size：池化核尺寸</li>
+<li>stride：步长，通常与 kernel_size 一致</li>
+<li>padding：填充宽度</li>
+</ul>
+<p>代码如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># pooling</span><br><span class="hljs-attribute">img_tensor</span> = torch.randint(high=<span class="hljs-number">5</span>, size=(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">4</span>, <span class="hljs-number">4</span>), dtype=torch.float)<br><span class="hljs-attribute">maxpool_layer</span> = nn.MaxPool2d((<span class="hljs-number">2</span>, <span class="hljs-number">2</span>), stride=(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>), return_indices=True)<br><span class="hljs-attribute">img_pool</span>, indices = maxpool_layer(img_tensor)<br><br><span class="hljs-comment"># unpooling</span><br><span class="hljs-attribute">img_reconstruct</span> = torch.randn_like(img_pool, dtype=torch.float)<br><span class="hljs-attribute">maxunpool_layer</span> = nn.MaxUnpool2d((<span class="hljs-number">2</span>, <span class="hljs-number">2</span>), stride=(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>))<br><span class="hljs-attribute">img_unpool</span> = maxunpool_layer(img_reconstruct, indices)<br><br><span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;raw_img:\n&#123;&#125;\nimg_pool:\n&#123;&#125;&quot;</span>.format(img_tensor, img_pool))<br><span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;img_reconstruct:\n&#123;&#125;\nimg_unpool:\n&#123;&#125;&quot;</span>.format(img_reconstruct, img_unpool))<br></code></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># pooling</span><br><span class="hljs-attribute">img_tensor</span> = torch.randint(high=<span class="hljs-number">5</span>, size=(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">4</span>, <span class="hljs-number">4</span>), dtype=torch.float)<br><span class="hljs-attribute">maxpool_layer</span> = nn.MaxPool2d((<span class="hljs-number">2</span>, <span class="hljs-number">2</span>), stride=(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>), return_indices=True)<br><span class="hljs-attribute">img_pool</span>, indices = maxpool_layer(img_tensor)<br><br><span class="hljs-comment"># unpooling</span><br><span class="hljs-attribute">img_reconstruct</span> = torch.randn_like(img_pool, dtype=torch.float)<br><span class="hljs-attribute">maxunpool_layer</span> = nn.MaxUnpool2d((<span class="hljs-number">2</span>, <span class="hljs-number">2</span>), stride=(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>))<br><span class="hljs-attribute">img_unpool</span> = maxunpool_layer(img_reconstruct, indices)<br><br><span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;raw_img:\n&#123;&#125;\nimg_pool:\n&#123;&#125;&quot;</span>.format(img_tensor, img_pool))<br><span class="hljs-attribute">print</span>(<span class="hljs-string">&quot;img_reconstruct:\n&#123;&#125;\nimg_unpool:\n&#123;&#125;&quot;</span>.format(img_reconstruct, img_unpool))<br></code></pre></td></tr></table></figure>
+<h3 id="线性层"><a href="#线性层" class="headerlink" title="线性层"></a>线性层</h3><p>线性层又称为全连接层，其每个神经元与上一个层所有神经元相连，实现对前一层的线性组合或线性变换。<br>代码如下：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs stylus">inputs = torch<span class="hljs-selector-class">.tensor</span>(<span class="hljs-selector-attr">[[1., 2, 3]</span>])<br>linear_layer = nn<span class="hljs-selector-class">.Linear</span>(<span class="hljs-number">3</span>, <span class="hljs-number">4</span>)<br>linear_layer<span class="hljs-selector-class">.weight</span><span class="hljs-selector-class">.data</span> = torch<span class="hljs-selector-class">.tensor</span>(<span class="hljs-selector-attr">[[1., 1., 1.]</span>,<br><span class="hljs-selector-attr">[2., 2., 2.]</span>,<br><span class="hljs-selector-attr">[3., 3., 3.]</span>,<br><span class="hljs-selector-attr">[4., 4., 4.]</span>])<br><br>linear_layer<span class="hljs-selector-class">.bias</span><span class="hljs-selector-class">.data</span><span class="hljs-selector-class">.fill_</span>(<span class="hljs-number">0.5</span>)<br>output = <span class="hljs-built_in">linear_layer</span>(inputs)<br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(inputs, inputs.shape)</span></span><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(linear_layer.weight.data, linear_layer.weight.data.shape)</span></span><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(output, output.shape)</span></span><br></code></pre></td></tr></table></figure>
+<p>输出为：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">tensor</span><span class="hljs-params">([[<span class="hljs-number">1</span>., <span class="hljs-number">2</span>., <span class="hljs-number">3</span>.]])</span></span> torch<span class="hljs-selector-class">.Size</span>(<span class="hljs-selector-attr">[1, 3]</span>)<br><span class="hljs-built_in">tensor</span>(<span class="hljs-selector-attr">[[1., 1., 1.]</span>,<br>        <span class="hljs-selector-attr">[2., 2., 2.]</span>,<br>        <span class="hljs-selector-attr">[3., 3., 3.]</span>,<br>        <span class="hljs-selector-attr">[4., 4., 4.]</span>]) torch<span class="hljs-selector-class">.Size</span>(<span class="hljs-selector-attr">[4, 3]</span>)<br><span class="hljs-function"><span class="hljs-title">tensor</span><span class="hljs-params">([[ <span class="hljs-number">6.5000</span>, <span class="hljs-number">12.5000</span>, <span class="hljs-number">18.5000</span>, <span class="hljs-number">24.5000</span>]], grad_fn=&lt;AddmmBackward&gt;)</span></span> torch<span class="hljs-selector-class">.Size</span>(<span class="hljs-selector-attr">[1, 4]</span>)<br></code></pre></td></tr></table></figure>
+<h3 id="激活函数层"><a href="#激活函数层" class="headerlink" title="激活函数层"></a>激活函数层</h3><p>假设第一个隐藏层为：$H{1}&#x3D;X \times W{1}$，第二个隐藏层为：$H{2}&#x3D;H{1} \times W_{2}$，输出层为：</p>
+<p><img src="/img/pytorchtrain3/1.jpg" srcset="/img/loading.gif" lazyload><br>如果没有非线性变换，由于矩阵乘法的结合性，多个线性层的组合等价于一个线性层。</p>
+<p>激活函数对特征进行非线性变换，赋予了多层神经网络具有深度的意义。下面介绍一些激活函数层。</p>
+<h4 id="nn-Sigmoid"><a href="#nn-Sigmoid" class="headerlink" title="nn.Sigmoid"></a>nn.Sigmoid</h4><ul>
+<li>计算公式：$y&#x3D;\frac{1}{1+e^{-x}}$</li>
+<li>梯度公式：$y^{\prime}&#x3D;y *(1-y)$</li>
+<li>特性：<ul>
+<li>输出值在(0,1)，符合概率</li>
+<li>导数范围是 [0, 0.25]，容易导致梯度消失</li>
+<li>输出为非 0 均值，破坏数据分布<br><img src="/img/pytorchtrain3/15.png" srcset="/img/loading.gif" lazyload></li>
+</ul>
+</li>
+</ul>
+<h4 id="nn-tanh"><a href="#nn-tanh" class="headerlink" title="nn.tanh"></a>nn.tanh</h4><ul>
+<li>计算公式：$y&#x3D;\frac{\sin x}{\cos x}&#x3D;\frac{e^{x}-e^{-x}}{e^{-}+e^{-x}}&#x3D;\frac{2}{1+e^{-2 x}}+1$</li>
+<li>梯度公式：$y^{\prime}&#x3D;1-y^{2}$</li>
+<li>特性：<ul>
+<li>输出值在(-1, 1)，数据符合 0 均值</li>
+<li>导数范围是 (0,1)，容易导致梯度消失<br><img src="/img/pytorchtrain3/16.png" srcset="/img/loading.gif" lazyload></li>
+</ul>
+</li>
+</ul>
+<h4 id="nn-ReLU-修正线性单元"><a href="#nn-ReLU-修正线性单元" class="headerlink" title="nn.ReLU(修正线性单元)"></a>nn.ReLU(修正线性单元)</h4><ul>
+<li>计算公式：$y&#x3D;max(0, x)$</li>
+<li>梯度公式：<img src="/img/pytorchtrain3/2.jpg" srcset="/img/loading.gif" lazyload></li>
+<li>特性：<ul>
+<li>输出值均为正数，负半轴的导数为 0，容易导致死神经元</li>
+<li>导数是 1，缓解梯度消失，但容易引发梯度爆炸<br><img src="/img/pytorchtrain3/17.png" srcset="/img/loading.gif" lazyload><br>针对 RuLU 会导致死神经元的缺点，出现了下面 3 种改进的激活函数。<br><img src="/img/pytorchtrain3/18.png" srcset="/img/loading.gif" lazyload></li>
+</ul>
+</li>
+</ul>
+<h4 id="nn-LeakyReLU"><a href="#nn-LeakyReLU" class="headerlink" title="nn.LeakyReLU"></a>nn.LeakyReLU</h4><ul>
+<li>有一个参数negative_slope：设置负半轴斜率</li>
+</ul>
+<h4 id="nn-PReLU"><a href="#nn-PReLU" class="headerlink" title="nn.PReLU"></a>nn.PReLU</h4><ul>
+<li>有一个参数init：设置初始斜率，这个斜率是可学习的</li>
+</ul>
+<h4 id="nn-RReLU"><a href="#nn-RReLU" class="headerlink" title="nn.RReLU"></a>nn.RReLU</h4><p>R 是 random 的意思，负半轴每次斜率都是随机取 [lower, upper] 之间的一个数</p>
+<ul>
+<li>lower：均匀分布下限</li>
+<li>upper：均匀分布上限</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="print-no-link">#深度学习</a>
+      
+        <a href="/tags/pytorch/" class="print-no-link">#pytorch</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深度学习-10-pytorch-3-模型构建</div>
+      <div>https://truth-zheng.github.io/2021/08/11/pytorchtrain3/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>zheng</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年8月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/08/11/pytorchtrain4/" title="深度学习-11-pytorch-4-损失函数与优化器">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深度学习-11-pytorch-4-损失函数与优化器</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/10/pytorchtrain2/" title="深度学习-9-pytorch-2-数据处理">
+                        <span class="hidden-mobile">深度学习-9-pytorch-2-数据处理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/mermaid@8.10.1/dist/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com" target="_blank" rel="nofollow noopener"><span>Github</span></a> <i class="iconfont icon-love"></i> <a href="https://scholar.google.com/" target="_blank" rel="nofollow noopener"><span>GoogleScholar</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://cdn.jsdelivr.net/npm/mathjax@3.1.4/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
